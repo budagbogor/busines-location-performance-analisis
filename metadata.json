@@ -1,0 +1,6 @@
+{
+  "name": "AutoReputation AI - Intelligence Network Bengkel & Retail",
+  "description": "Platform analisis reputasi, persepsi publik, dan pemetaan kinerja cabang bengkel otomotif dengan Google Search Grounding dan Gemini AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
