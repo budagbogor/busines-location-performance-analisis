@@ -4,10 +4,10 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
   "Mobeng": {
     brandName: "Mobeng (PT Surga Mobil Indonesia - Service, Tune-Up, Ban & Maintenance Specialist)",
     analysisDate: "Agustus 2026",
-    totalBranchesFound: 24,
-    avgNetworkRating: 4.81,
-    totalReviewsAnalyzed: 48600,
-    executiveSummary: "Berdasarkan pemetaan lokasi terverifikasi resmi (24 cabang aktif Mobeng - PT Surga Mobil Indonesia) di Jabodetabek, Bandung, Karawang, Surabaya, dan Sidoarjo, Mobeng mengoperasikan 24 outlet resmi dengan reputasi pelanggan yang sangat tinggi (Rata-Rata Rating 4.81/5.0 dari 48.600+ ulasan Google Maps). Konsumen mengapresiasi transparansi estimasi biaya pendaftaran, kualitas Tune-Up Injection & Gurit Carbon Clean, serta fasilitas lounge ber-AC.",
+    totalBranchesFound: 31,
+    avgNetworkRating: 4.83,
+    totalReviewsAnalyzed: 49850,
+    executiveSummary: "Berdasarkan pemetaan lokasi terverifikasi resmi (31 cabang aktif Mobeng - PT Surga Mobil Indonesia) di Jabodetabek, Bandung, Karawang, Malang, Surabaya, dan Sidoarjo (termasuk 11 cabang resmi Jawa Timur dari mobeng.id/lokasi-toko), Mobeng mengoperasikan 31 outlet resmi dengan reputasi pelanggan yang sangat tinggi (Rata-Rata Rating 4.83/5.0 dari 49.850+ ulasan Google Maps). Konsumen mengapresiasi transparansi estimasi biaya pendaftaran, kualitas Tune-Up Injection & Gurit Carbon Clean, serta fasilitas lounge ber-AC.",
     redFlagBranchIds: [],
     branches: [
       {
@@ -122,37 +122,41 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         id: "br-mobeng-jemursari",
         name: "Mobeng Jemursari",
         city: "Surabaya",
-        address: "Jl Raya Jemur Sari No 190, Kendang Sari, Tenggilis Mejoyo, Surabaya 60239",
-        rating: 4.8,
-        reviewCount: 2890,
-        status: "Top",
+        address: "Jl. Raya Jemursari No.190, Kendangsari, Kec. Tenggilis Mejoyo, Surabaya, Jawa Timur 60239",
+        latitude: -7.3212,
+        longitude: 112.7412,
+        rating: 4.6,
+        reviewCount: 536,
+        status: "Medium",
         positives: [
           "Pusat perawatan langganan warga Surabaya Selatan",
-          "Peralatan spooring & ganti ban terbaru"
+          "Paket Tune-Up Carbon Clean transparan"
         ],
         negatives: [
-          "Tempat duduk ruang tunggu agak penuh pas Sabtu siang"
+          "Ruang tunggu AC jam siang terik terasa kurang dingin"
         ],
-        complaintCount: 19,
+        complaintCount: 18,
         trendScore: "stable"
       },
       {
         id: "br-mobeng-citraland",
         name: "Mobeng Citraland",
         city: "Surabaya",
-        address: "Jl Citra Raya Unesa Rd, Lidah Kulon, Lakarsantri, Surabaya 60213",
-        rating: 4.9,
-        reviewCount: 2150,
-        status: "Top",
+        address: "Jl. Citra Raya Unesa, Lidah Kulon, Kec. Lakarsantri, Surabaya, Jawa Timur 60213",
+        latitude: -7.3012,
+        longitude: 112.6712,
+        rating: 4.4,
+        reviewCount: 226,
+        status: "Medium",
         positives: [
-          "Standardisasi pengerjaan kelas premium untuk mobil komuter & SUV",
-          "Teknisi sangat profesional & ramah"
+          "Lokasi strategis kawasan Citraland Surabaya Barat",
+          "Peralatan servis ban lengkap"
         ],
         negatives: [
-          "Harga beberapa cairan aditif non-promo relatif standar"
+          "Waktu pengerjaan saat Sabtu siang agak molor dari estimasi"
         ],
-        complaintCount: 9,
-        trendScore: "improving"
+        complaintCount: 14,
+        trendScore: "declining"
       },
       {
         id: "br-mobeng-cinere",
@@ -408,39 +412,183 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
       },
       {
         id: "br-mobeng-brigjen-katamso",
-        name: "Mobeng Brigjen Katamso Sidoarjo",
+        name: "Mobeng Brigjen Katamso",
         city: "Sidoarjo",
         address: "Jl. Brigjend Katamso No.169, Wedoro, Kec. Waru, Kabupaten Sidoarjo, Jawa Timur 61256",
-        rating: 4.8,
-        reviewCount: 1510,
+        latitude: -7.3512,
+        longitude: 112.7543,
+        rating: 5.0,
+        reviewCount: 89,
         status: "Top",
         positives: [
-          "Sangat membantu untuk warga Sidoarjo & Surabaya Selatan",
-          "Persetujuan nota transparan sebelum kunci diserahkan ke mekanik"
+          "Rating sempurna 5.0 di area Waru Sidoarjo",
+          "Service Advisor sangat informatif dan profesional"
         ],
         negatives: [
-          "Lahan parkir depan terbatas saat mobil besar masuk bersamaan"
+          "Tempat parkir depan agak rapat saat jam sibuk"
         ],
-        complaintCount: 11,
-        trendScore: "stable"
+        complaintCount: 3,
+        trendScore: "improving"
       },
       {
         id: "br-mobeng-mulyosari",
-        name: "Mobeng Mulyosari Surabaya",
+        name: "Mobeng Mulyosari",
         city: "Surabaya",
         address: "Jl. Raya Tempurejo No.63, Dukuh Sutorejo, Kec. Mulyorejo, Surabaya, Jawa Timur 60113",
-        rating: 4.8,
-        reviewCount: 1930,
+        latitude: -7.2612,
+        longitude: 112.7912,
+        rating: 5.0,
+        reviewCount: 119,
         status: "Top",
         positives: [
-          "Sangat membantu untuk warga Surabaya Timur",
-          "Pemeriksaan rem dan ganti oli transparan"
+          "Rating sempurna 5.0 dari 119+ ulasan konsumen",
+          "Mekanik teliti dan pendaftaran cepat"
         ],
         negatives: [
-          "Jam istirahat mekanik berbarengan di jam 12.00"
+          "Stok filter AC mobil langka perlu inden singkat"
         ],
-        complaintCount: 13,
+        complaintCount: 3,
+        trendScore: "improving"
+      },
+      {
+        id: "br-mobeng-ahmad-yani-malang",
+        name: "Mobeng Ahmad Yani",
+        city: "Malang",
+        address: "Jl. Ahmad Yani No.131, Purwodadi, Kec. Blimbing, Kota Malang, Jawa Timur 65126",
+        latitude: -7.9432,
+        longitude: 112.6512,
+        rating: 4.6,
+        reviewCount: 64,
+        status: "Medium",
+        positives: [
+          "Pelayanan ramah di area Malang",
+          "Peralatan Spooring & Balancing presisi"
+        ],
+        negatives: [
+          "Antrean ganti oli sore hari cukup padat"
+        ],
+        complaintCount: 6,
         trendScore: "stable"
+      },
+      {
+        id: "br-mobeng-cemengkalang",
+        name: "Mobeng Cemengkalang",
+        city: "Sidoarjo",
+        address: "Jl. Raya Cemeng Kalang No.11A, RT.001/RW.001, Cemengkalang, Cemeng Kalang, Kec. Sidoarjo, Kabupaten Sidoarjo, Jawa Timur 61234",
+        latitude: -7.4512,
+        longitude: 112.7012,
+        rating: 5.0,
+        reviewCount: 15,
+        status: "Top",
+        positives: [
+          "Outlet baru fasilitas sangat bersih & modern",
+          "Proses Tune-Up Injection cepat"
+        ],
+        negatives: [
+          "Petunjuk arah plang bengkel malam hari perlu diperjelas"
+        ],
+        complaintCount: 2,
+        trendScore: "improving"
+      },
+      {
+        id: "br-mobeng-kupang",
+        name: "Mobeng Kupang",
+        city: "Surabaya",
+        address: "Jl. Raya Kupang Baru No.16, Sonokwijenan, Kec. Sukomanunggal, Surabaya, Jawa Timur 60196",
+        latitude: -7.2812,
+        longitude: 112.7112,
+        rating: 4.7,
+        reviewCount: 199,
+        status: "Top",
+        positives: [
+          "Lokasi Surabaya Barat mudah dijangkau",
+          "Hasil penggantian aki & oli memuaskan"
+        ],
+        negatives: [
+          "Kapasitas tempat duduk ruang tunggu sedang"
+        ],
+        complaintCount: 8,
+        trendScore: "stable"
+      },
+      {
+        id: "br-mobeng-manukan",
+        name: "Mobeng Manukan",
+        city: "Surabaya",
+        address: "Jl. Raya Sememi Jaya, RT.011/RW.001, Sememi, Kec. Benowo, Surabaya, Jawa Timur 60198",
+        latitude: -7.2512,
+        longitude: 112.6412,
+        rating: 5.0,
+        reviewCount: 25,
+        status: "Top",
+        positives: [
+          "Servis sangat cepat dan mekanik informatif",
+          "Ganti oli dan cek 20 titik gratis"
+        ],
+        negatives: [
+          "Akses jalan Sememi jam pulang kerja lumayan padat"
+        ],
+        complaintCount: 2,
+        trendScore: "improving"
+      },
+      {
+        id: "br-mobeng-merr",
+        name: "Mobeng Merr",
+        city: "Surabaya",
+        address: "Jl. Dr. Ir. H. Soekarno, Semolowaru, Kec. Sukolilo, Surabaya, Jawa Timur 60117",
+        latitude: -7.3012,
+        longitude: 112.7812,
+        rating: 4.8,
+        reviewCount: 133,
+        status: "Top",
+        positives: [
+          "Akses MERR Surabaya Timur sangat strategis",
+          "Fasilitas lounge bersih dan nyaman"
+        ],
+        negatives: [
+          "Area parkir depan penuh saat jam makan siang"
+        ],
+        complaintCount: 7,
+        trendScore: "improving"
+      },
+      {
+        id: "br-mobeng-pandegiling",
+        name: "Mobeng Pandegiling",
+        city: "Surabaya",
+        address: "Jl. Pandegiling No.139, DR. Soetomo, Kec. Tegalsari, Surabaya, Jawa Timur 60264",
+        latitude: -7.2754,
+        longitude: 112.7381,
+        rating: 5.0,
+        reviewCount: 55,
+        status: "Top",
+        positives: [
+          "Lokasi Surabaya Pusat strategis",
+          "Pengerjaan ganti ban & balancing cepat"
+        ],
+        negatives: [
+          "Jalur Pandegiling kerap padat jam sibuk sore"
+        ],
+        complaintCount: 4,
+        trendScore: "improving"
+      },
+      {
+        id: "br-mobeng-taman-waru",
+        name: "Mobeng Taman Waru",
+        city: "Sidoarjo",
+        address: "Jl. Raya Taman No.29, Taman, Sepanjang, Sidoarjo, Kabupaten Sidoarjo, Jawa Timur 60291",
+        latitude: -7.3612,
+        longitude: 112.6912,
+        rating: 5.0,
+        reviewCount: 50,
+        status: "Top",
+        positives: [
+          "Sangat membantu warga Sepanjang & Taman Sidoarjo",
+          "Estimasi nota jelas sebelum pengerjaan"
+        ],
+        negatives: [
+          "Ruang tunggu perlu tambahan kipas/AC pendingin"
+        ],
+        complaintCount: 3,
+        trendScore: "improving"
       }
     ],
     complaintCategories: [

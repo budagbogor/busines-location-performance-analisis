@@ -9,18 +9,18 @@ interface TrafficPatternSectionProps {
 
 export const TrafficPatternSection: React.FC<TrafficPatternSectionProps> = ({ pattern }) => {
   return (
-    <section className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 mb-8">
+    <section className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl p-6 mb-8">
       
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-100">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-800">
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
-            <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-              3. Pattern Kedatangan & Tren Keramaian (Footfall Analysis)
+            <h3 className="text-xl font-bold text-white tracking-tight">
+              5. Pattern Kedatangan & Tren Keramaian (Footfall Analysis)
             </h3>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Analisis pola waktu tersibuk (peak hours), hari paling ramai, dan indikasi penumpukan beban kerja operasional jaringan.
           </p>
         </div>

@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -9,26 +9,22 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
-// Initialize Gemini client lazily
-let aiClient: GoogleGenAI | null = null;
-function getGeminiClient(): GoogleGenAI {
-  if (!aiClient) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      throw new Error("GEMINI_API_KEY is not configured in environment variables.");
-    }
-    aiClient = new GoogleGenAI({
-      apiKey: apiKey,
-      httpOptions: {
-        headers: {
-          "User-Agent": "aistudio-build",
-        },
-      },
-    });
+// Helper to get Gemini Client with custom or fallback API key
+function getGeminiClient(customApiKey?: string): GoogleGenAI {
+  const apiKey = customApiKey || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("API Key Gemini belum dikonfigurasi. Masukkan API Key di Pengaturan Engine AI.");
   }
-  return aiClient;
+  return new GoogleGenAI({
+    apiKey: apiKey,
+    httpOptions: {
+      headers: {
+        "User-Agent": "aistudio-build",
+      },
+    },
+  });
 }
 
 // API Health Check
@@ -36,30 +32,93 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Deep Search Analysis Endpoint
-app.post("/api/analyze", async (req, res) => {
+// API Test Connection Endpoint
+app.post("/api/test-ai", async (req, res) => {
   try {
-    const { query } = req.body;
-    if (!query || typeof query !== "string") {
-      res.status(400).json({ error: "Nama bisnis/bengkel wajib diisi." });
+    const { provider, model, apiKey, baseUrl } = req.body;
+
+    if (provider === "gemini") {
+      const keyToUse = apiKey || process.env.GEMINI_API_KEY;
+      if (!keyToUse) {
+        res.status(400).json({ success: false, error: "API Key Gemini kosong. Harap masukkan API Key." });
+        return;
+      }
+      const ai = getGeminiClient(keyToUse);
+      const testModel = model || "gemini-3.6-flash";
+      const response = await ai.models.generateContent({
+        model: testModel,
+        contents: "Hello, test connection.",
+      });
+      if (response && response.text) {
+        res.json({ success: true, message: `Koneksi berhasil ke Gemini (${testModel})!` });
+        return;
+      }
+    } else if (provider === "sumopod" || provider === "openai") {
+      const keyToUse = apiKey || process.env.SUMOPOD_API_KEY || process.env.OPENAI_API_KEY;
+      if (!keyToUse) {
+        res.status(400).json({ success: false, error: `API Key ${provider.toUpperCase()} kosong. Harap masukkan API Key.` });
+        return;
+      }
+      let rawBase = baseUrl || "https://ai.sumopod.com/v1";
+      if (rawBase.includes("api.sumopod.com")) {
+        rawBase = rawBase.replace("api.sumopod.com", "ai.sumopod.com");
+      }
+      const targetBase = rawBase.replace(/\/+$/, "");
+      const targetUrl = `${targetBase}/chat/completions`;
+      const testModel = model || (provider === "sumopod" ? "gpt-4o" : "gpt-4o-mini");
+
+      try {
+        const fetchRes = await fetch(targetUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${keyToUse}`,
+          },
+          body: JSON.stringify({
+            model: testModel,
+            messages: [{ role: "user", content: "Test connection ping" }],
+            max_tokens: 10,
+          }),
+        });
+
+        if (fetchRes.ok) {
+          res.json({ success: true, message: `Koneksi terhubung ke ${provider.toUpperCase()} (${testModel})!` });
+          return;
+        } else {
+          const errText = await fetchRes.text();
+          res.status(400).json({ success: false, error: `HTTP ${fetchRes.status}: ${errText.substring(0, 150)}` });
+          return;
+        }
+      } catch (networkErr: any) {
+        res.status(500).json({
+          success: false,
+          error: `Gagal terhubung ke host (${targetBase}). Pastikan URL Base API adalah https://ai.sumopod.com/v1 dan perangkat terhubung ke internet.`,
+        });
+        return;
+      }
+    } else {
+      res.status(400).json({ success: false, error: "Provider tidak dikenali." });
       return;
     }
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message || String(err) });
+  }
+});
 
-    const ai = getGeminiClient();
-
-    const systemPrompt = `
+// System Prompt for Business Intelligence
+const SYSTEM_PROMPT = `
 Anda adalah Pakar Intelijen Bisnis & Reputasi Perusahaan tingkat Executive (Enterprise Business & Reputation Intelligence Analyst).
-Tugas Anda adalah melakukan deep-search grounding dan analisis performa jaringan cabang/bengkel/retail untuk merek: "${query}".
+Tugas Anda adalah melakukan deep-search grounding dan analisis performa jaringan cabang/bengkel/retail untuk merek yang diberikan.
 
-Anda HARUS melakukan pencarian real-time via Google Search untuk mendeteksi:
-1. Lokasi cabang-cabang asli/nyata dari "${query}" di Indonesia (misal cabang di Jakarta, Surabaya, Bandung, Semarang, Medan, Makassar, Bali, dll.).
+Anda HARUS menganalisis dan mendeteksi:
+1. Lokasi cabang-cabang asli/nyata dari merek tersebut di Indonesia (misal cabang di Jakarta, Surabaya, Bandung, Semarang, Medan, Makassar, Bali, dll.).
 2. Rating Google Review terbaru dan estimasi jumlah ulasan untuk setiap cabang.
-3. Keluhan pelanggan paling dominan (antrean lama, harga sparepart, mekanik kurang jujur, salah diagnosa, transparansi billing) dan poin positif utama (ruang tunggu AC dingin, servis cepat, staff ramah, pengerjaan rapi).
+3. Keluhan pelanggan paling dominan (antrean lama, harga sparepart, mekanik kurang jujur, salah diagnosa, transparansi billing) dan poin positif utama.
 4. Pola keramaian dan jam sibuk (peak hours, hari tersibuk).
 5. Sentimen di media sosial (Instagram, TikTok, YouTube, Berita Online, X/Twitter).
 6. Rekomendasi strategis operasional konkret untuk manajemen eksekutif.
 
-Keluarkan respon dalam bentuk JSON VALID tanpa markdown wrapper tambahan (atau murni string JSON) sesuai skema berikut:
+Keluarkankan respon dalam bentuk JSON VALID murni (tanpa wrapper markdown \`\`\`json) sesuai skema berikut:
 
 {
   "brandName": "Nama Merek Resmi",
@@ -76,11 +135,11 @@ Keluarkan respon dalam bentuk JSON VALID tanpa markdown wrapper tambahan (atau m
       "address": "Alamat singkat",
       "rating": 4.8,
       "reviewCount": 1420,
-      "status": "Top", // pilihan: "Top", "Medium", "Attention Required"
+      "status": "Top",
       "positives": ["Ruang tunggu nyaman & gratis kopi", "Pengerjaan tepat waktu", "Penjelasan mekanik sangat transparan"],
       "negatives": ["Antrean hari Sabtu cukup panjang", "Parkir agak sempit"],
       "complaintCount": 18,
-      "trendScore": "stable", // "improving", "stable", "declining"
+      "trendScore": "stable",
       "trendDetails": "Performa relatif stabil dengan kepuasan tinggi pada keramahan mekanik.",
       "recentReviews": [
         {
@@ -95,7 +154,7 @@ Keluarkan respon dalam bentuk JSON VALID tanpa markdown wrapper tambahan (atau m
       ]
     }
   ],
-  "redFlagBranchIds": ["br-id-1"],
+  "redFlagBranchIds": ["br-1"],
   "complaintCategories": [
     {
       "category": "Waktu Tunggu & Antrean",
@@ -103,27 +162,6 @@ Keluarkan respon dalam bentuk JSON VALID tanpa markdown wrapper tambahan (atau m
       "count": 140,
       "severity": "High",
       "sampleQuotes": ["Menunggu hingga 3 jam padahal sudah booking lewat aplikasi."]
-    },
-    {
-      "category": "Transparansi Harga & Sparepart",
-      "percentage": 25,
-      "count": 100,
-      "severity": "High",
-      "sampleQuotes": ["Harga sparepart di kuitansi beda dengan estimasi awal."]
-    },
-    {
-      "category": "Kualitas Pengerjaan & Diagnosa",
-      "percentage": 20,
-      "count": 80,
-      "severity": "Medium",
-      "sampleQuotes": ["Suara mesin masih agak bising setelah ditune-up."]
-    },
-    {
-      "category": "Keramahan & Pelayanan Front Office",
-      "percentage": 20,
-      "count": 80,
-      "severity": "Low",
-      "sampleQuotes": ["Staff penerima registrasi kurang responsif saat ditanya estimasi."]
     }
   ],
   "trafficPattern": {
@@ -132,14 +170,10 @@ Keluarkan respon dalam bentuk JSON VALID tanpa markdown wrapper tambahan (atau m
     "quietHours": "Selasa & Rabu (08:00 - 10:00 WIB)",
     "hourlyDistribution": [
       {"hour": "08:00", "trafficLevel": 35, "label": "Rendah"},
-      {"hour": "10:00", "trafficLevel": 90, "label": "Sangat Padat"},
-      {"hour": "12:00", "trafficLevel": 65, "label": "Sedang"},
-      {"hour": "14:00", "trafficLevel": 85, "label": "Padat"},
-      {"hour": "16:00", "trafficLevel": 50, "label": "Sedang"},
-      {"hour": "18:00", "trafficLevel": 20, "label": "Rendah"}
+      {"hour": "10:00", "trafficLevel": 90, "label": "Sangat Padat"}
     ],
-    "summary": "Analisis kedatangan menunjukkan lonjakan ekstrem pada akhir pekan dengan waktu tunggu meningkat hingga 120%.",
-    "recommendations": ["Terapkan insentif diskon 15% untuk servis hari kerja (Selasa-Kamis).", "Buka slot Express Maintenance khusus ganti oli."]
+    "summary": "Analisis kedatangan menunjukkan lonjakan pada akhir pekan.",
+    "recommendations": ["Terapkan insentif diskon 15% untuk servis hari kerja."]
   },
   "socialSentiment": {
     "overallPositivePercentage": 72,
@@ -150,27 +184,13 @@ Keluarkan respon dalam bentuk JSON VALID tanpa markdown wrapper tambahan (atau m
         "platform": "Instagram",
         "mentionCount": 1250,
         "sentimentScore": 78,
-        "viralTopics": ["Promo Paket Ganti Oli", "Ulasan Influencer Otomotif"],
-        "recentHeadline": "Banyak apresiasi netizen terhadap konten tips perawatan berkala."
-      },
-      {
-        "platform": "TikTok",
-        "mentionCount": 2400,
-        "sentimentScore": 65,
-        "viralTopics": ["Video Curhat Antrean Bengkel", "Spill Harga Servis Rutin"],
-        "recentHeadline": "Konten keluhan antrean sempat FYP dengan 150rb tayangan."
-      },
-      {
-        "platform": "Google News",
-        "mentionCount": 450,
-        "sentimentScore": 88,
-        "viralTopics": ["Ekspansi Cabang Baru", "Sertifikasi Teknisi"],
-        "recentHeadline": "Liputan pers mengenai pembukaan cabang berstandar internasional."
+        "viralTopics": ["Promo Paket Ganti Oli"],
+        "recentHeadline": "Apresiasi netizen terhadap konten tips perawatan."
       }
     ],
-    "viralComplaints": ["Video TikTok kritik waktu tunggu booking online yang tidak tepat waktu."],
-    "successfulCampaigns": ["Kampanye 'Cek Gratis 21 Komponen' sukses mendongkrak reputasi positif."],
-    "publicPerceptionSummary": "Merek memiliki reputasi kuat secara umum, namun isu waktu tunggu di TikTok perlu penanganan respon cepat PR."
+    "viralComplaints": ["Video TikTok kritik waktu tunggu."],
+    "successfulCampaigns": ["Kampanye Cek Gratis 21 Komponen."],
+    "publicPerceptionSummary": "Merek memiliki reputasi kuat secara umum."
   },
   "strategicRecommendations": [
     {
@@ -178,37 +198,80 @@ Keluarkan respon dalam bentuk JSON VALID tanpa markdown wrapper tambahan (atau m
       "priority": "Critical",
       "category": "Operasional",
       "title": "Restrukturisasi Sistem Queue & Booking Digital",
-      "description": "Perbaiki akurasi estimasi pengerjaan di aplikasi booking dan batasi slot walk-in pada hari Sabtu-Minggu.",
+      "description": "Perbaiki akurasi estimasi pengerjaan di aplikasi booking.",
       "targetBranches": ["Cabang Red Flag"],
-      "expectedImpact": "Penurunan komplain waktu tunggu hingga 40% dalam 30 hari."
-    },
-    {
-      "id": "rec-2",
-      "priority": "High",
-      "category": "Inventaris & Transparansi",
-      "title": "Digital Quotation & Approval Sebelum Pengerjaan",
-      "description": "Setiap pengerjaan tambahan wajib dikonfirmasi via approval digital ke HP pelanggan sebelum mekanik mulai membongkar.",
-      "targetBranches": ["Semua Cabang"],
-      "expectedImpact": "Menghilangkan keluhan transparansi biaya sparepart hingga 90%."
-    },
-    {
-      "id": "rec-3",
-      "priority": "High",
-      "category": "Pelatihan Staff",
-      "title": "SOP Keramahan & Audit Mekanik Berkala",
-      "description": "Lakukan audit insognito pada cabang ber-rating di bawah 4.5 dan latih ulang Service Advisor.",
-      "targetBranches": ["Cabang Attention Required"],
-      "expectedImpact": "Peningkatan rating rata-rata cabang bermasalah menjadi >4.6 dalam 2 bulan."
+      "expectedImpact": "Penurunan komplain waktu tunggu hingga 40%."
     }
   ]
 }
 `;
 
+// Deep Search Analysis Endpoint
+app.post("/api/analyze", async (req, res) => {
+  try {
+    const { query, provider = "gemini", model = "gemini-3.6-flash", apiKey, baseUrl } = req.body;
+    if (!query || typeof query !== "string") {
+      res.status(400).json({ error: "Nama bisnis/bengkel wajib diisi." });
+      return;
+    }
+
+    if (provider === "sumopod" || provider === "openai") {
+      const keyToUse = apiKey || process.env.SUMOPOD_API_KEY || process.env.OPENAI_API_KEY;
+      if (!keyToUse) {
+        res.status(400).json({ error: `API Key ${provider.toUpperCase()} belum disetel di Pengaturan Engine AI.` });
+        return;
+      }
+
+      let rawBase = baseUrl || "https://ai.sumopod.com/v1";
+      if (rawBase.includes("api.sumopod.com")) {
+        rawBase = rawBase.replace("api.sumopod.com", "ai.sumopod.com");
+      }
+      const targetBase = rawBase.replace(/\/+$/, "");
+      const targetUrl = `${targetBase}/chat/completions`;
+      const modelToUse = model || (provider === "sumopod" ? "gpt-4o" : "gpt-4o-mini");
+
+      const userPrompt = `Lakukan pencarian dan buat analisis reputasi intelijen bisnis mendalam untuk merek: "${query}". Buat data cabang lengkap di Indonesia. Kembalikan JSON persis sesuai format skema.`;
+
+      const response = await fetch(targetUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${keyToUse}`,
+        },
+        body: JSON.stringify({
+          model: modelToUse,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: userPrompt },
+          ],
+          response_format: { type: "json_object" },
+          temperature: 0.3,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API ${provider.toUpperCase()} error: ${response.status} - ${errorText.substring(0, 200)}`);
+      }
+
+      const jsonRes = await response.json();
+      const content = jsonRes.choices?.[0]?.message?.content || "";
+      const cleaned = content.replace(/```json/g, "").replace(/```/g, "").trim();
+      const parsedData = JSON.parse(cleaned);
+
+      res.json(parsedData);
+      return;
+    }
+
+    // Default to Gemini
+    const ai = getGeminiClient(apiKey);
+    const geminiModel = model || "gemini-3.6-flash";
+
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: geminiModel,
       contents: `Lakukan pencarian Google Search dan buat analisis mendalam untuk bisnis/bengkel: "${query}". Buat setidaknya 6-10 cabang asli jika ada (atau cabang utama lokasi kota-kota besar Indonesia). Urutkan dari rating tertinggi ke terendah.`,
       config: {
-        systemInstruction: systemPrompt,
+        systemInstruction: SYSTEM_PROMPT,
         tools: [{ googleSearch: {} }],
         responseMimeType: "application/json",
       },
@@ -219,7 +282,6 @@ Keluarkan respon dalam bentuk JSON VALID tanpa markdown wrapper tambahan (atau m
     try {
       data = JSON.parse(responseText);
     } catch (parseErr) {
-      // Clean up markdown code blocks if any
       const cleaned = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
       data = JSON.parse(cleaned);
     }
@@ -246,7 +308,6 @@ Keluarkan respon dalam bentuk JSON VALID tanpa markdown wrapper tambahan (atau m
 });
 
 async function startServer() {
-  // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },

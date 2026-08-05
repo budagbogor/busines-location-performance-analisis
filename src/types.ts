@@ -15,6 +15,10 @@ export interface BranchData {
   name: string;
   city: string;
   address?: string;
+  latitude?: number;
+  longitude?: number;
+  placeId?: string;
+  mapsUrl?: string;
   rating: number;
   reviewCount: number;
   status: BranchStatus;
@@ -94,9 +98,41 @@ export interface FullIntelligenceReport {
   groundingSources?: Array<{ title: string; uri: string }>;
 }
 
+export type AIProvider = 'gemini' | 'sumopod' | 'openai';
+
+export interface AIConfig {
+  provider: AIProvider;
+  model: string;
+  apiKey: string;
+  baseUrl: string;
+  useOrchestration: boolean;
+}
+
+export type AgentStatus = 'idle' | 'working' | 'completed' | 'error';
+
+export interface AgentDefinition {
+  id: string;
+  name: string;
+  role: string;
+  skill: string;
+  avatar: string;
+  color: string;
+  description: string;
+}
+
+export interface AgentExecutionState {
+  agentId: string;
+  status: AgentStatus;
+  progressPercent: number;
+  outputSnippet?: string;
+  executionTimeMs?: number;
+  error?: string;
+}
+
 export interface SearchState {
   isLoading: boolean;
   step: 'idle' | 'mapping_network' | 'fetching_reviews' | 'analyzing_complaints' | 'tracking_social' | 'synthesizing' | 'completed' | 'error';
   errorMessage?: string;
   progressPercent: number;
 }
+

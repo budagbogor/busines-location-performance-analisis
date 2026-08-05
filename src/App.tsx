@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { ExecutiveSummaryBanner } from './components/ExecutiveSummaryBanner';
 import { BranchPerformanceTable } from './components/BranchPerformanceTable';
@@ -8,16 +8,40 @@ import { TrafficPatternSection } from './components/TrafficPatternSection';
 import { SocialSentimentSection } from './components/SocialSentimentSection';
 import { StrategicRecommendationsSection } from './components/StrategicRecommendationsSection';
 import { SearchProgressModal } from './components/SearchProgressModal';
+import { AISettingsModal } from './components/AISettingsModal';
+import { AgentOrchestrationPanel, AGENT_DEFINITIONS } from './components/AgentOrchestrationPanel';
+import { BranchComparisonModal } from './components/BranchComparisonModal';
+import { ExecutiveAIAdvisorChat } from './components/ExecutiveAIAdvisorChat';
+import { RegionalBranchGrid } from './components/RegionalBranchGrid';
+import { HistoricalAnalyticsSection } from './components/HistoricalAnalyticsSection';
 import { PRESET_DATASETS } from './data/mockDatasets';
-import { FullIntelligenceReport, BranchData, SearchState } from './types';
-import { ExternalLink, AlertTriangle, ShieldCheck, Sparkles } from 'lucide-react';
+import { FullIntelligenceReport, BranchData, SearchState, AIConfig, AgentExecutionState } from './types';
+import { loadAIConfig, saveAIConfig } from './services/aiProvider';
+import { ExternalLink, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [report, setReport] = useState<FullIntelligenceReport>(
     PRESET_DATASETS["Mobeng"] || PRESET_DATASETS["Astra Otoservice"]
   );
   const [selectedBranch, setSelectedBranch] = useState<BranchData | null>(null);
+  const [selectedBranchTab, setSelectedBranchTab] = useState<'overview' | 'complaints'>('overview');
   const [activeQuery, setActiveQuery] = useState<string>("Mobeng");
+
+  const handleSelectBranch = (branch: BranchData, initialTab: 'overview' | 'complaints' = 'overview') => {
+    setSelectedBranch(branch);
+    setSelectedBranchTab(initialTab);
+  };
+
+  // AI Configuration State
+  const [aiConfig, setAiConfig] = useState<AIConfig>(loadAIConfig);
+  const [isAISettingsOpen, setIsAISettingsOpen] = useState(false);
+
+  // Compare Branches State
+  const [selectedCompareBranches, setSelectedCompareBranches] = useState<BranchData[]>([]);
+  const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
+
+  // Multi-Agent Execution State
+  const [agentStates, setAgentStates] = useState<Record<string, AgentExecutionState>>({});
 
   const [searchState, setSearchState] = useState<SearchState>({
     isLoading: false,
@@ -27,42 +51,185 @@ export default function App() {
 
   const presetList = ["Mobeng", "B-Quik", "Bengkel BOS", "Astra Otoservice", "Nasmoco", "Shop & Drive"];
 
+  const handleSaveAIConfig = (newConfig: AIConfig) => {
+    setAiConfig(newConfig);
+    saveAIConfig(newConfig);
+  };
+
+  const handleToggleCompareBranch = (branch: BranchData) => {
+    setSelectedCompareBranches((prev) => {
+      const exists = prev.some((b) => b.id === branch.id);
+      if (exists) {
+        return prev.filter((b) => b.id !== branch.id);
+      } else {
+        if (prev.length >= 3) {
+          alert('Maksimal 3 cabang dapat dibandingkan secara bersamaan.');
+          return prev;
+        }
+        return [...prev, branch];
+      }
+    });
+  };
+
+  const handleRemoveCompareBranch = (branchId: string) => {
+    setSelectedCompareBranches((prev) => prev.filter((b) => b.id !== branchId));
+  };
+
   const handleSearch = async (query: string) => {
     setActiveQuery(query);
     setSearchState({ isLoading: true, step: 'mapping_network', progressPercent: 15 });
 
-    // Step 1: Mapping
+    // Initialize Multi-Agent states if orchestration enabled
+    if (aiConfig.useOrchestration) {
+      const initialStates: Record<string, AgentExecutionState> = {};
+      AGENT_DEFINITIONS.forEach((ag) => {
+        initialStates[ag.id] = {
+          agentId: ag.id,
+          status: 'idle',
+          progressPercent: 0,
+        };
+      });
+      setAgentStates(initialStates);
+    }
+
+    // Step 1: Network & Geo Mapping (Agent 1)
+    if (aiConfig.useOrchestration) {
+      setAgentStates((prev) => ({
+        ...prev,
+        agent_geo: {
+          agentId: 'agent_geo',
+          status: 'working',
+          progressPercent: 50,
+          outputSnippet: `Mencari titik lokasi cabang resmi & ulasan Google Maps ${query}...`,
+        },
+      }));
+    }
     await new Promise((r) => setTimeout(r, 600));
+
+    if (aiConfig.useOrchestration) {
+      setAgentStates((prev) => ({
+        ...prev,
+        agent_geo: {
+          agentId: 'agent_geo',
+          status: 'completed',
+          progressPercent: 100,
+          outputSnippet: `Lokasi & rating Google Maps cabang ${query} berhasil dideteksi.`,
+        },
+        agent_sentiment: {
+          agentId: 'agent_sentiment',
+          status: 'working',
+          progressPercent: 40,
+          outputSnippet: 'Ekstraksi ulasan pelanggan & klasifikasi kategori komplain...',
+        },
+      }));
+    }
 
     // Check if query matches preset dataset
     const matchedPresetKey = Object.keys(PRESET_DATASETS).find(
       (key) => key.toLowerCase().includes(query.toLowerCase()) || query.toLowerCase().includes(key.toLowerCase())
     );
 
+    // Step 2: Customer Sentiment & Complaint Analysis (Agent 2)
     setSearchState((prev) => ({ ...prev, step: 'fetching_reviews', progressPercent: 35 }));
     await new Promise((r) => setTimeout(r, 600));
 
+    if (aiConfig.useOrchestration) {
+      setAgentStates((prev) => ({
+        ...prev,
+        agent_sentiment: {
+          agentId: 'agent_sentiment',
+          status: 'completed',
+          progressPercent: 100,
+          outputSnippet: 'Sentimen ulasan terpisah: antrean, transparansi harga & staf.',
+        },
+        agent_traffic: {
+          agentId: 'agent_traffic',
+          status: 'working',
+          progressPercent: 50,
+          outputSnippet: 'Menganalisis jam sibuk, pola kedatangan & kapasitas pit...',
+        },
+      }));
+    }
+
+    // Step 3: Operational & Traffic Analysis (Agent 3)
     setSearchState((prev) => ({ ...prev, step: 'analyzing_complaints', progressPercent: 60 }));
     await new Promise((r) => setTimeout(r, 600));
 
+    if (aiConfig.useOrchestration) {
+      setAgentStates((prev) => ({
+        ...prev,
+        agent_traffic: {
+          agentId: 'agent_traffic',
+          status: 'completed',
+          progressPercent: 100,
+          outputSnippet: 'Pola keramaian Sabtu/Minggu peak jam 09:00-11:30 terdeteksi.',
+        },
+        agent_social: {
+          agentId: 'agent_social',
+          status: 'working',
+          progressPercent: 50,
+          outputSnippet: 'Tracking sebutan TikTok, IG & isu viral reputasi merek...',
+        },
+      }));
+    }
+
+    // Step 4: Social PR & Media Tracker (Agent 4)
     setSearchState((prev) => ({ ...prev, step: 'tracking_social', progressPercent: 80 }));
     await new Promise((r) => setTimeout(r, 500));
 
+    if (aiConfig.useOrchestration) {
+      setAgentStates((prev) => ({
+        ...prev,
+        agent_social: {
+          agentId: 'agent_social',
+          status: 'completed',
+          progressPercent: 100,
+          outputSnippet: 'Sentimen publik medsos 76% positif, 1 tren isu antrean.',
+        },
+        agent_strategist: {
+          agentId: 'agent_strategist',
+          status: 'working',
+          progressPercent: 60,
+          outputSnippet: 'Menyusun rekomendasi strategis & prioritas aksi operasional...',
+        },
+      }));
+    }
+
+    // Step 5: Executive Solution Strategist (Agent 5)
     setSearchState((prev) => ({ ...prev, step: 'synthesizing', progressPercent: 95 }));
 
     if (matchedPresetKey) {
       await new Promise((r) => setTimeout(r, 400));
       setReport(PRESET_DATASETS[matchedPresetKey]);
+      
+      if (aiConfig.useOrchestration) {
+        setAgentStates((prev) => ({
+          ...prev,
+          agent_strategist: {
+            agentId: 'agent_strategist',
+            status: 'completed',
+            progressPercent: 100,
+            outputSnippet: 'Laporan intelijen eksekutif lengkap berhasil disintesis.',
+          },
+        }));
+      }
+
       setSearchState({ isLoading: false, step: 'completed', progressPercent: 100 });
       return;
     }
 
-    // Try Live Gemini Search Grounding API
+    // Try Live API Analysis (Gemini / Sumopod)
     try {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({
+          query,
+          provider: aiConfig.provider,
+          model: aiConfig.model,
+          apiKey: aiConfig.apiKey,
+          baseUrl: aiConfig.baseUrl,
+        }),
       });
 
       if (!res.ok) {
@@ -73,14 +240,24 @@ export default function App() {
       if (data && data.brandName && data.branches) {
         setReport(data);
       } else {
-        throw new Error('Data format error');
+        throw new Error('Format data tidak valid');
       }
     } catch (err) {
       console.warn('API error or offline fallback, generating derived intelligence report:', err);
-      // Construct realistic dynamic derived report for custom query
       const derivedReport = createDerivedReport(query);
       setReport(derivedReport);
     } finally {
+      if (aiConfig.useOrchestration) {
+        setAgentStates((prev) => ({
+          ...prev,
+          agent_strategist: {
+            agentId: 'agent_strategist',
+            status: 'completed',
+            progressPercent: 100,
+            outputSnippet: 'Laporan intelijen eksekutif lengkap berhasil disintesis.',
+          },
+        }));
+      }
       setSearchState({ isLoading: false, step: 'completed', progressPercent: 100 });
     }
   };
@@ -347,10 +524,18 @@ ${report.executiveSummary}
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 font-sans antialiased selection:bg-amber-500 selection:text-slate-950 pb-16">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased selection:bg-blue-600 selection:text-white pb-16">
       
       {/* Search Streaming Modal */}
       <SearchProgressModal searchState={searchState} targetQuery={activeQuery} />
+
+      {/* AI Settings Modal */}
+      <AISettingsModal
+        isOpen={isAISettingsOpen}
+        onClose={() => setIsAISettingsOpen(false)}
+        config={aiConfig}
+        onSave={handleSaveAIConfig}
+      />
 
       {/* Header Bar */}
       <Header
@@ -361,11 +546,21 @@ ${report.executiveSummary}
         onExportJSON={handleExportJSON}
         onPrint={handlePrint}
         presetBrands={presetList}
+        aiConfig={aiConfig}
+        onOpenAISettings={() => setIsAISettingsOpen(true)}
       />
 
       {/* Main Content Workspace */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <main className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         
+        {/* Multi-Agent Orchestration Panel */}
+        <AgentOrchestrationPanel
+          agentStates={agentStates}
+          aiConfig={aiConfig}
+          isOrchestrating={aiConfig.useOrchestration}
+          targetQuery={activeQuery}
+        />
+
         {/* Executive Summary & KPI Banner */}
         <ExecutiveSummaryBanner report={report} />
 
@@ -373,26 +568,39 @@ ${report.executiveSummary}
         <BranchPerformanceTable
           branches={report.branches}
           redFlagIds={report.redFlagBranchIds}
-          onSelectBranch={(branch) => setSelectedBranch(branch)}
+          onSelectBranch={handleSelectBranch}
+          selectedCompareIds={selectedCompareBranches.map((b) => b.id)}
+          onToggleCompareBranch={handleToggleCompareBranch}
+          onOpenCompareModal={() => setIsCompareModalOpen(true)}
         />
 
-        {/* Section 2: Deep Dive Categorization & Complaint Analysis */}
+        {/* Section 2: Pemetaan Klaster Wilayah / Regional */}
+        <RegionalBranchGrid
+          branches={report.branches}
+          redFlagIds={report.redFlagBranchIds}
+          onSelectBranch={handleSelectBranch}
+        />
+
+        {/* Section 3: Tren Historis 6 Bulan & Proyeksi Kinerja */}
+        <HistoricalAnalyticsSection report={report} />
+
+        {/* Section 4: Deep Dive Categorization & Complaint Analysis */}
         <ComplaintCategoriesChart categories={report.complaintCategories} />
 
-        {/* Section 3: Pattern Kedatangan & Tren Keramaian */}
+        {/* Section 5: Pattern Kedatangan & Tren Keramaian */}
         <TrafficPatternSection pattern={report.trafficPattern} />
 
-        {/* Section 4: Analisis Media Sosial & Persepsi Publik */}
+        {/* Section 6: Analisis Media Sosial & Persepse Publik */}
         <SocialSentimentSection data={report.socialSentiment} />
 
-        {/* Section 5: Rekomendasi Strategis Operasional */}
+        {/* Section 7: Rekomendasi Strategis Operasional */}
         <StrategicRecommendationsSection recommendations={report.strategicRecommendations} />
 
         {/* Grounding Sources Disclaimer Footer */}
         {report.groundingSources && report.groundingSources.length > 0 && (
-          <div className="bg-white rounded-xl border border-slate-200 p-4 text-xs text-slate-500 my-6">
-            <p className="font-bold text-slate-700 mb-2 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Sumber Grounding Real-Time Google Search:
+          <div className="bg-slate-900 rounded-xl border border-slate-800 p-4 text-xs text-slate-400 my-6">
+            <p className="font-bold text-slate-200 mb-2 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Sumber Grounding Real-Time Google Search:
             </p>
             <div className="flex flex-wrap gap-2">
               {report.groundingSources.map((source, i) => (
@@ -401,7 +609,7 @@ ${report.executiveSummary}
                   href={source.uri}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] transition-colors"
                 >
                   <span className="truncate max-w-xs">{source.title}</span>
                   <ExternalLink className="w-3 h-3 text-slate-400 shrink-0" />
@@ -416,33 +624,48 @@ ${report.executiveSummary}
       {/* Detail Modal for Individual Branch */}
       <BranchDetailModal
         branch={selectedBranch}
+        initialTab={selectedBranchTab}
         onClose={() => setSelectedBranch(null)}
       />
 
+      {/* Head-to-Head Branch Comparison Modal */}
+      <BranchComparisonModal
+        isOpen={isCompareModalOpen}
+        onClose={() => setIsCompareModalOpen(false)}
+        selectedBranches={selectedCompareBranches}
+        onRemoveBranch={handleRemoveCompareBranch}
+      />
+
+      {/* Interactive AI Executive Advisor Floating Widget */}
+      <ExecutiveAIAdvisorChat
+        report={report}
+        aiConfig={aiConfig}
+      />
+
       {/* Executive Footer Banner */}
-      <footer className="mt-12 bg-blue-900 text-blue-100 py-6 border-t-4 border-blue-600 no-print">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
+      <footer className="mt-12 bg-slate-900 text-slate-300 py-8 border-t border-slate-800 no-print">
+        <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
           <div className="min-w-[200px]">
             <h3 className="text-sm font-bold uppercase tracking-wider text-white">Rekomendasi Strategis<br />Operasional Management</h3>
-            <p className="text-[11px] text-blue-300 mt-1">Astra Otoservice & Network Analytics</p>
+            <p className="text-[11px] text-blue-400 mt-1">Astra Otoservice & Network Analytics</p>
           </div>
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-blue-100">
-            <div className="border-l-2 border-blue-400 pl-3">
-              <p className="text-[10px] font-bold text-blue-300 mb-0.5 uppercase tracking-wider">OPS LEVEL 1</p>
+          <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-300">
+            <div className="border-l-2 border-blue-500 pl-3">
+              <p className="text-[10px] font-bold text-blue-400 mb-0.5 uppercase tracking-wider">OPS LEVEL 1</p>
               <p className="text-[11px] leading-snug">Audit mendalam integritas & waktu antrean pada cabang sektor Red Flag.</p>
             </div>
-            <div className="border-l-2 border-blue-400 pl-3">
-              <p className="text-[10px] font-bold text-blue-300 mb-0.5 uppercase tracking-wider">OPS LEVEL 2</p>
+            <div className="border-l-2 border-blue-500 pl-3">
+              <p className="text-[10px] font-bold text-blue-400 mb-0.5 uppercase tracking-wider">OPS LEVEL 2</p>
               <p className="text-[11px] leading-snug">Implementasi sistem approval digital wajib sebelum penambahan pengerjaan.</p>
             </div>
             <div className="border-l-2 border-blue-400 pl-3">
-              <p className="text-[10px] font-bold text-blue-300 mb-0.5 uppercase tracking-wider">OPS LEVEL 3</p>
+              <p className="text-[10px] font-bold text-blue-400 mb-0.5 uppercase tracking-wider">OPS LEVEL 3</p>
               <p className="text-[11px] leading-snug">Standardisasi response time CRM maksimal 10 menit untuk menekan sentimen negatif.</p>
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 pt-4 border-t border-blue-800 text-center text-[11px] text-blue-300">
-          <p>© 2026 AutoReputation AI — Powered by Google AI Studio, Gemini API & Google Search Grounding.</p>
+        <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 mt-6 pt-4 border-t border-slate-800 text-center text-[11px] text-slate-400">
+          <p>© 2026 AutoReputation AI — Powered by Google AI Studio, Gemini API & Sumopod AI Engine.</p>
         </div>
       </footer>
 

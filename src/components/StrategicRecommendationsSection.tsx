@@ -19,24 +19,24 @@ export const StrategicRecommendationsSection: React.FC<StrategicRecommendationsS
   };
 
   return (
-    <section className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 mb-8" id="rekomendasi-strategis">
+    <section className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl p-6 mb-8" id="rekomendasi-strategis">
       
       {/* Title Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-100">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-            <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-              5. Rekomendasi Strategis Operasional Manajemen
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <h3 className="text-xl font-bold text-white tracking-tight">
+              7. Rekomendasi Strategis Operasional Manajemen
             </h3>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Langkah-langkah konkret dan terukur untuk eksekusi direksi & Kepala Cabang guna meningkatkan standar layanan dan rating jaringan.
+          <p className="text-xs text-slate-400 mt-1">
+            Langkah aksi operasional konkret yang diprioritaskan berdasarkan dampak pada kepuasan pelanggan dan perbaikan rating.
           </p>
         </div>
 
-        <div className="text-xs text-slate-500 font-medium">
-          Progress Eksekusi: <span className="font-bold text-slate-900">{Object.values(completedMap).filter(Boolean).length} / {recommendations.length}</span> Selesai
+        <div className="text-xs text-slate-400 font-medium">
+          Progress Eksekusi: <span className="font-bold text-white">{Object.values(completedMap).filter(Boolean).length} / {recommendations.length}</span> Selesai
         </div>
       </div>
 
