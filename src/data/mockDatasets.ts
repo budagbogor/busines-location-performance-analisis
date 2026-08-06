@@ -491,8 +491,8 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         trendScore: "improving"
       },
       {
-        id: "br-mobeng-kupang",
-        name: "Mobeng Kupang",
+        id: "br-mobeng-kupang-surabaya",
+        name: "Mobeng Kupang Surabaya",
         city: "Surabaya",
         address: "Jl. Raya Kupang Baru No.16, Sonokwijenan, Kec. Sukomanunggal, Surabaya, Jawa Timur 60196",
         latitude: -7.2812,
@@ -531,8 +531,8 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         trendScore: "improving"
       },
       {
-        id: "br-mobeng-merr",
-        name: "Mobeng Merr",
+        id: "br-mobeng-merr-surabaya",
+        name: "Mobeng Merr Surabaya",
         city: "Surabaya",
         address: "Jl. Dr. Ir. H. Soekarno, Semolowaru, Kec. Sukolilo, Surabaya, Jawa Timur 60117",
         latitude: -7.3012,
@@ -691,10 +691,10 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
   "B-Quik": {
     brandName: "B-Quik Indonesia (Jaringan Servis Cepat, Ban, Rem, Aki & Suspension)",
     analysisDate: "Agustus 2026",
-    totalBranchesFound: 18,
-    avgNetworkRating: 4.72,
-    totalReviewsAnalyzed: 21500,
-    executiveSummary: "B-Quik menunjukkan pertumbuhan reputasi bisnis yang sangat pesat di Jabodetabek. Konsumen sangat menyukai konsep bengkel modern ber-AC penuh, transparansi pemeriksaan 30 titik gratis, garansi ban 1 tahun, serta promo cicilan 0%. Kritis: keluhan sporadis di cabang Karawaci mengenai saran pergantian kampas rem yang terkesan terlalu dini oleh teknisi.",
+    totalBranchesFound: 32,
+    avgNetworkRating: 4.77,
+    totalReviewsAnalyzed: 72890,
+    executiveSummary: "B-Quik menunjukkan ekspansi & pertumbuhan reputasi bisnis yang sangat pesat di seluruh Indonesia dengan 32 cabang aktif terverifikasi yang tersebar di Jabodetabek, Jawa Barat, Jawa Tengah & DIY, Jawa Timur, Sumatra (Medan), Sulawesi (Makassar), dan Bali. Konsumen sangat menyukai konsep bengkel modern ber-AC penuh, transparansi pemeriksaan 30 titik gratis, garansi ban 1 tahun, serta promo cicilan 0%. Kritis: keluhan di cabang Karawaci mengenai saran pergantian kampas rem yang terkesan terlalu dini oleh teknisi.",
     redFlagBranchIds: ["br-bquik-8"],
     branches: [
       {
@@ -735,6 +735,96 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         trendScore: "stable"
       },
       {
+        id: "br-bquik-3",
+        name: "B-Quik Cinere",
+        city: "Depok",
+        address: "Jl. Cinere Raya No. 45, Cinere, Kota Depok",
+        rating: 4.8,
+        reviewCount: 2650,
+        status: "Top",
+        positives: [
+          "Pengerjaan penggantian aki cepat kurang dari 15 menit",
+          "Lounge ber-AC sangat bersih dan ramah keluarga"
+        ],
+        negatives: [
+          "Area parkir masuk agak sempit saat akhir pekan"
+        ],
+        complaintCount: 12,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bquik-4",
+        name: "B-Quik Bintaro Jaya",
+        city: "Tangerang Selatan",
+        address: "Jl. Bintaro Utama 9 Blok HB1 No. 8, Bintaro Sektor 9",
+        rating: 4.9,
+        reviewCount: 3100,
+        status: "Top",
+        positives: [
+          "Mekanik sangat menguasai masalah suspensi & rem",
+          "Transparansi rincian estimasi biaya sebelum servis"
+        ],
+        negatives: [
+          "Jam sibuk siang hari tempat duduk ruang tunggu penuh"
+        ],
+        complaintCount: 11,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bquik-5",
+        name: "B-Quik Harapan Indah",
+        city: "Bekasi",
+        address: "Jl. Harapan Indah Boulevard No. 28, Pejuang, Medan Satria",
+        rating: 4.8,
+        reviewCount: 2420,
+        status: "Top",
+        positives: [
+          "Pilihan merek ban lengkap dari Michelin, Bridgestone hingga Dunlop",
+          "Garansi ban berlaku nasional di seluruh outlet B-Quik"
+        ],
+        negatives: [
+          "Koneksi WiFi pengunjung sempat tidak stabil"
+        ],
+        complaintCount: 15,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-6",
+        name: "B-Quik Gading Serpong",
+        city: "Tangerang",
+        address: "Jl. Gading Serpong Boulevard Blok AA3 No. 15",
+        rating: 4.8,
+        reviewCount: 2800,
+        status: "Top",
+        positives: [
+          "Peralatan pit modern dengan lift hidrolik terbaru",
+          "Service advisor ramah dan komunikatif"
+        ],
+        negatives: [
+          "Antrean spooring weekend cukup panjang"
+        ],
+        complaintCount: 13,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-7",
+        name: "B-Quik Cibubur Transyogi",
+        city: "Bekasi",
+        address: "Jl. Alternatif Cibubur Km 4 No. 88, Jatisampurna",
+        rating: 4.7,
+        reviewCount: 2150,
+        status: "Top",
+        positives: [
+          "Buka setiap hari libur nasional",
+          "Pemeriksaan rem dan shock absorber teliti"
+        ],
+        negatives: [
+          "Akses keluar ke jalan utama padat pada jam pulang kerja"
+        ],
+        complaintCount: 18,
+        trendScore: "stable"
+      },
+      {
         id: "br-bquik-8",
         name: "B-Quik Karawaci Tangerang",
         city: "Tangerang",
@@ -753,6 +843,438 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         complaintCount: 92,
         trendScore: "declining",
         trendDetails: "Banyak ulasan negatif menyindir rekomendasi ganti part yang prematur."
+      },
+      {
+        id: "br-bquik-9",
+        name: "B-Quik Sunter Raya",
+        city: "Jakarta Utara",
+        address: "Jl. Danau Sunter Utara Blok J12 No. 6",
+        rating: 4.8,
+        reviewCount: 2250,
+        status: "Top",
+        positives: [
+          "Layanan cepat ganti oli & filter",
+          "Ruang tunggu dingin dan nyaman"
+        ],
+        negatives: [
+          "Stok oli spesifikasi khusus kadang habis"
+        ],
+        complaintCount: 14,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-10",
+        name: "B-Quik Pluit",
+        city: "Jakarta Utara",
+        address: "Jl. Pluit Selatan Raya No. 10, Penjaringan",
+        rating: 4.7,
+        reviewCount: 1980,
+        status: "Medium",
+        positives: [
+          "Teknisi paham penanganan mobil SUV & Crossover",
+          "Diskon promo oli berkala"
+        ],
+        negatives: [
+          "Waktu konfirmasi antrean kasir agak lama"
+        ],
+        complaintCount: 22,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-11",
+        name: "B-Quik Puri Indah",
+        city: "Jakarta Barat",
+        address: "Jl. Puri Lingkar Luar No. 8, Kembangan Selatan",
+        rating: 4.8,
+        reviewCount: 2540,
+        status: "Top",
+        positives: [
+          "Ruang tunggu luas dua lantai dengan view pit servis",
+          "Teknisi transparan menunjukkan suku cadang lama"
+        ],
+        negatives: [
+          "Parkiran depan terbatas saat weekend"
+        ],
+        complaintCount: 16,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bquik-12",
+        name: "B-Quik Kebon Jeruk",
+        city: "Jakarta Barat",
+        address: "Jl. Raya Pejuangan No. 3, Kebon Jeruk",
+        rating: 4.7,
+        reviewCount: 1890,
+        status: "Medium",
+        positives: [
+          "Peralatan ganti ban otomatis bebas lecet velg",
+          "Pemeriksaan aki gratis"
+        ],
+        negatives: [
+          "Waktu tunggu pencucian ban setelah dipasang agak lama"
+        ],
+        complaintCount: 24,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-13",
+        name: "B-Quik Rawamangun",
+        city: "Jakarta Timur",
+        address: "Jl. Pemuda No. 66, Rawamangun",
+        rating: 4.8,
+        reviewCount: 2050,
+        status: "Top",
+        positives: [
+          "Pelayanan staf front office ramah dan sigap",
+          "Persetujuan pengerjaan transparan via tablet digital"
+        ],
+        negatives: [
+          "Layanan Spooring jam 12 siang mengantre"
+        ],
+        complaintCount: 15,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-14",
+        name: "B-Quik Duren Sawit",
+        city: "Jakarta Timur",
+        address: "Jl. Raden Inten II No. 18, Duren Sawit",
+        rating: 4.7,
+        reviewCount: 1760,
+        status: "Medium",
+        positives: [
+          "Bengkel terang dan bersih",
+          "Pilihan ban lengkap bergaransi resmi"
+        ],
+        negatives: [
+          "AC ruang tunggu kurang dingin saat cuaca terik"
+        ],
+        complaintCount: 20,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-15",
+        name: "B-Quik Tebet Raya",
+        city: "Jakarta Selatan",
+        address: "Jl. Tebet Raya No. 82, Tebet Timur",
+        rating: 4.8,
+        reviewCount: 2380,
+        status: "Top",
+        positives: [
+          "Lokasi strategis di pusat kota",
+          "Pengerjaan tune-up injection halus dan bertenaga"
+        ],
+        negatives: [
+          "Antrean pagi jam 09.00 sudah mulai mengular"
+        ],
+        complaintCount: 17,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bquik-16",
+        name: "B-Quik Cilandak Fatmawati",
+        city: "Jakarta Selatan",
+        address: "Jl. RS Fatmawati No. 15, Cilandak Barat",
+        rating: 4.7,
+        reviewCount: 2120,
+        status: "Top",
+        positives: [
+          "Fasilitas lengkap dan mekanik bersertifikat",
+          "Garansi pengerjaan 14 hari"
+        ],
+        negatives: [
+          "Pintu keluar langsung ke jalur macet Fatmawati"
+        ],
+        complaintCount: 19,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-17",
+        name: "B-Quik Margonda Depok",
+        city: "Depok",
+        address: "Jl. Margonda Raya No. 350, Kemirimuka, Beji",
+        rating: 4.8,
+        reviewCount: 1950,
+        status: "Top",
+        positives: [
+          "Sangat cocok untuk servis rutin mahasiswa & warga Depok",
+          "Pemeriksaan 30 titik menyeluruh"
+        ],
+        negatives: [
+          "Area parkir lumayan ketat"
+        ],
+        complaintCount: 16,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-18",
+        name: "B-Quik Pajajaran Bogor",
+        city: "Bogor",
+        address: "Jl. Raya Pajajaran No. 78, Baranangsiang, Bogor Timur",
+        rating: 4.7,
+        reviewCount: 1820,
+        status: "Medium",
+        positives: [
+          "Bengkel terluas di area Bogor",
+          "Petugas ramah dan penjelasan nota lengkap"
+        ],
+        negatives: [
+          "Antrean hari Minggu cukup ramai oleh wisatawan"
+        ],
+        complaintCount: 21,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-19",
+        name: "B-Quik Bandung Buah Batu",
+        city: "Bandung",
+        address: "Jl. Buah Batu No. 198, Cijagra, Lengkong",
+        rating: 4.8,
+        reviewCount: 2100,
+        status: "Top",
+        positives: [
+          "Pusat layanan ban & spooring favorit warga Bandung Selatan",
+          "Ruang tunggu dingin ber-AC dengan free coffee"
+        ],
+        negatives: [
+          "Jalur Buah Batu cukup padat di jam pulang kantor"
+        ],
+        complaintCount: 13,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bquik-20",
+        name: "B-Quik Bandung Pasteur",
+        city: "Bandung",
+        address: "Jl. Dr. Djunjunan No. 115, Pajajaran, Cicendo",
+        rating: 4.7,
+        reviewCount: 1950,
+        status: "Top",
+        positives: [
+          "Sangat dekat pintu tol Pasteur, cocok untuk pengerjaan mendadak",
+          "Pemeriksaan 30 titik cepat dan detail"
+        ],
+        negatives: [
+          "Area parkir agak terbatas saat akhir pekan"
+        ],
+        complaintCount: 16,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-21",
+        name: "B-Quik Cirebon Sunyaragi",
+        city: "Cirebon",
+        address: "Jl. Brigjend Dharsono No. 45, Sunyaragi, Kesambi",
+        rating: 4.7,
+        reviewCount: 1450,
+        status: "Medium",
+        positives: [
+          "Fasilitas pit servis paling modern di Cirebon",
+          "Peralatan ganti ban otomatis bebas lecet velg"
+        ],
+        negatives: [
+          "Stok ukuran ban mobil impor langka perlu inden 1 hari"
+        ],
+        complaintCount: 19,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-22",
+        name: "B-Quik Semarang Pemuda",
+        city: "Semarang",
+        address: "Jl. Pemuda No. 128, Sekayu, Semarang Tengah",
+        rating: 4.8,
+        reviewCount: 2300,
+        status: "Top",
+        positives: [
+          "Pusat ganti ban & tune up terpercaya pusat kota Semarang",
+          "Service advisor jujur dan tidak maksa upsell"
+        ],
+        negatives: [
+          "Antrean spooring hari Sabtu lumayan lama"
+        ],
+        complaintCount: 14,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bquik-23",
+        name: "B-Quik Semarang Majapahit",
+        city: "Semarang",
+        address: "Jl. Majapahit No. 280, Palebon, Pedurungan",
+        rating: 4.7,
+        reviewCount: 1780,
+        status: "Medium",
+        positives: [
+          "Akses jalur arteri utama, pengerjaan ganti aki kilat",
+          "Garansi pengerjaan 14 hari resmi"
+        ],
+        negatives: [
+          "Ruang tunggu saat jam 12 siang terasa agak panas"
+        ],
+        complaintCount: 22,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-24",
+        name: "B-Quik Solo Slamet Riyadi",
+        city: "Solo",
+        address: "Jl. Slamet Riyadi No. 340, Sriwedari, Laweyan",
+        rating: 4.8,
+        reviewCount: 1920,
+        status: "Top",
+        positives: [
+          "Pelayanan sangat ramah khas Solo",
+          "Hasil spooring 3D presisi tinggi"
+        ],
+        negatives: [
+          "Ruang tunggu penuh saat jam istirahat siang"
+        ],
+        complaintCount: 12,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-25",
+        name: "B-Quik Yogyakarta Magelang",
+        city: "Yogyakarta",
+        address: "Jl. Magelang Km 5.5 No. 88, Sinduadi, Mlati, Sleman",
+        rating: 4.8,
+        reviewCount: 2400,
+        status: "Top",
+        positives: [
+          "Favorit mahasiswa & warga Jogja untuk cek 30 titik gratis",
+          "Garansi ban ganti baru 1 tahun"
+        ],
+        negatives: [
+          "Antrean weekend cukup panjang"
+        ],
+        complaintCount: 15,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bquik-26",
+        name: "B-Quik Surabaya MERR",
+        city: "Surabaya",
+        address: "Jl. Dr. Ir. H. Soekarno No. 88, Semolowaru, Sukolilo",
+        rating: 4.9,
+        reviewCount: 3150,
+        status: "Top",
+        positives: [
+          "Fasilitas terbanyak dan terluas di Surabaya Timur",
+          "Lounge tunggu VIP tingkat 2 sangat nyaman untuk kerja"
+        ],
+        negatives: [
+          "Harga beberapa varian ban premium impor lumayan tinggi"
+        ],
+        complaintCount: 10,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bquik-27",
+        name: "B-Quik Surabaya HR Muhammad",
+        city: "Surabaya",
+        address: "Jl. HR. Muhammad No. 102, Pradahkalikidal, Dukuh Pakis",
+        rating: 4.8,
+        reviewCount: 2680,
+        status: "Top",
+        positives: [
+          "Lokasi premium Surabaya Barat, pengerjaan sangat presisi",
+          "Transparansi rincian estimasi di tablet digital"
+        ],
+        negatives: [
+          "Lahan parkir depan agak padat jam makan siang"
+        ],
+        complaintCount: 14,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-28",
+        name: "B-Quik Sidoarjo Ahmad Yani",
+        city: "Sidoarjo",
+        address: "Jl. Jend. Ahmad Yani No. 54, Sidokumpul, Sidoarjo",
+        rating: 4.7,
+        reviewCount: 1850,
+        status: "Medium",
+        positives: [
+          "Teknisi terampil dan proses pergantian oli cepat",
+          "Pemeriksaan kaki-kaki teliti"
+        ],
+        negatives: [
+          "Waktu pemanggilan kasir agak lama"
+        ],
+        complaintCount: 20,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-29",
+        name: "B-Quik Malang Soekarno Hatta",
+        city: "Malang",
+        address: "Jl. Soekarno Hatta No. 45, Jatimulyo, Lowokwaru",
+        rating: 4.8,
+        reviewCount: 2050,
+        status: "Top",
+        positives: [
+          "Sangat diminati warga Kota Malang & wisatawan",
+          "Pilihan merek ban lengkap untuk medan berbukit"
+        ],
+        negatives: [
+          "Hari Minggu sore antrean servis lumayan mengular"
+        ],
+        complaintCount: 13,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bquik-30",
+        name: "B-Quik Medan Gatot Subroto",
+        city: "Medan",
+        address: "Jl. Gatot Subroto No. 180, Sei Sikambing D, Medan Petisah",
+        rating: 4.8,
+        reviewCount: 2500,
+        status: "Top",
+        positives: [
+          "Cabang flagship B-Quik Sumatra dengan 8 pit servis paralel",
+          "Layanan Spooring 3D Hunter presisi tinggi"
+        ],
+        negatives: [
+          "Jalur Gatot Subroto kerap padat lalu lintas"
+        ],
+        complaintCount: 17,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-31",
+        name: "B-Quik Makassar Pettarani",
+        city: "Makassar",
+        address: "Jl. AP. Pettarani No. 90, Buakana, Rappocini",
+        rating: 4.7,
+        reviewCount: 1920,
+        status: "Medium",
+        positives: [
+          "Cabang utama Sulawesi, teknisi berpengalaman",
+          "Pemeriksaan 30 titik gratis tanpa syarat"
+        ],
+        negatives: [
+          "Pendingin udara lounge agak kurang dingin saat panas terik"
+        ],
+        complaintCount: 23,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bquik-32",
+        name: "B-Quik Bali Sunset Road",
+        city: "Denpasar",
+        address: "Jl. Sunset Road No. 108, Kuta, Badung, Bali",
+        rating: 4.8,
+        reviewCount: 2850,
+        status: "Top",
+        positives: [
+          "Pelayanan standar internasional sangat disukai turis & ekspratriat",
+          "Buka setiap hari sampai pukul 21.00 WITA"
+        ],
+        negatives: [
+          "Waktu tunggu akhir pekan cukup ramai"
+        ],
+        complaintCount: 15,
+        trendScore: "improving"
       }
     ],
     complaintCategories: [
@@ -836,9 +1358,9 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
     brandName: "Bengkel BOS (Bengkel Open Service - Ban, Velg, Oli & Servis)",
     analysisDate: "Agustus 2026",
     totalBranchesFound: 22,
-    avgNetworkRating: 4.58,
-    totalReviewsAnalyzed: 28900,
-    executiveSummary: "Bengkel BOS (Bengkel Open Service) memegang ceruk pasar yang luas dalam penyediaan ban, velg, oli, dan tune-up dengan jaringan 22 outlet di Jabodetabek & Jawa Barat. Keunggulan utamanya adalah pilihan merek ban terlengkap (Bridgestone, Dunlop, Yokohama, Achilles, Giti) dengan harga bersaing. Titik perhatian utama adalah peremajaan pendingin udara di ruang tunggu dan kerapihan pit area.",
+    avgNetworkRating: 4.67,
+    totalReviewsAnalyzed: 47470,
+    executiveSummary: "Bengkel BOS (Bengkel Open Service) memegang ceruk pasar yang luas dalam penyediaan ban, velg, oli, dan tune-up dengan jaringan 22 outlet resmi di Jabodetabek, Jawa Barat, Jawa Tengah, dan Jawa Timur. Keunggulan utamanya adalah pilihan merek ban terlengkap (Bridgestone, Dunlop, Yokohama, Achilles, Giti) dengan harga bersaing. Titik perhatian utama berpusat pada peremajaan pendingin udara di ruang tunggu dan kerapihan pit area di beberapa cabang.",
     redFlagBranchIds: ["br-bos-12"],
     branches: [
       {
@@ -879,6 +1401,168 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         trendScore: "stable"
       },
       {
+        id: "br-bos-3",
+        name: "Bengkel BOS Bintaro",
+        city: "Tangerang Selatan",
+        address: "Jl. Bintaro Utama 3 Blok AP No. 15",
+        rating: 4.8,
+        reviewCount: 2900,
+        status: "Top",
+        positives: [
+          "Layanan cepat ganti oli & filter",
+          "Mekanik informatif memberikan rekomendasi perawatan"
+        ],
+        negatives: [
+          "Lahan parkir depan agak muat sedikit mobil"
+        ],
+        complaintCount: 12,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bos-4",
+        name: "Bengkel BOS BSD Serpong",
+        city: "Tangerang Selatan",
+        address: "Jl. Letnan Sutopo Blok C2 No. 8, BSD",
+        rating: 4.8,
+        reviewCount: 2750,
+        status: "Top",
+        positives: [
+          "Peralatan balancing & spooring presisi",
+          "Ruang tunggu bersih ber-AC"
+        ],
+        negatives: [
+          "Harga wiper original sedikit lebih mahal"
+        ],
+        complaintCount: 14,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-5",
+        name: "Bengkel BOS Kelapa Gading",
+        city: "Jakarta Utara",
+        address: "Jl. Boulevard Raya Blok QJ No. 12",
+        rating: 4.7,
+        reviewCount: 2450,
+        status: "Top",
+        positives: [
+          "Promo ganti ban bergaransi resmi",
+          "Service advisor ramah dan cekatan"
+        ],
+        negatives: [
+          "Antrean spooring weekend lumayan rame"
+        ],
+        complaintCount: 16,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-6",
+        name: "Bengkel BOS Larangan Ciledug",
+        city: "Tangerang",
+        address: "Jl. Ciledug Raya No. 88, Larangan",
+        rating: 4.7,
+        reviewCount: 2100,
+        status: "Top",
+        positives: [
+          "Pengerjaan ganti aki & oli kilat",
+          "Teknisi paham penanganan mobil matik"
+        ],
+        negatives: [
+          "Akses jalan depan sering macet"
+        ],
+        complaintCount: 18,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-7",
+        name: "Bengkel BOS Pasar Minggu",
+        city: "Jakarta Selatan",
+        address: "Jl. Raya Pasar Minggu No. 45",
+        rating: 4.8,
+        reviewCount: 2600,
+        status: "Top",
+        positives: [
+          "Bengkel terang dan bersih",
+          "Pilihan oli terlengkap"
+        ],
+        negatives: [
+          "Waktu pencucian ban agak lama"
+        ],
+        complaintCount: 13,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bos-8",
+        name: "Bengkel BOS Sawangan Depok",
+        city: "Depok",
+        address: "Jl. Raya Sawangan No. 102",
+        rating: 4.6,
+        reviewCount: 1850,
+        status: "Medium",
+        positives: [
+          "Harga paket Tune-up terjangkau",
+          "Garansi pengerjaan 14 hari"
+        ],
+        negatives: [
+          "AC ruang tunggu kadang kurang dingin"
+        ],
+        complaintCount: 24,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-9",
+        name: "Bengkel BOS Narogong Bekasi",
+        city: "Bekasi",
+        address: "Jl. Raya Narogong Km 7 No. 18",
+        rating: 4.7,
+        reviewCount: 1980,
+        status: "Medium",
+        positives: [
+          "Cocok untuk kendaraan niaga & pribadi",
+          "Stok ban ukuran besar komplit"
+        ],
+        negatives: [
+          "Debu luar jalanan Narogong lumayan masuk ke pit"
+        ],
+        complaintCount: 22,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-10",
+        name: "Bengkel BOS Cimanggis Depok",
+        city: "Depok",
+        address: "Jl. Raya Bogor Km 30, Cimanggis",
+        rating: 4.6,
+        reviewCount: 1720,
+        status: "Medium",
+        positives: [
+          "Pemeriksaan kaki-kaki gratis",
+          "Kasir & pendaftaran ramah"
+        ],
+        negatives: [
+          "Slot pit hanya ada 4 bay"
+        ],
+        complaintCount: 25,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-11",
+        name: "Bengkel BOS Pondok Gede",
+        city: "Bekasi",
+        address: "Jl. Raya Jatiwaringin No. 56",
+        rating: 4.7,
+        reviewCount: 2050,
+        status: "Medium",
+        positives: [
+          "Servis rutin terpercaya di Pondok Gede",
+          "Pengecekan aki presisi"
+        ],
+        negatives: [
+          "Antrean pagi mengular jam 9"
+        ],
+        complaintCount: 21,
+        trendScore: "stable"
+      },
+      {
         id: "br-bos-12",
         name: "Bengkel BOS Cinere Balai Pustaka",
         city: "Depok",
@@ -887,15 +1571,195 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         reviewCount: 1520,
         status: "Attention Required",
         positives: [
-          "Stok ban Achilles dan Dunlop lengkap"
+          "Stok ban Bridgestone selalu ada"
         ],
         negatives: [
-          "AC ruang tunggu kurang dingin saat siang terik",
-          "Lantai area pit servis terlihat banyak ceceran oli bekas",
-          "Sikap petugas pendaftaran kurang ramah saat ditanya diskon promo"
+          "AC ruang tunggu rusak dan belum diganti",
+          "Waktu pengerjaan molor 1 jam dari janji mekanik",
+          "Kerataan hasil balancing kurang presisi pada kecepatan tinggi"
         ],
-        complaintCount: 98,
+        complaintCount: 85,
         trendScore: "declining"
+      },
+      {
+        id: "br-bos-13",
+        name: "Bengkel BOS Cikarang",
+        city: "Bekasi",
+        address: "Jl. Cikarang Barat No. 88",
+        rating: 4.7,
+        reviewCount: 1890,
+        status: "Medium",
+        positives: [
+          "Bantuan kilat masalah oli & aki karyawan kawasan",
+          "Diskon oli member"
+        ],
+        negatives: [
+          "Parkiran lumayan ramai siang"
+        ],
+        complaintCount: 19,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-14",
+        name: "Bengkel BOS Bandung Soekarno Hatta",
+        city: "Bandung",
+        address: "Jl. Soekarno Hatta No. 350, Bandung",
+        rating: 4.7,
+        reviewCount: 2150,
+        status: "Top",
+        positives: [
+          "Bengkel terluas di Bandung",
+          "Spooring 3D presisi tinggi"
+        ],
+        negatives: [
+          "Akses tol jalur utama kerap padat"
+        ],
+        complaintCount: 17,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bos-15",
+        name: "Bengkel BOS Bandung Kopo",
+        city: "Bandung",
+        address: "Jl. Raya Kopo No. 210, Bandung",
+        rating: 4.6,
+        reviewCount: 1680,
+        status: "Medium",
+        positives: [
+          "Layanan tune-up murah dan bergaransi",
+          "Mekanik bersertifikat"
+        ],
+        negatives: [
+          "Ruang tunggu agak terbatas"
+        ],
+        complaintCount: 26,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-16",
+        name: "Bengkel BOS Cirebon",
+        city: "Cirebon",
+        address: "Jl. Tuparev No. 88, Cirebon",
+        rating: 4.6,
+        reviewCount: 1420,
+        status: "Medium",
+        positives: [
+          "Paket promo ban terlengkap di Cirebon",
+          "Pengecekan 15 titik gratis"
+        ],
+        negatives: [
+          "Inden ban impor khusus butuh 1-2 hari"
+        ],
+        complaintCount: 23,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-17",
+        name: "Bengkel BOS Semarang Majapahit",
+        city: "Semarang",
+        address: "Jl. Majapahit No. 180, Semarang",
+        rating: 4.7,
+        reviewCount: 1950,
+        status: "Top",
+        positives: [
+          "Pelayanan cepat & mekanik jujur",
+          "Ruang tunggu nyaman ber-AC"
+        ],
+        negatives: [
+          "Antrean akhir pekan cukup tinggi"
+        ],
+        complaintCount: 18,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bos-18",
+        name: "Bengkel BOS Yogyakarta Magelang",
+        city: "Yogyakarta",
+        address: "Jl. Magelang Km 6 No. 45, Sleman",
+        rating: 4.7,
+        reviewCount: 2100,
+        status: "Top",
+        positives: [
+          "Favorit warga & mahasiswa Jogja",
+          "Promo ganti oli murah berkala"
+        ],
+        negatives: [
+          "Waktu antrean siang lumayan"
+        ],
+        complaintCount: 15,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-19",
+        name: "Bengkel BOS Surabaya MERR",
+        city: "Surabaya",
+        address: "Jl. Dr. Ir. H. Soekarno No. 102, Surabaya",
+        rating: 4.8,
+        reviewCount: 2650,
+        status: "Top",
+        positives: [
+          "Fasilitas lengkap dengan 6 bay servis",
+          "Mekanik terampil menangani spooring 3D"
+        ],
+        negatives: [
+          "Tempat duduk ruang tunggu penuh jam 11"
+        ],
+        complaintCount: 14,
+        trendScore: "improving"
+      },
+      {
+        id: "br-bos-20",
+        name: "Bengkel BOS Surabaya Wiyung",
+        city: "Surabaya",
+        address: "Jl. Raya Menganti Wiyung No. 48",
+        rating: 4.7,
+        reviewCount: 1890,
+        status: "Medium",
+        positives: [
+          "Pusat ganti ban Surabaya Barat",
+          "Penggantian aki kilat bergaransi"
+        ],
+        negatives: [
+          "Parkiran depan agak sempit"
+        ],
+        complaintCount: 20,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-21",
+        name: "Bengkel BOS Sidoarjo",
+        city: "Sidoarjo",
+        address: "Jl. Jend. Sudirman No. 78, Sidoarjo",
+        rating: 4.6,
+        reviewCount: 1540,
+        status: "Medium",
+        positives: [
+          "Stok ban lokal ekonomis terlengkap",
+          "Pemeriksaan kaki-kaki gratis"
+        ],
+        negatives: [
+          "AC ruang tunggu perlu perawatan"
+        ],
+        complaintCount: 27,
+        trendScore: "stable"
+      },
+      {
+        id: "br-bos-22",
+        name: "Bengkel BOS Malang",
+        city: "Malang",
+        address: "Jl. Letjend Sutoyo No. 88, Malang",
+        rating: 4.7,
+        reviewCount: 1780,
+        status: "Medium",
+        positives: [
+          "Layanan ramah dan penjelasan transparan",
+          "Hasil spooring balancing memuaskan"
+        ],
+        negatives: [
+          "Antrean hari Minggu sore padat"
+        ],
+        complaintCount: 19,
+        trendScore: "stable"
       }
     ],
     complaintCategories: [
@@ -1230,6 +2094,42 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
             tags: ["Transparansi Biaya", "Persetujuan Tambahan"]
           }
         ]
+      },
+      {
+        id: "br-astra-11",
+        name: "Astra Otoservice Sunter Utara",
+        city: "Jakarta Utara",
+        address: "Jl. Danau Sunter Utara Blok O2 No. 12",
+        rating: 4.8,
+        reviewCount: 2100,
+        status: "Top",
+        positives: [
+          "Fasilitas ruang tunggu eksekutif ber-AC",
+          "Pemeriksaan 18 titik komponen standar Astra presisi"
+        ],
+        negatives: [
+          "Parkir depan outlet penuh jam 12 siang"
+        ],
+        complaintCount: 14,
+        trendScore: "improving"
+      },
+      {
+        id: "br-astra-12",
+        name: "Astra Otoservice Cilandak Fatmawati",
+        city: "Jakarta Selatan",
+        address: "Jl. RS Fatmawati No. 88, Cilandak",
+        rating: 4.7,
+        reviewCount: 1950,
+        status: "Top",
+        positives: [
+          "Servis cepat Express Maintenance",
+          "Pelayanan SA ramah dan garansi resmi Astra"
+        ],
+        negatives: [
+          "Keluar bengkel harus hati-hati karena macet Fatmawati"
+        ],
+        complaintCount: 16,
+        trendScore: "stable"
       }
     ],
     complaintCategories: [
@@ -1379,272 +2279,14 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
     ]
   },
 
-  "Nasmoco": {
-    brandName: "Nasmoco (Toyota Authorized Network Jawa Tengah & DIY)",
-    analysisDate: "Agustus 2026",
-    totalBranchesFound: 14,
-    avgNetworkRating: 4.62,
-    totalReviewsAnalyzed: 24100,
-    executiveSummary: "Jaringan Nasmoco di Jawa Tengah dan DIY menampilkan performa bisnis yang kuat dengan kepercayaan tinggi pada layanan resmi Toyota. Cabang utama di Semarang Pemuda dan Solo Slamet Riyadi mencapai skor reputasi bintang 4.8. Poin kritis yang perlu ditindaklanjuti direksi adalah lamanya durasi pengerjaan perbaikan bodi & cat (Body & Paint) serta ketersediaan stok sparepart tertentu untuk unit Toyota lama.",
-    redFlagBranchIds: ["br-nasmoco-9", "br-nasmoco-12"],
-    branches: [
-      {
-        id: "br-nasmoco-1",
-        name: "Nasmoco Pemuda Semarang",
-        city: "Semarang",
-        address: "Jl. Pemuda No. 72, Semarang Tengah",
-        rating: 4.8,
-        reviewCount: 3420,
-        status: "Top",
-        positives: [
-          "Pelayanan berkelas dengan lounge tunggu eksklusif dan hidangan ringan",
-          "Proses klaim asuransi & perbaikan mesin sangat rapi dan bergaransi resmi",
-          "Service Advisor sangat responsif mengabarkan status mobil via WA"
-        ],
-        negatives: [
-          "Biaya estimasi perbaikan kaki-kaki cenderung tinggi"
-        ],
-        complaintCount: 15,
-        trendScore: "improving"
-      },
-      {
-        id: "br-nasmoco-2",
-        name: "Nasmoco Solo Slamet Riyadi",
-        city: "Surakarta",
-        address: "Jl. Slamet Riyadi No. 438, Surakarta",
-        rating: 4.8,
-        reviewCount: 2980,
-        status: "Top",
-        positives: [
-          "Teknisi tersertifikasi master Toyota",
-          "Ruang tunggu VIP bersih dan tenang untuk bekerja"
-        ],
-        negatives: [
-          "Pilihan jadwal booking hari Jumat sering penuh"
-        ],
-        complaintCount: 12,
-        trendScore: "stable"
-      },
-      {
-        id: "br-nasmoco-3",
-        name: "Nasmoco Mlati Yogyakarta",
-        city: "Yogyakarta",
-        address: "Jl. Magelang Km 7, Sleman, DIY",
-        rating: 4.7,
-        reviewCount: 2650,
-        status: "Top",
-        positives: [
-          "Pelayanan cepat untuk Express Maintenance 1 Jam",
-          "Stok sparepart rutin Toyota Avanza/Innova sangat melimpah"
-        ],
-        negatives: [
-          "Area tunggu luar kadang tercium bau asap knalpot"
-        ],
-        complaintCount: 22,
-        trendScore: "stable"
-      },
-      {
-        id: "br-nasmoco-4",
-        name: "Nasmoco Magelang",
-        city: "Magelang",
-        address: "Jl. Raya Magelang - Jogja Km 5",
-        rating: 4.6,
-        reviewCount: 1840,
-        status: "Medium",
-        positives: [
-          "Keramahan khas Jawa yang halus dan membimbing",
-          "Hasil cuci mobil gratis setelah servis bersih mengkilap"
-        ],
-        negatives: [
-          "Waktu serah terima kunci sore hari agak tersendat"
-        ],
-        complaintCount: 31,
-        trendScore: "stable"
-      },
-      {
-        id: "br-nasmoco-9",
-        name: "Nasmoco Kaligawe Body & Paint Semarang",
-        city: "Semarang",
-        address: "Jl. Raya Kaligawe Km 5, Genuk, Semarang",
-        rating: 4.1,
-        reviewCount: 1650,
-        status: "Attention Required",
-        positives: [
-          "Hasil pengecatan mulus sesuai warna asli pabrikan Toyota"
-        ],
-        negatives: [
-          "Proses pengerjaan perbaikan bodi molor hingga 3 minggu dari janji awal",
-          "Sulit menghubungi pihak customer service untuk mengecek progres mobil",
-          "Banyak debu amplas tersisa di dalam interior mobil saat diserahterimakan",
-          "Proses konfirmasi persetujuan pihak asuransi lambat"
-        ],
-        complaintCount: 184,
-        trendScore: "declining",
-        trendDetails: "Banyak ulasan negatif terkait keterlambatan penyelesaian Body & Paint serta interior kotor.",
-        recentReviews: [
-          {
-            id: "rn1",
-            author: "Agus Supriyanto",
-            rating: 1,
-            date: "4 hari lalu",
-            text: "Janjinya 10 hari selesai perbaikan bemper, kenyataan sampai 25 hari baru kelar. Ditanya via WA cuma dibalas 'masih proses'. Parah!",
-            sentiment: "negative",
-            tags: ["Body & Paint", "Keterlambatan", "Komunikasi CS"]
-          }
-        ]
-      },
-      {
-        id: "br-nasmoco-12",
-        name: "Nasmoco Cilacap",
-        city: "Cilacap",
-        address: "Jl. Dokter Soetomo No. 12, Cilacap",
-        rating: 4.3,
-        reviewCount: 1220,
-        status: "Attention Required",
-        positives: [
-          "Lokasi mudah dijangkau di pusat kota Cilacap"
-        ],
-        negatives: [
-          "Indikasi inden sparepart terlampau lama (lebih dari 1 bulan)",
-          "Ruang tunggu sempit saat masa puncak servis berkala"
-        ],
-        complaintCount: 95,
-        trendScore: "declining"
-      }
-    ],
-    complaintCategories: [
-      {
-        category: "Keterlambatan Pengerjaan Body & Paint",
-        percentage: 42,
-        count: 210,
-        severity: "High",
-        sampleQuotes: [
-          "Mobil ditahan 3 minggu padahal perbaikan cuma penyok ringan di pintu.",
-          "Tidak ada kabar progres kecuali ditanya terus menerus."
-        ]
-      },
-      {
-        category: "Durasi Inden Sparepart Unit Lama/Langka",
-        percentage: 28,
-        count: 140,
-        severity: "High",
-        sampleQuotes: [
-          "Inden sensor ABS Toyota Kijang Innova diesel sampai 1.5 bulan belum datang."
-        ]
-      },
-      {
-        category: "Kualitas Kebersihan Post-Servis (Interior)",
-        percentage: 18,
-        count: 90,
-        severity: "Medium",
-        sampleQuotes: [
-          "Noda oli mekanik tertempel di jok kain mobil saya.",
-          "Debu pengerjaan bodi masih menempel di dashboard."
-        ]
-      },
-      {
-        category: "Transparansi Biaya Jasa & Garansi",
-        percentage: 12,
-        count: 60,
-        severity: "Low",
-        sampleQuotes: [
-          "Biaya Jasa berkala terasa cukup tinggi dibanding bengkel spesialis."
-        ]
-      }
-    ],
-    trafficPattern: {
-      busyDays: ["Sabtu", "Senin Pagi", "Jumat"],
-      peakHours: "08.00 - 11.00 WIB & 13.00 - 15.00 WIB",
-      quietHours: "Rabu & Kamis (13.00 - 16.00 WIB)",
-      hourlyDistribution: [
-        { hour: "08:00", trafficLevel: 60, label: "Awal Buka Padat" },
-        { hour: "09:00", trafficLevel: 95, label: "Puncak Registrasi" },
-        { hour: "10:00", trafficLevel: 90, label: "Padat Penuh" },
-        { hour: "11:00", trafficLevel: 75, label: "Sedang" },
-        { hour: "12:00", trafficLevel: 50, label: "Makan Siang" },
-        { hour: "13:00", trafficLevel: 82, label: "Gelombang II" },
-        { hour: "14:00", trafficLevel: 78, label: "Sedang" },
-        { hour: "15:00", trafficLevel: 55, label: "Pengambilan Mobil" },
-        { hour: "16:00", trafficLevel: 30, label: "Penutupan" }
-      ],
-      summary: "Kepadatan tinggi terjadi pada hari Senin pagi (unit dinas/instansi) dan Sabtu pagi (kendaraan pribadi). Cabang Body & Paint mengalami bottleneck penumpukan unit di area pengerjaan dempul dan oven pengecatan.",
-      recommendations: [
-        "Implementasikan 'Real-Time Body & Paint Tracker' yang mengirimkan foto progres otomatis ke WA konsumen.",
-        "Sediakan proteksi jok & stir transparan (seat/wheel cover) wajib untuk setiap mobil yang masuk pit pengerjaan."
-      ]
-    },
-    socialSentiment: {
-      overallPositivePercentage: 78,
-      overallNeutralPercentage: 14,
-      overallNegativePercentage: 8,
-      channels: [
-        {
-          platform: "Instagram",
-          mentionCount: 4200,
-          sentimentScore: 85,
-          viralTopics: ["Nasmoco World Promo", "Layanan Emergency Roadside Nasmoco"],
-          recentHeadline: "Apresiasi tinggi pada kecepatan tim Emergency Nasmoco menolong mogok di jalan tol."
-        },
-        {
-          platform: "TikTok",
-          mentionCount: 2800,
-          sentimentScore: 72,
-          viralTopics: ["Review Fasilitas Nasmoco Pemuda", "Curhat Mobil Inden Part"],
-          recentHeadline: "Konten kemewahan lounge Nasmoco Semarang disukai pengguna TikTok."
-        },
-        {
-          platform: "YouTube",
-          mentionCount: 1100,
-          sentimentScore: 88,
-          viralTopics: ["Vlog Penyerahan Mobil Baru", "Ulasan Servis Berkala Hybrid"],
-          recentHeadline: "Ulasan kepuasan servis unit Innova Zenix Hybrid di Nasmoco Mlati."
-        }
-      ],
-      viralComplaints: [
-        "Postingan forum konsumen Semarang mengeluhkan lamanya waktu pengerjaan di Nasmoco Body & Paint Kaligawe."
-      ],
-      successfulCampaigns: [
-        "Program 'Nasmoco Emergency Assistance 24 Jam' menjadi tolok ukur pelayanan terbaik di Jateng."
-      ],
-      publicPerceptionSummary: "Nasmoco dipandang sebagai pilihan utama pemeliharaan mobil Toyota berstandar tinggi di Jawa Tengah. Perbaikan mendesak berada pada lini bisnis Body & Paint Kaligawe."
-    },
-    strategicRecommendations: [
-      {
-        id: "rec-nas-1",
-        priority: "Critical",
-        category: "Operasional",
-        title: "Implementasi Automated WhatsApp Progress Tracker untuk Body & Paint",
-        description: "Bangun sistem pelacakan otomatis yang mengunggah foto progres tahap pengerjaan (Dempul, Oven, Polishing) langsung ke WhatsApp pemilik kendaraan secara berkala.",
-        targetBranches: ["Nasmoco Kaligawe Body & Paint Semarang"],
-        expectedImpact: "Menurunkan 80% pertanyaan dan komplain mengenai kejelasan durasi pengerjaan bodi."
-      },
-      {
-        id: "rec-nas-2",
-        priority: "High",
-        category: "Pelatihan Staff",
-        title: "SOP Kebersihan Interior & Final Quality Control Inspection",
-        description: "Terapkan check-list wajib QC kebersihan interior (bebas minyak & debu amplas) sebelum kunci mobil diserahkan ke pelanggan.",
-        targetBranches: ["Nasmoco Kaligawe Body & Paint Semarang", "Nasmoco Cilacap"],
-        expectedImpact: "Eliminasi 100% ulasan negatif terkait kondisi mobil kotor pasca perbaikan."
-      },
-      {
-        id: "rec-nas-3",
-        priority: "High",
-        category: "Inventaris & Transparansi",
-        title: "Optimasi Hub Distribusi SparePart Regional Jateng",
-        description: "Percepat sistem transfer antar-cabang untuk sparepart inden dan berikan kepastian tanggal estimasi barang tiba di cabang Cilacap & Magelang.",
-        targetBranches: ["Nasmoco Cilacap", "Nasmoco Magelang"],
-        expectedImpact: "Memotong durasi rata-rata inden sparepart dari 30 hari menjadi maksimal 10 hari kerja."
-      }
-    ]
-  },
+
 
   "Shop & Drive": {
     brandName: "Shop & Drive (Astra Otoparts Retail Network)",
     analysisDate: "Agustus 2026",
-    totalBranchesFound: 16,
-    avgNetworkRating: 4.71,
-    totalReviewsAnalyzed: 31200,
+    totalBranchesFound: 30,
+    avgNetworkRating: 4.81,
+    totalReviewsAnalyzed: 78500,
     executiveSummary: "Shop & Drive memegang posisi kepemimpinan yang sangat solid dalam segmen fast-service otomotif (penggantian aki, oli, shockbreaker, dan ban). Tingkat kepuasan umum mencapai 91% berkat kekuatan jaringan garansi resmi GS Astra dan layanan 'Home Delivery Battery' 24 jam. Titik kelemahan yang ditemukan berpusat pada keterbatasan area parkir beberapa outlet cabang kecil serta ketidaksesuaian stok tipe ban spesifik.",
     redFlagBranchIds: ["br-sd-11"],
     branches: [
@@ -1685,6 +2327,151 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         trendScore: "stable"
       },
       {
+        id: "br-sd-3",
+        name: "Super Shop & Drive BSD City",
+        city: "Tangerang Selatan",
+        address: "Jl. BSD Grand Boulevard No. 15",
+        rating: 4.9,
+        reviewCount: 3450,
+        status: "Top",
+        positives: [
+          "Layanan cepat ganti aki GS Astra & garansi nasional 18 bulan",
+          "Pilihan ban Michelin & Bridgestone terlengkap",
+          "Spooring 3D presisi tinggi"
+        ],
+        negatives: [
+          "Harga aki premium relatif tinggi dibanding toko umum"
+        ],
+        complaintCount: 11,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-4",
+        name: "Shop & Drive Bintaro Utama",
+        city: "Tangerang Selatan",
+        address: "Jl. Bintaro Utama 9 Blok HB2 No. 6",
+        rating: 4.8,
+        reviewCount: 2890,
+        status: "Top",
+        positives: [
+          "Layanan Home Delivery penggantian aki kilat 24 jam",
+          "Mekanik jujur dan komunikatif"
+        ],
+        negatives: [
+          "Parkiran depan muat 3 mobil"
+        ],
+        complaintCount: 12,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-5",
+        name: "Super Shop & Drive Harapan Indah",
+        city: "Bekasi",
+        address: "Jl. Harapan Indah Boulevard No. 30",
+        rating: 4.8,
+        reviewCount: 2650,
+        status: "Top",
+        positives: [
+          "Pit servis luas dan alat ganti ban canggih",
+          "Ruang tunggu AC dingin dengan free snack"
+        ],
+        negatives: [
+          "Jam sibuk weekend cukup antre"
+        ],
+        complaintCount: 15,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-6",
+        name: "Shop & Drive Cinere Raya",
+        city: "Depok",
+        address: "Jl. Cinere Raya No. 88, Depok",
+        rating: 4.8,
+        reviewCount: 2420,
+        status: "Top",
+        positives: [
+          "Pengecekan kelistrikan & aki gratis",
+          "Proses penggantian oli cepat"
+        ],
+        negatives: [
+          "Akses masuk dari jalan raya ramai"
+        ],
+        complaintCount: 13,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-7",
+        name: "Shop & Drive Sunter Danau",
+        city: "Jakarta Utara",
+        address: "Jl. Danau Sunter Utara Blok F2 No. 8",
+        rating: 4.7,
+        reviewCount: 2150,
+        status: "Top",
+        positives: [
+          "Pelayanan staf ramah",
+          "Garansi aki berlaku nasional"
+        ],
+        negatives: [
+          "Ruang tunggu agak terbatas"
+        ],
+        complaintCount: 17,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-8",
+        name: "Super Shop & Drive Bandung Dago",
+        city: "Bandung",
+        address: "Jl. Ir. H. Juanda No. 185, Dago, Bandung",
+        rating: 4.8,
+        reviewCount: 2780,
+        status: "Top",
+        positives: [
+          "Pusat layanan penggantian aki & ban favorit di Bandung",
+          "Lounge eksekutif ber-AC"
+        ],
+        negatives: [
+          "Jalur Dago ramai pada akhir pekan"
+        ],
+        complaintCount: 14,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-9",
+        name: "Shop & Drive Semarang Pemuda",
+        city: "Semarang",
+        address: "Jl. Pemuda No. 102, Semarang",
+        rating: 4.7,
+        reviewCount: 1980,
+        status: "Medium",
+        positives: [
+          "Pengerjaan rapi dan mekanik bersertifikat",
+          "Garansi resmi Astra Otoparts"
+        ],
+        negatives: [
+          "Koneksi WiFi ruang tunggu kadang lambat"
+        ],
+        complaintCount: 19,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-10",
+        name: "Super Shop & Drive Yogyakarta Gejayan",
+        city: "Yogyakarta",
+        address: "Jl. Gejayan No. 45, Sleman, DIY",
+        rating: 4.8,
+        reviewCount: 2540,
+        status: "Top",
+        positives: [
+          "Layanan ramah dan transparan",
+          "Spooring 3D Hunter sangat presisi"
+        ],
+        negatives: [
+          "Antrean sore jam 4 ramai"
+        ],
+        complaintCount: 13,
+        trendScore: "improving"
+      },
+      {
         id: "br-sd-11",
         name: "Shop & Drive Ciledug Tangerang",
         city: "Tangerang",
@@ -1702,6 +2489,348 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         ],
         complaintCount: 88,
         trendScore: "declining"
+      },
+      {
+        id: "br-sd-12",
+        name: "Super Shop & Drive Surabaya Gubeng",
+        city: "Surabaya",
+        address: "Jl. Gubeng Raya No. 66, Surabaya",
+        rating: 4.9,
+        reviewCount: 3250,
+        status: "Top",
+        positives: [
+          "Flagship outlet Jawa Timur, fasilitas paling lengkap",
+          "Layanan ganti aki kilat 15 menit & garansi langsung aktif"
+        ],
+        negatives: [
+          "Parkiran depan padat jam makan siang"
+        ],
+        complaintCount: 10,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-13",
+        name: "Shop & Drive Surabaya HR Muhammad",
+        city: "Surabaya",
+        address: "Jl. HR. Muhammad No. 88, Surabaya Barat",
+        rating: 4.8,
+        reviewCount: 2680,
+        status: "Top",
+        positives: [
+          "Penanganan aki & oli presisi",
+          "Kasir & pendaftaran serba digital"
+        ],
+        negatives: [
+          "Harga promo ban cepat habis stoknya"
+        ],
+        complaintCount: 15,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-14",
+        name: "Shop & Drive Malang Ijen",
+        city: "Malang",
+        address: "Jl. Besar Ijen No. 42, Malang",
+        rating: 4.8,
+        reviewCount: 1950,
+        status: "Top",
+        positives: [
+          "Bengkel bersih di kawasan ijen",
+          "Mekanik ramah dan cekatan"
+        ],
+        negatives: [
+          "Jam operasional Sabtu sore penuh"
+        ],
+        complaintCount: 14,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-15",
+        name: "Super Shop & Drive Medan Amir Hamzah",
+        city: "Medan",
+        address: "Jl. Tengku Amir Hamzah No. 55, Medan",
+        rating: 4.8,
+        reviewCount: 2400,
+        status: "Top",
+        positives: [
+          "Outlet Super terbesar di Sumatra",
+          "Pilihan aki & shockbreaker Kayaba terlengkap"
+        ],
+        negatives: [
+          "Jalur depan ramai kendaraan"
+        ],
+        complaintCount: 16,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-16",
+        name: "Super Shop & Drive Bali Sunset Road",
+        city: "Denpasar",
+        address: "Jl. Sunset Road No. 88, Kuta, Bali",
+        rating: 4.8,
+        reviewCount: 2750,
+        status: "Top",
+        positives: [
+          "Standar pelayanan internasional disukai turis & ekspratriat",
+          "Layanan ganti aki antar 24 jam di Bali"
+        ],
+        negatives: [
+          "Waktu tunggu weekend lumayan ramai"
+        ],
+        complaintCount: 13,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-17",
+        name: "Shop & Drive Kemang Raya",
+        city: "Jakarta Selatan",
+        address: "Jl. Kemang Raya No. 45, Jakarta Selatan",
+        rating: 4.9,
+        reviewCount: 3200,
+        status: "Top",
+        positives: [
+          "Layanan Home Delivery penggantian aki super cepat",
+          "Mekanik sangat berpengalaman & ramah"
+        ],
+        negatives: [
+          "Jalur Kemang ramai saat sore hari"
+        ],
+        complaintCount: 8,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-18",
+        name: "Shop & Drive Rawamangun",
+        city: "Jakarta Timur",
+        address: "Jl. Pemuda No. 66, Rawamangun, Jakarta Timur",
+        rating: 4.8,
+        reviewCount: 2950,
+        status: "Top",
+        positives: [
+          "Pemeriksaan kelistrikan & aki gratis 18 titik",
+          "Stok aki GS Astra Hybrid & Maintenance Free lengkap"
+        ],
+        negatives: [
+          "Kapasitas parkir depan sedang"
+        ],
+        complaintCount: 11,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-19",
+        name: "Super Shop & Drive Puri Indah",
+        city: "Jakarta Barat",
+        address: "Jl. Puri Indah Raya Blok A3 No. 12, Jakarta Barat",
+        rating: 4.9,
+        reviewCount: 3500,
+        status: "Top",
+        positives: [
+          "Fasilitas Super lengkap dengan spooring 3D Hunter presisi",
+          "Lounge tunggu eksklusif ber-AC dingin"
+        ],
+        negatives: [
+          "Antrean spooring weekend cukup padat"
+        ],
+        complaintCount: 9,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-20",
+        name: "Shop & Drive Bogor Pajajaran",
+        city: "Bogor",
+        address: "Jl. Raya Pajajaran No. 88, Bogor Timur",
+        rating: 4.8,
+        reviewCount: 2780,
+        status: "Top",
+        positives: [
+          "Respon cepat panggilan penggantian aki antar daerah Bogor",
+          "Garansi resmi Astra Otoparts valid nasional"
+        ],
+        negatives: [
+          "Parkir depan meluber jika hujan lebat"
+        ],
+        complaintCount: 12,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-21",
+        name: "Shop & Drive Bandung Soekarno Hatta",
+        city: "Bandung",
+        address: "Jl. Soekarno Hatta No. 420, Bandung",
+        rating: 4.7,
+        reviewCount: 2450,
+        status: "Top",
+        positives: [
+          "Akses jalur utama Bandung Selatan sangat strategis",
+          "Proses ganti oli Shell & Mobil1 presisi"
+        ],
+        negatives: [
+          "Lalu lintas depan outlet cukup padat jam kerja"
+        ],
+        complaintCount: 15,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-22",
+        name: "Shop & Drive Solo Slamet Riyadi",
+        city: "Surakarta",
+        address: "Jl. Slamet Riyadi No. 210, Surakarta",
+        rating: 4.8,
+        reviewCount: 2100,
+        status: "Top",
+        positives: [
+          "Pelayanan ramah khas Solo",
+          "Cek kesehatan aki & alternator gratis"
+        ],
+        negatives: [
+          "Area tunggu agak terbatas"
+        ],
+        complaintCount: 10,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-23",
+        name: "Shop & Drive Surabaya Mayjend Sungkono",
+        city: "Surabaya",
+        address: "Jl. Mayjend Sungkono No. 102, Surabaya",
+        rating: 4.9,
+        reviewCount: 3100,
+        status: "Top",
+        positives: [
+          "Layanan fast track penggantian aki 15 menit",
+          "Mekanik bersertifikat Astra"
+        ],
+        negatives: [
+          "Jam makan siang antrean cukup ramai"
+        ],
+        complaintCount: 8,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-24",
+        name: "Shop & Drive Sidoarjo Ahmad Yani",
+        city: "Sidoarjo",
+        address: "Jl. A. Yani No. 55, Sidoarjo",
+        rating: 4.8,
+        reviewCount: 1980,
+        status: "Top",
+        positives: [
+          "Lokasi strategis di pusat kota Sidoarjo",
+          "Garansi aki GS Astra tanpa kendala"
+        ],
+        negatives: [
+          "Lahan parkir muat 4 mobil"
+        ],
+        complaintCount: 13,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-25",
+        name: "Shop & Drive Palembang R. Sukamto",
+        city: "Palembang",
+        address: "Jl. R. Sukamto No. 88, Palembang",
+        rating: 4.8,
+        reviewCount: 2300,
+        status: "Top",
+        positives: [
+          "Pusat layanan aki & oli terfavorit di Palembang",
+          "Layanan antar aki 24 jam responsif"
+        ],
+        negatives: [
+          "Cuaca panas siang hari di ruang tunggu luar"
+        ],
+        complaintCount: 11,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-26",
+        name: "Shop & Drive Makassar Pettarani",
+        city: "Makassar",
+        address: "Jl. AP Pettarani No. 45, Makassar",
+        rating: 4.8,
+        reviewCount: 2600,
+        status: "Top",
+        positives: [
+          "Flagship outlet Sulawesi dengan pilihan ban Dunlop & Bridgestone",
+          "Mekanik sigap & informatif"
+        ],
+        negatives: [
+          "Akses U-turn jalan Pettarani lumayan jauh"
+        ],
+        complaintCount: 14,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-27",
+        name: "Super Shop & Drive Balikpapan Sudirman",
+        city: "Balikpapan",
+        address: "Jl. Jendral Sudirman No. 120, Balikpapan",
+        rating: 4.9,
+        reviewCount: 2850,
+        status: "Top",
+        positives: [
+          "Outlet Super terlengkap di Kalimantan Timur",
+          "Peralatan spooring & balancing canggih"
+        ],
+        negatives: [
+          "Harga aki kualifikasi heavy duty sesuai standar industri"
+        ],
+        complaintCount: 9,
+        trendScore: "improving"
+      },
+      {
+        id: "br-sd-28",
+        name: "Shop & Drive Denpasar Teuku Umar",
+        city: "Denpasar",
+        address: "Jl. Teuku Umar No. 150, Denpasar, Bali",
+        rating: 4.8,
+        reviewCount: 2400,
+        status: "Top",
+        positives: [
+          "Layanan panggilan aki cepat untuk area Denpasar",
+          "Ruang tunggu bersih dan ber-AC"
+        ],
+        negatives: [
+          "Lalu lintas Teuku Umar ramai"
+        ],
+        complaintCount: 12,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-29",
+        name: "Shop & Drive Karawang Galuh Mas",
+        city: "Karawang",
+        address: "Jl. Galuh Mas Raya No. 18, Karawang",
+        rating: 4.7,
+        reviewCount: 1850,
+        status: "Top",
+        positives: [
+          "Sangat membantu pekerja kawasan industri Karawang",
+          "Garansi aki nasional Astra valid"
+        ],
+        negatives: [
+          "Jam pulang pabrik antrean servis meningkat"
+        ],
+        complaintCount: 16,
+        trendScore: "stable"
+      },
+      {
+        id: "br-sd-30",
+        name: "Super Shop & Drive Serpong Raya",
+        city: "Tangerang",
+        address: "Jl. Raya Serpong Km 7 No. 88, Tangerang",
+        rating: 4.9,
+        reviewCount: 3300,
+        status: "Top",
+        positives: [
+          "Layanan Super Shop & Drive dengan 6 pit pengerjaan",
+          "Spooring 3D presisi & penggantian shockbreaker Kayaba"
+        ],
+        negatives: [
+          "Weekend sore antrean cukup panjang"
+        ],
+        complaintCount: 10,
+        trendScore: "improving"
       }
     ],
     complaintCategories: [

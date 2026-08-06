@@ -49,7 +49,7 @@ export default function App() {
     progressPercent: 0,
   });
 
-  const presetList = ["Mobeng", "B-Quik", "Bengkel BOS", "Astra Otoservice", "Nasmoco", "Shop & Drive"];
+  const presetList = ["Mobeng", "B-Quik", "Bengkel BOS", "Astra Otoservice", "Shop & Drive"];
 
   const handleSaveAIConfig = (newConfig: AIConfig) => {
     setAiConfig(newConfig);
@@ -77,7 +77,23 @@ export default function App() {
 
   const handleSearch = async (query: string) => {
     setActiveQuery(query);
+    setSelectedCompareBranches([]);
+    setSelectedBranch(null);
     setSearchState({ isLoading: true, step: 'mapping_network', progressPercent: 15 });
+
+    // Robust preset key matching by normalizing spaces & special characters (e.g. b-quik, bquik, bengkel b-quik)
+    const normalizeStr = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const normQuery = normalizeStr(query);
+
+    const matchedPresetKey = Object.keys(PRESET_DATASETS).find((key) => {
+      const normKey = normalizeStr(key);
+      return normKey.includes(normQuery) || normQuery.includes(normKey);
+    });
+
+    // Immediately update report if preset dataset matches to clear previous brand data from screen instantly
+    if (matchedPresetKey) {
+      setReport(PRESET_DATASETS[matchedPresetKey]);
+    }
 
     // Initialize Multi-Agent states if orchestration enabled
     if (aiConfig.useOrchestration) {
@@ -123,11 +139,6 @@ export default function App() {
         },
       }));
     }
-
-    // Check if query matches preset dataset
-    const matchedPresetKey = Object.keys(PRESET_DATASETS).find(
-      (key) => key.toLowerCase().includes(query.toLowerCase()) || query.toLowerCase().includes(key.toLowerCase())
-    );
 
     // Step 2: Customer Sentiment & Complaint Analysis (Agent 2)
     setSearchState((prev) => ({ ...prev, step: 'fetching_reviews', progressPercent: 35 }));
@@ -567,6 +578,7 @@ ${report.executiveSummary}
         {/* Section 1: Tabel Komparasi Performa Cabang */}
         <BranchPerformanceTable
           branches={report.branches}
+          currentBrandName={report.brandName}
           redFlagIds={report.redFlagBranchIds}
           onSelectBranch={handleSelectBranch}
           selectedCompareIds={selectedCompareBranches.map((b) => b.id)}

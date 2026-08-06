@@ -9,6 +9,7 @@ interface BranchPerformanceTableProps {
   selectedCompareIds: string[];
   onToggleCompareBranch: (branch: BranchData) => void;
   onOpenCompareModal: () => void;
+  currentBrandName?: string;
 }
 
 export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
@@ -18,15 +19,35 @@ export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
   selectedCompareIds,
   onToggleCompareBranch,
   onOpenCompareModal,
+  currentBrandName,
 }) => {
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortField, setSortField] = useState<'rating' | 'reviewCount' | 'complaintCount'>('rating');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  // Ensure default order is rating descending as per prompt requirement
+  // Strict Brand Isolation + Filter & Sort
   const sortedAndFilteredBranches = useMemo(() => {
     let result = [...branches];
+
+    // Filter by Brand Isolation if brandName is supplied
+    if (currentBrandName) {
+      const clean = currentBrandName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      let brandKey = '';
+      if (clean.includes('bquik')) brandKey = 'bquik';
+      else if (clean.includes('mobeng')) brandKey = 'mobeng';
+      else if (clean.includes('astra')) brandKey = 'astra';
+      else if (clean.includes('shop')) brandKey = 'shop';
+      else if (clean.includes('bos')) brandKey = 'bos';
+      else if (clean.includes('nasmoco')) brandKey = 'nasmoco';
+
+      if (brandKey) {
+        result = result.filter((b) => {
+          const bClean = b.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+          return bClean.includes(brandKey);
+        });
+      }
+    }
 
     // Filter by Search Query
     if (searchQuery.trim()) {
@@ -55,7 +76,7 @@ export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
     });
 
     return result;
-  }, [branches, searchQuery, statusFilter, sortField, sortOrder]);
+  }, [branches, searchQuery, statusFilter, sortField, sortOrder, currentBrandName]);
 
   const handleSort = (field: 'rating' | 'reviewCount' | 'complaintCount') => {
     if (sortField === field) {
@@ -276,7 +297,7 @@ export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="flex items-center gap-1.5">
                         <span className={`text-base font-extrabold ${
-                          branch.rating >= 4.7 ? 'text-emerald-700' : branch.rating >= 4.5 ? 'text-amber-700' : 'text-rose-700'
+                          branch.rating >= 4.7 ? 'text-emerald-400' : branch.rating >= 4.5 ? 'text-amber-400' : 'text-rose-400'
                         }`}>
                           {branch.rating.toFixed(1)}
                         </span>
@@ -288,7 +309,7 @@ export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
 
                     {/* Column 3: Review Count */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
-                      <span className="font-semibold text-slate-800">
+                      <span className="font-semibold text-slate-200">
                         {branch.reviewCount.toLocaleString('id-ID')}
                       </span>
                       <span className="text-xs text-slate-400 ml-1">ulasan</span>
