@@ -648,6 +648,13 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
       overallNegativePercentage: 3,
       channels: [
         {
+          platform: "Facebook",
+          mentionCount: 3850,
+          sentimentScore: 87,
+          viralTopics: ["Facebook Fanpage @mobeng.id", "Promo Paket Tune-Up & Oli", "Testimoni Pelanggan"],
+          recentHeadline: "Halaman resmi Facebook Mobeng (@mobeng.id) aktif membagikan jadwal promo bulanan, tips perawatan aki, dan lokasi outlet terbaru."
+        },
+        {
           platform: "Instagram",
           mentionCount: 4200,
           sentimentScore: 89,
@@ -660,11 +667,18 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
           sentimentScore: 84,
           viralTopics: ["Edukasi Gejala Mesin Pincang", "Review Servis Mobeng"],
           recentHeadline: "Video transparansi pengerjaan mekanik Mobeng banyak mendapatkan tanggapan positif netizen."
+        },
+        {
+          platform: "YouTube",
+          mentionCount: 1950,
+          sentimentScore: 88,
+          viralTopics: ["Vlog Pengerjaan Carbon Clean", "Review Layanan Mobeng"],
+          recentHeadline: "Ulasan video pengerjaan gurit mesin dan penggantian ban di cabang Mobeng mendapat apresiasi konsumen."
         }
       ],
       viralComplaints: ["Beberapa komentar mengenai lamanya antrean di beberapa cabang favorit saat akhir pekan."],
-      successfulCampaigns: ["Kampanye 'Mobeng Transparan & Bergaransi' sukses menarik perhatian pengguna mobil harian."],
-      publicPerceptionSummary: "Mobeng dipandang sebagai jaringan bengkel modern yang dapat diandalkan dengan harga bersaing dan mekanik yang ramah."
+      successfulCampaigns: ["Kampanye 'Mobeng Transparan & Bergaransi' di Facebook & IG sukses menarik perhatian pengguna mobil harian."],
+      publicPerceptionSummary: "Mobeng dipandang sebagai jaringan bengkel modern yang dapat diandalkan dengan transparansi pengerjaan tinggi di media sosial (Facebook, Instagram, TikTok) serta harga bersaing dan mekanik yang ramah."
     },
     strategicRecommendations: [
       {
