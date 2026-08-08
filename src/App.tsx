@@ -14,8 +14,9 @@ import { BranchComparisonModal } from './components/BranchComparisonModal';
 import { ExecutiveAIAdvisorChat } from './components/ExecutiveAIAdvisorChat';
 import { RegionalBranchGrid } from './components/RegionalBranchGrid';
 import { HistoricalAnalyticsSection } from './components/HistoricalAnalyticsSection';
+import { CSAutomationModal } from './components/CSAutomationModal';
 import { PRESET_DATASETS } from './data/mockDatasets';
-import { FullIntelligenceReport, BranchData, SearchState, AIConfig, AgentExecutionState } from './types';
+import { FullIntelligenceReport, BranchData, SearchState, AIConfig, AgentExecutionState, CSAutomationConfig } from './types';
 import { loadAIConfig, saveAIConfig } from './services/aiProvider';
 import { ExternalLink, Sparkles } from 'lucide-react';
 
@@ -35,6 +36,44 @@ export default function App() {
   // AI Configuration State
   const [aiConfig, setAiConfig] = useState<AIConfig>(loadAIConfig);
   const [isAISettingsOpen, setIsAISettingsOpen] = useState(false);
+
+  // CS Email Automation State
+  const [csAutomationConfig, setCsAutomationConfig] = useState<CSAutomationConfig>(() => {
+    const saved = localStorage.getItem('auto_rep_cs_automation_config');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (!parsed.csEmails || !Array.isArray(parsed.csEmails)) {
+          const emails = (parsed.csEmail || 'budagbogor@gmail.com')
+            .split(/[\s,;]+/)
+            .map((e: string) => e.trim())
+            .filter((e: string) => e.length > 0);
+          parsed.csEmails = emails.length > 0 ? emails : ['budagbogor@gmail.com'];
+        }
+        return parsed;
+      } catch (e) {}
+    }
+    return {
+      csEmail: 'budagbogor@gmail.com',
+      csEmails: ['budagbogor@gmail.com'],
+      autoSyncEnabled: true,
+      syncInterval: '1h',
+      monitoredPlatforms: ['Threads', 'Instagram', 'TikTok', 'Google Reviews', 'X/Twitter', 'Facebook'],
+      targetBusinessUnits: ['Semua Cabang Mobeng'],
+      targetBrandFocus: 'Mobeng',
+      triggers: {
+        negativeComplaints: true,
+        positiveTestimonials: true,
+        viralMentions: true,
+      },
+    };
+  });
+  const [isCSAutomationOpen, setIsCSAutomationOpen] = useState(false);
+
+  const handleSaveCSConfig = (newConfig: CSAutomationConfig) => {
+    setCsAutomationConfig(newConfig);
+    localStorage.setItem('auto_rep_cs_automation_config', JSON.stringify(newConfig));
+  };
 
   // Compare Branches State
   const [selectedCompareBranches, setSelectedCompareBranches] = useState<BranchData[]>([]);
@@ -408,6 +447,13 @@ export default function App() {
         overallNegativePercentage: 10,
         channels: [
           {
+            platform: "Threads",
+            mentionCount: 1950,
+            sentimentScore: 74,
+            viralTopics: ["Curhatan Threads Pelanggan", "Review Jujur Layanan"],
+            recentHeadline: "Threads curhatan pengguna mengenai transparansi biaya & antrean servis.",
+          },
+          {
             platform: "Instagram",
             mentionCount: 2800,
             sentimentScore: 82,
@@ -422,7 +468,10 @@ export default function App() {
             recentHeadline: "Video kritik waktu tunggu sempat FYP di TikTok.",
           },
         ],
-        viralComplaints: ["Video TikTok kritik waktu tunggu di cabang satelit."],
+        viralComplaints: [
+          "Thread keluhan durasi antrean akhir pekan di Threads & TikTok.",
+          "Video TikTok kritik waktu tunggu di cabang satelit."
+        ],
         successfulCampaigns: ["Kampanye pengecekan komponen gratis berhasil menarik prospek baru."],
         publicPerceptionSummary: "Sentimen publik secara umum sangat baik, dengan atensi perbaikan pada durasi antrean akhir pekan.",
       },
@@ -548,6 +597,15 @@ ${report.executiveSummary}
         onSave={handleSaveAIConfig}
       />
 
+      {/* CS Email & Social Sync Automation Modal */}
+      <CSAutomationModal
+        isOpen={isCSAutomationOpen}
+        onClose={() => setIsCSAutomationOpen(false)}
+        report={report}
+        config={csAutomationConfig}
+        onSaveConfig={handleSaveCSConfig}
+      />
+
       {/* Header Bar */}
       <Header
         currentBrand={report.brandName}
@@ -559,6 +617,7 @@ ${report.executiveSummary}
         presetBrands={presetList}
         aiConfig={aiConfig}
         onOpenAISettings={() => setIsAISettingsOpen(true)}
+        onOpenCSAutomation={() => setIsCSAutomationOpen(true)}
       />
 
       {/* Main Content Workspace */}

@@ -1,12 +1,123 @@
-import React from 'react';
-import { Share2, Video, Globe, MessageSquare, ThumbsUp, ThumbsDown, Flame, Award, ArrowUpRight } from 'lucide-react';
-import { SocialSentimentData } from '../types';
+import React, { useState } from 'react';
+import {
+  Share2,
+  Video,
+  Globe,
+  MessageSquare,
+  ThumbsUp,
+  ThumbsDown,
+  Flame,
+  Award,
+  ArrowUpRight,
+  HelpCircle,
+  CheckCircle2,
+  Copy,
+  Check,
+  Sparkles,
+  Clock,
+  Send,
+  MessageCircle,
+  Filter
+} from 'lucide-react';
+import { SocialSentimentData, CustomerInquiry } from '../types';
 
 interface SocialSentimentSectionProps {
   data: SocialSentimentData;
 }
 
 export const SocialSentimentSection: React.FC<SocialSentimentSectionProps> = ({ data }) => {
+  const DEFAULT_INQUIRIES: CustomerInquiry[] = [
+    {
+      id: 'inq-1',
+      platform: 'Threads',
+      author: 'RianHidayat_88',
+      authorHandle: '@rian_hidayat',
+      targetBranch: 'Cabang Utama Sektor 1',
+      date: '2 jam lalu',
+      questionText: 'Halo kak, mau tanya kalau mau tune up mesin & carbon clean di cabang ini hari Sabtu besok perlu booking H-berapa ya? Apakah bisa walk-in langsung pagi?',
+      category: 'Booking & Slot',
+      status: 'Unanswered',
+      suggestedAIResponse: 'Halo Kak Rian! 👋 Untuk servis hari Sabtu sangat disarankan booking online H-1 via WA cabang agar langsung mendapat slot pit tanpa mengantre. Namun kami juga melayani walk-in mulai pukul 08.00 WIB. Ditunggu kedatangannya kak!',
+    },
+    {
+      id: 'inq-2',
+      platform: 'Instagram',
+      author: 'Siti_Aisyah_Car',
+      authorHandle: '@siti.carcare',
+      targetBranch: 'Cabang Pusat Kota',
+      date: '3 jam lalu',
+      questionText: 'Min, estimasi biaya paket ganti oli fully synthetic + filter oli untuk MPV 1.5L berapa ya? Apakah ada paket promo bulan ini?',
+      category: 'Harga & Promo',
+      status: 'Unanswered',
+      suggestedAIResponse: 'Halo Kak Siti! 🚗 Estimasi paket ganti oli Fully Synthetic (4L) + Filter Oli Original + Gratis 23 Titik Pengecekan Komponen berkisar Rp 380.000 - Rp 430.000. Tersedia diskon tambahan 10% jika melakukan booking online minggu ini kak!',
+    },
+    {
+      id: 'inq-3',
+      platform: 'TikTok',
+      author: 'BagasAutoFan',
+      authorHandle: '@bagas_automotive',
+      targetBranch: 'Cabang Satelit Barat',
+      date: '5 jam lalu',
+      questionText: 'Apakah di cabang ini sudah ada fasilitas Spooring 3D Digital & Balancing untuk velg ring 18?',
+      category: 'Stok Sparepart',
+      status: 'Responded',
+      suggestedAIResponse: 'Halo Kak Bagas! Ya betul, cabang kami sudah dilengkapi pit Spooring 3D Digital presisi tinggi yang dapat melayani velg ring 14 hingga ring 20. Silakan mampir kak!',
+    },
+    {
+      id: 'inq-4',
+      platform: 'Google Reviews',
+      author: 'Dedi Kurniawan',
+      targetBranch: 'Cabang Timur Raya',
+      date: '1 hari lalu',
+      questionText: 'Jam operasional bengkel saat tanggal merah / libur nasional buka jam berapa sampai jam berapa ya?',
+      category: 'Lokasi & Jam Buka',
+      status: 'Responded',
+      suggestedAIResponse: 'Halo Pak Dedi Kurniawan! Cabang kami tetap beroperasi penuh saat hari libur nasional mulai pukul 08:30 WIB - 17:00 WIB. Terima kasih pak!',
+    },
+  ];
+
+  const inquiriesList: CustomerInquiry[] =
+    data.customerInquiries && data.customerInquiries.length > 0
+      ? data.customerInquiries
+      : DEFAULT_INQUIRIES;
+
+  const [inquiriesState, setInquiriesState] = useState<CustomerInquiry[]>(inquiriesList);
+  const [inquiryFilter, setInquiryFilter] = useState<'all' | 'unanswered' | 'responded'>('all');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const filteredInquiries = inquiriesState.filter((item) => {
+    if (inquiryFilter === 'unanswered') return item.status === 'Unanswered';
+    if (inquiryFilter === 'responded') return item.status === 'Responded';
+    return true;
+  });
+
+  const handleCopyResponse = (id: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleToggleStatus = (id: string) => {
+    setInquiriesState((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, status: item.status === 'Unanswered' ? 'Responded' : 'Unanswered' }
+          : item
+      )
+    );
+  };
+
+  const getPlatformBadge = (platform: string) => {
+    const p = platform.toLowerCase();
+    if (p.includes('threads')) return 'bg-slate-950 text-white border border-purple-500/70 font-extrabold shadow-sm';
+    if (p.includes('facebook')) return 'bg-blue-600 text-white';
+    if (p.includes('instagram')) return 'bg-gradient-to-r from-purple-500 to-pink-500 text-white';
+    if (p.includes('tiktok')) return 'bg-slate-950 text-cyan-400 border border-slate-700';
+    if (p.includes('youtube')) return 'bg-red-600 text-white';
+    if (p.includes('x') || p.includes('twitter')) return 'bg-sky-600 text-white';
+    return 'bg-slate-800 text-white';
+  };
+
   return (
     <section className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl p-6 mb-8">
       
@@ -20,13 +131,13 @@ export const SocialSentimentSection: React.FC<SocialSentimentSectionProps> = ({ 
             </h3>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Pemantauan lintas platform (TikTok, Instagram, YouTube, Berita Online, X/Twitter) mengenai isu viral dan keberhasilan kampanye publik.
+            Pemantauan lintas platform (Threads, TikTok, Instagram, YouTube, Berita Online, X/Twitter) mengenai isu viral, pertanyaan calon konsumen, dan keberhasilan kampanye publik.
           </p>
         </div>
       </div>
 
       {/* Sentiment Overview Gauge Bar */}
-      <div className="bg-slate-900 text-white p-5 rounded-2xl mb-6 shadow-inner">
+      <div className="bg-slate-900 text-white p-5 rounded-2xl mb-6 shadow-inner border border-slate-800/80">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400">
@@ -73,15 +184,6 @@ export const SocialSentimentSection: React.FC<SocialSentimentSectionProps> = ({ 
       {/* Social Media Channels Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {data.channels.map((channel, idx) => {
-          const getPlatformBadge = (platform: string) => {
-            const p = platform.toLowerCase();
-            if (p.includes('facebook')) return 'bg-blue-600 text-white';
-            if (p.includes('instagram')) return 'bg-gradient-to-r from-purple-500 to-pink-500 text-white';
-            if (p.includes('tiktok')) return 'bg-slate-950 text-cyan-400 border border-slate-700';
-            if (p.includes('youtube')) return 'bg-red-600 text-white';
-            return 'bg-slate-800 text-white';
-          };
-
           return (
             <div key={idx} className="p-4 rounded-xl border border-slate-800 bg-slate-950/70 hover:bg-slate-800/80 hover:border-slate-700 transition-all flex flex-col justify-between">
               <div>
@@ -112,6 +214,156 @@ export const SocialSentimentSection: React.FC<SocialSentimentSectionProps> = ({ 
             </div>
           );
         })}
+      </div>
+
+      {/* NEW SECTION: Customer & Netizen Inquiries Response Desk */}
+      <div className="mb-6 p-5 rounded-2xl bg-gradient-to-b from-indigo-950/40 via-slate-950 to-slate-900 border border-indigo-500/40 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-indigo-500/30">
+          <div>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-indigo-600/30 border border-indigo-500/50 flex items-center justify-center text-indigo-400">
+                <HelpCircle className="w-4 h-4 text-indigo-300" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                  Pertanyaan Netizen & Prospek Pelanggan di Medsos
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-extrabold border border-amber-500/40">
+                    CS RESPONSE DESK
+                  </span>
+                </h4>
+                <p className="text-[11px] text-slate-400">
+                  Postingan pertanyaan dari calon pelanggan di Threads, Instagram, TikTok, & Google Maps yang membutuhkan respon cepat
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Inquiry Status Filter Tabs */}
+          <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 self-start sm:self-auto text-xs">
+            <button
+              onClick={() => setInquiryFilter('all')}
+              className={`px-3 py-1 rounded-lg font-semibold transition-all ${
+                inquiryFilter === 'all'
+                  ? 'bg-indigo-600 text-white shadow'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Semua ({inquiriesState.length})
+            </button>
+            <button
+              onClick={() => setInquiryFilter('unanswered')}
+              className={`px-3 py-1 rounded-lg font-semibold transition-all flex items-center gap-1 ${
+                inquiryFilter === 'unanswered'
+                  ? 'bg-amber-600 text-white shadow'
+                  : 'text-amber-400 hover:bg-amber-500/10'
+              }`}
+            >
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+              Belum Dijawab ({inquiriesState.filter((i) => i.status === 'Unanswered').length})
+            </button>
+            <button
+              onClick={() => setInquiryFilter('responded')}
+              className={`px-3 py-1 rounded-lg font-semibold transition-all ${
+                inquiryFilter === 'responded'
+                  ? 'bg-emerald-600 text-white shadow'
+                  : 'text-emerald-400 hover:bg-emerald-500/10'
+              }`}
+            >
+              Sudah Dijawab ({inquiriesState.filter((i) => i.status === 'Responded').length})
+            </button>
+          </div>
+        </div>
+
+        {/* List of Customer Inquiries */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filteredInquiries.map((inquiry) => (
+            <div
+              key={inquiry.id}
+              className={`p-4 rounded-xl border transition-all flex flex-col justify-between ${
+                inquiry.status === 'Unanswered'
+                  ? 'bg-slate-950 border-amber-500/40 hover:border-amber-400'
+                  : 'bg-slate-900/80 border-slate-800 opacity-90'
+              }`}
+            >
+              <div className="space-y-2.5">
+                
+                {/* Inquiry Card Header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${getPlatformBadge(inquiry.platform)}`}>
+                      {inquiry.platform}
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-200">
+                      {inquiry.authorHandle || inquiry.author}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-slate-400 flex items-center gap-1 font-mono">
+                      <Clock className="w-3 h-3 text-slate-500" /> {inquiry.date}
+                    </span>
+                    <button
+                      onClick={() => handleToggleStatus(inquiry.id)}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                        inquiry.status === 'Unanswered'
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
+                          : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
+                      }`}
+                    >
+                      {inquiry.status === 'Unanswered' ? '⏳ Belum Dijawab' : '✅ Sudah Dijawab'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Target Branch & Category Tag */}
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-indigo-300 font-semibold">
+                    📍 Target: {inquiry.targetBranch}
+                  </span>
+                  <span className="px-2 py-0.5 bg-slate-800 text-slate-300 rounded-md text-[10px] font-medium border border-slate-700">
+                    {inquiry.category}
+                  </span>
+                </div>
+
+                {/* Question Text Box */}
+                <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-100 font-medium leading-relaxed">
+                  "{inquiry.questionText}"
+                </div>
+
+                {/* Suggested AI Response Box */}
+                <div className="p-3 bg-indigo-950/40 rounded-xl border border-indigo-500/30 space-y-1.5">
+                  <div className="flex items-center justify-between text-[10px] font-bold text-indigo-300">
+                    <span className="flex items-center gap-1">
+                      <Sparkles className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
+                      Draf Respon Otomatis AI (Siap Kirim):
+                    </span>
+                    <button
+                      onClick={() => handleCopyResponse(inquiry.id, inquiry.suggestedAIResponse)}
+                      className="px-2 py-0.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] transition-colors flex items-center gap-1 font-bold"
+                    >
+                      {copiedId === inquiry.id ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-300" />
+                          <span>Tersalin!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Salin Draf</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-slate-300 italic leading-relaxed">
+                    {inquiry.suggestedAIResponse}
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Viral Complaints vs Successful Campaigns Cards */}

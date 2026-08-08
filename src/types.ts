@@ -54,11 +54,24 @@ export interface TrafficPattern {
 }
 
 export interface SocialChannelData {
-  platform: 'Instagram' | 'TikTok' | 'YouTube' | 'News' | 'Facebook' | 'X/Twitter';
+  platform: 'Instagram' | 'TikTok' | 'Threads' | 'YouTube' | 'News' | 'Facebook' | 'X/Twitter';
   mentionCount: number;
   sentimentScore: number; // 0 - 100%
   viralTopics: string[];
   recentHeadline: string;
+}
+
+export interface CustomerInquiry {
+  id: string;
+  platform: 'Threads' | 'Instagram' | 'TikTok' | 'Google Reviews' | 'X/Twitter' | 'Facebook';
+  author: string;
+  authorHandle?: string;
+  targetBranch: string;
+  date: string;
+  questionText: string;
+  category: 'Harga & Promo' | 'Booking & Slot' | 'Lokasi & Jam Buka' | 'Stok Sparepart' | 'Layanan General';
+  status: 'Unanswered' | 'Responded';
+  suggestedAIResponse: string;
 }
 
 export interface SocialSentimentData {
@@ -69,6 +82,7 @@ export interface SocialSentimentData {
   viralComplaints: string[];
   successfulCampaigns: string[];
   publicPerceptionSummary: string;
+  customerInquiries?: CustomerInquiry[];
 }
 
 export interface StrategicRecommendation {
@@ -134,5 +148,21 @@ export interface SearchState {
   step: 'idle' | 'mapping_network' | 'fetching_reviews' | 'analyzing_complaints' | 'tracking_social' | 'synthesizing' | 'completed' | 'error';
   errorMessage?: string;
   progressPercent: number;
+}
+
+export interface CSAutomationConfig {
+  csEmail: string;
+  csEmails?: string[];
+  autoSyncEnabled: boolean;
+  syncInterval: '15m' | '1h' | '6h' | '24h' | 'realtime';
+  monitoredPlatforms: string[];
+  targetBusinessUnits: string[];
+  targetBrandFocus: string;
+  triggers: {
+    negativeComplaints: boolean;
+    positiveTestimonials: boolean;
+    viralMentions: boolean;
+  };
+  lastSyncTimestamp?: string;
 }
 

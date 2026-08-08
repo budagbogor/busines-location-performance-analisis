@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, Building2, Download, Printer, RefreshCw, Cpu, Layers } from 'lucide-react';
+import { Search, Sparkles, Building2, Download, Printer, RefreshCw, Cpu, Layers, BellRing, Mail } from 'lucide-react';
 import { AIConfig } from '../types';
 
 interface HeaderProps {
@@ -12,6 +12,7 @@ interface HeaderProps {
   presetBrands: string[];
   aiConfig: AIConfig;
   onOpenAISettings: () => void;
+  onOpenCSAutomation: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,6 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
   presetBrands,
   aiConfig,
   onOpenAISettings,
+  onOpenCSAutomation,
 }) => {
   const [searchInput, setSearchInput] = useState('');
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -114,6 +116,18 @@ export const Header: React.FC<HeaderProps> = ({
           {/* AI Settings Trigger & Export Buttons */}
           <div className="flex items-center space-x-2 justify-end">
             
+            {/* CS Email Automation Settings Button */}
+            <button
+              onClick={onOpenCSAutomation}
+              title="Pengaturan Otomasi Sync Medsos & Email CS (budagbogor@gmail.com)"
+              className="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-950/80 hover:bg-amber-900 text-amber-200 border border-amber-500/50 transition-all gap-1.5 shadow-md ring-1 ring-amber-500/20"
+            >
+              <BellRing className="w-3.5 h-3.5 text-amber-400" />
+              <span className="truncate max-w-[120px] sm:max-w-none">
+                Email CS & Otomasi
+              </span>
+            </button>
+
             {/* AI Engine Button */}
             <button
               onClick={onOpenAISettings}

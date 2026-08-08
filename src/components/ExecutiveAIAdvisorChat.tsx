@@ -46,6 +46,8 @@ export const ExecutiveAIAdvisorChat: React.FC<ExecutiveAIAdvisorChatProps> = ({
     'Cabang mana yang paling mendesak butuh audit operasional minggu ini?',
     'Buatkan draf email instruksi tegas untuk Manajer Cabang Red Flag.',
     'Rangkum komplain utama & rekomendasi solusinya dalam 3 poin.',
+    'Bagaimana strategi terbaik meningkatkan rating jaringan cabang ke 4.8+?',
+    'Apa analisis dampak komplain teratas terhadap reputasi & pendapatan bisnis?',
   ];
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -64,26 +66,20 @@ export const ExecutiveAIAdvisorChat: React.FC<ExecutiveAIAdvisorChatProps> = ({
     setIsLoading(true);
 
     try {
-      // Simulate or call AI logic using report context
-      const promptContext = `
-Data Merek: ${report.brandName}
-Total Cabang: ${report.totalBranchesFound}
-Average Rating: ${report.avgNetworkRating}
-Executive Summary: ${report.executiveSummary}
-Cabang Red Flag: ${report.branches.filter(b => b.status === 'Attention Required' || report.redFlagBranchIds.includes(b.id)).map(b => b.name).join(', ')}
-Kategori Komplain: ${report.complaintCategories.map(c => c.category).join(', ')}
-Pertanyaan Pengguna: "${queryText}"
-`;
-
       let aiResponseText = '';
+      const lowerQuery = queryText.toLowerCase();
 
       // Generate context-aware response
-      if (queryText.toLowerCase().includes('audit') || queryText.toLowerCase().includes('mendesak')) {
+      if (lowerQuery.includes('audit') || lowerQuery.includes('mendesak')) {
         const redFlags = report.branches.filter(b => b.status === 'Attention Required' || report.redFlagBranchIds.includes(b.id));
         const targetNames = redFlags.length > 0 ? redFlags.map(b => b.name).join(' & ') : 'cabang dengan rating di bawah 4.5';
         aiResponseText = `Berdasarkan data intelijen terbaru untuk **${report.brandName}**, cabang yang paling mendesak butuh **Audit Operasional Khusus** adalah:\n\n🚨 **${targetNames}**\n\n**Alasan Utama:**\n- Mengalami lonjakan keluhan pelanggan terkait waktu tunggu antrean yang melebihi estimasi.\n- Rating kinerja terkoreksi dan banyak ulasan publik di TikTok/Google mengenai transparansi persetujuan pengerjaan.\n\n**Tindakan Direkomendasikan:**\n1. Kirim tim Mystery Shopper / Auditor Insognito dalam 48 jam.\n2. Wajibkan persetujuan kuitansi digital sebelum mekanik membongkar sparepart tambahan.`;
-      } else if (queryText.toLowerCase().includes('draf') || queryText.toLowerCase().includes('email')) {
+      } else if (lowerQuery.includes('draf') || lowerQuery.includes('email')) {
         aiResponseText = `Berikut adalah draf **Email Instruksi Eksekutif Directive** dari Manajemen:\n\n---\n**Subjek:** [SANGAT PENTING] Audit Operasional & Penanganan Komplain Waktu Antrean - Cabang Red Sector\n\n**Kepada:** Seluruh Service Manager & Head Officer ${report.brandName}\n\n**Dengan hormat,**\nMenindaklanjuti hasil audit reputasi bisnis periode Agustus 2026, manajemen menemukan adanya kenaikan sentimen negatif terkait durasi antrean dan persetujuan jasa.\n\nDengan ini diinstruksikan:\n1. **Batasi kuota walk-in sebesar 30%** pada hari Sabtu-Minggu dan prioritas slot booking online.\n2. **Terapkan Digital Quotation Approval** via SMS/WA sebelum pengerjaan tambahan dimulai.\n3. **Lakukan evaluasi harian** kapasitas pit dan panggil teknisi cadangan pada jam puncak (09:00 - 11:30 WIB).\n\nLaporan progres perbaikan wajib diserahkan paling lambat hari Jumat ini.\n\nSalam,\n**Executive Management**\n---`;
+      } else if (lowerQuery.includes('strategi') || lowerQuery.includes('4.8') || lowerQuery.includes('meningkatkan rating')) {
+        aiResponseText = `Berikut **Roadmap Strategis 30 Hari** untuk menaikkan rating rata-rata jaringan **${report.brandName}** dari **${report.avgNetworkRating.toFixed(2)}** menuju **4.8+**:\n\n1. **SOP SLA Penanganan Keluhan < 2 Jam:**\n   - Tanggapi setiap ulasan Google & Social Media bintang 1-3 dalam waktu maksimal 120 menit dengan solusi konkret & insentif voucher serviced.\n2. **Inisiatif Transparent Pricing Guarantee:**\n   - Pasang TV display status pengerjaan kendaraan realtime di ruang tunggu pelanggan.\n3. **Program Insentif Service Advisor:**\n   - Berikan bonus performa mingguan bagi tim cabang yang berhasil mempertahankan skor kepuasan CSAT > 95%.`;
+      } else if (lowerQuery.includes('dampak') || lowerQuery.includes('pendapatan') || lowerQuery.includes('reputasi')) {
+        aiResponseText = `Berikut **Analisis Dampak Bisnis & Pendapatan** untuk **${report.brandName}**:\n\n📉 **Potensi Risk Exposure:**\n- Komplain mengenai **${report.complaintCategories[0]?.category || 'Waktu Tunggu'}** berisiko menurunkan churn rate pelanggan repeat-order hingga **15-20%** per kuartal.\n- Setiap penurunan 0.1 bintang pada rating Google Maps berpotensi menurunkan pencarian organik dan booking walk-in sebesar **5-8%**.\n\n💡 **Peluang Revenue Recovery:**\n- Mengatasi 3 kategori komplain teratas diperkirakan dapat menyelamatkan potensi omzet hingga **Rp 450.000.000 / bulan** di seluruh cabang jaringan.`;
       } else {
         aiResponseText = `Terima kasih atas pertanyaannya. Berdasarkan analisis intelijen untuk **${report.brandName}**:\n\n- Rata-rata rating jaringan saat ini berada pada **${report.avgNetworkRating.toFixed(2)}/5.0** dengan total **${report.totalReviewsAnalyzed.toLocaleString('id-ID')} ulasan**.\n- Kategori komplain paling tinggi didominasi oleh **${report.complaintCategories[0]?.category || 'Waktu Tunggu Antrean'}** (${report.complaintCategories[0]?.percentage || 40}%).\n\nRekomendasi strategis utama adalah **${report.strategicRecommendations[0]?.title || 'Restrukturisasi Sistem Queue Digital'}** untuk menekan komplain hingga 40% dalam 30 hari ke depan.`;
       }
@@ -193,17 +189,35 @@ Pertanyaan Pengguna: "${queryText}"
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Prompts */}
-          <div className="px-3 py-2 bg-slate-900 border-t border-slate-800 flex gap-1.5 overflow-x-auto no-scrollbar">
-            {quickPrompts.map((prompt, i) => (
-              <button
-                key={i}
-                onClick={() => handleSendMessage(prompt)}
-                className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[10px] whitespace-nowrap shrink-0 border border-slate-700 transition-colors"
+          {/* Quick Prompts Dropdown */}
+          <div className="px-3 py-2 bg-slate-900 border-t border-slate-800 flex items-center gap-2">
+            <div className="relative flex-1">
+              <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-amber-400">
+                <Sparkles className="w-3.5 h-3.5" />
+              </div>
+              <select
+                defaultValue=""
+                onChange={(e) => {
+                  if (e.target.value) {
+                    handleSendMessage(e.target.value);
+                    e.target.value = '';
+                  }
+                }}
+                className="w-full pl-8 pr-7 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs border border-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none truncate cursor-pointer transition-colors"
               >
-                💡 {prompt}
-              </button>
-            ))}
+                <option value="" disabled hidden>
+                  💡 Pilih Rekomendasi Pertanyaan Cepat...
+                </option>
+                {quickPrompts.map((prompt, i) => (
+                  <option key={i} value={prompt} className="bg-slate-900 text-slate-200 py-1 text-xs">
+                    {prompt}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-slate-400">
+                <ChevronDown className="w-3.5 h-3.5" />
+              </div>
+            </div>
           </div>
 
           {/* Input Box */}

@@ -648,6 +648,13 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
       overallNegativePercentage: 3,
       channels: [
         {
+          platform: "Threads",
+          mentionCount: 3100,
+          sentimentScore: 86,
+          viralTopics: ["Threads Curhatan Servis Mobeng", "Rekomendasi Bengkel Transparan"],
+          recentHeadline: "Threads perbincangan warganet memuji kecepatan servis ganti oli dan kebersihan lounge Mobeng."
+        },
+        {
           platform: "Facebook",
           mentionCount: 3850,
           sentimentScore: 87,
@@ -678,7 +685,68 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
       ],
       viralComplaints: ["Beberapa komentar mengenai lamanya antrean di beberapa cabang favorit saat akhir pekan."],
       successfulCampaigns: ["Kampanye 'Mobeng Transparan & Bergaransi' di Facebook & IG sukses menarik perhatian pengguna mobil harian."],
-      publicPerceptionSummary: "Mobeng dipandang sebagai jaringan bengkel modern yang dapat diandalkan dengan transparansi pengerjaan tinggi di media sosial (Facebook, Instagram, TikTok) serta harga bersaing dan mekanik yang ramah."
+      publicPerceptionSummary: "Mobeng dipandang sebagai jaringan bengkel modern yang dapat diandalkan dengan transparansi pengerjaan tinggi di media sosial (Facebook, Instagram, TikTok) serta harga bersaing dan mekanik yang ramah.",
+      customerInquiries: [
+        {
+          id: "inq-mobeng-1",
+          platform: "Threads",
+          author: "RianHidayat_88",
+          authorHandle: "@rian_mobengfan",
+          targetBranch: "Mobeng BSD",
+          date: "1 jam lalu",
+          questionText: "Halo kak, kalau mau servis Tune-Up Injection + Gurit Carbon Clean di Mobeng BSD Sabtu besok perlu booking dari sekarang atau bisa langsung datang walk-in pagi jam 8?",
+          category: "Booking & Slot",
+          status: "Unanswered",
+          suggestedAIResponse: "Halo Kak Rian! 👋 Di Mobeng BSD sangat disarankan booking via WhatsApp H-1 agar langsung mendapat kuota pit prioritas tanpa mengantre. Namun kami juga melayani walk-in mulai pukul 08:00 WIB dengan garansi transparansi pengerjaan. Ditunggu kedatangannya kak!"
+        },
+        {
+          id: "inq-mobeng-2",
+          platform: "Instagram",
+          author: "Siti_Aisyah_Car",
+          authorHandle: "@siti.carcare",
+          targetBranch: "Mobeng Karawaci",
+          date: "2 jam lalu",
+          questionText: "Min, estimasi paket ganti oli mesin fully synthetic 4L + filter oli original untuk Avanza di Mobeng Karawaci kena berapa ya? Apakah masih ada promo gurit carbon clean gratis pengecekan?",
+          category: "Harga & Promo",
+          status: "Unanswered",
+          suggestedAIResponse: "Halo Kak Siti! 🚗 Di Mobeng Karawaci, paket ganti oli Fully Synthetic (4L) + Filter Oli Original + Gratis 23 Titik Pengecekan Komponen berkisar Rp 380.000 - Rp 420.000. Tersedia diskon tambahan 10% jika booking hari ini via CS!"
+        },
+        {
+          id: "inq-mobeng-3",
+          platform: "TikTok",
+          author: "BagasAutoFan",
+          authorHandle: "@bagas_mobeng_vlog",
+          targetBranch: "Mobeng Gading Serpong",
+          date: "4 jam lalu",
+          questionText: "Apakah pit Spooring 3D Digital di Mobeng Gading Serpong bisa untuk mobil velg ring 18 dan perendaman carbon clean injection?",
+          category: "Stok Sparepart",
+          status: "Responded",
+          suggestedAIResponse: "Halo Kak Bagas! Ya betul, Mobeng Gading Serpong dilengkapi pit Spooring 3D Digital presisi tinggi untuk velg ring 14 hingga 20, serta perlengkapan Gurit Carbon Clean modern. Silakan mampir kak!"
+        },
+        {
+          id: "inq-mobeng-4",
+          platform: "Google Reviews",
+          author: "Dedi Kurniawan",
+          targetBranch: "Mobeng Cipondoh",
+          date: "6 jam lalu",
+          questionText: "Jam operasional Mobeng Cipondoh pas tanggal merah / libur nasional tetap buka jam berapa ya?",
+          category: "Lokasi & Jam Buka",
+          status: "Responded",
+          suggestedAIResponse: "Halo Pak Dedi Kurniawan! Mobeng Cipondoh tetap buka penuh saat libur nasional mulai pukul 08:30 - 17:00 WIB. Ditunggu kedatangannya pak!"
+        },
+        {
+          id: "inq-mobeng-5",
+          platform: "Threads",
+          author: "Fenny_Driver",
+          authorHandle: "@fenny_driver",
+          targetBranch: "Mobeng Pondok Betung",
+          date: "1 hari lalu",
+          questionText: "Kalo mau klaim garansi aki atau ganti oli di Mobeng Pondok Betung syaratnya apa aja ya min? Nota berapa bulan lalu hilang apakah tetep terdata di sistem?",
+          category: "Layanan General",
+          status: "Unanswered",
+          suggestedAIResponse: "Halo Kak Fenny! Tidak perlu khawatir, seluruh riwayat servis di Mobeng Pondok Betung tersimpan secara digital berdasarkan nomor plat kendaraan / nomor HP. Kakak cukup sebutkan no plat saat pendaftaran di kasir!"
+        }
+      ]
     },
     strategicRecommendations: [
       {
