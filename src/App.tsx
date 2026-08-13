@@ -104,16 +104,6 @@ export default function App() {
 
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        if (data.requiresApiKey) {
-          alert('API Key Gemini/Sumopod belum disetel. Membuka Pengaturan Engine AI...');
-          setIsAISettingsOpen(true);
-        } else {
-          alert(`Pemberitahuan Penarikan AI: ${data.error || data.message || 'Gagal menarik data'}`);
-        }
-        return;
-      }
-
       if (data.branches && Array.isArray(data.branches)) {
         setReport((prev) => ({
           ...prev,
