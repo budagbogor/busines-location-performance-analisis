@@ -307,6 +307,165 @@ app.post("/api/analyze", async (req, res) => {
   }
 });
 
+// Endpoint untuk menarik & memperbarui indikator performa cabang via AI Live Grounding
+app.post("/api/sync-branch-performance", async (req, res) => {
+  try {
+    const { brandName = "Mobeng", branches = [], provider = "gemini", model = "gemini-3.6-flash", apiKey, baseUrl } = req.body;
+    
+    if (!Array.isArray(branches) || branches.length === 0) {
+      res.status(400).json({ error: "Daftar cabang kosong." });
+      return;
+    }
+
+    const now = new Date();
+    const formattedTimestamp = `${now.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}, ${now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB`;
+
+    const branchSummaryList = branches.map((b: any) => ({
+      id: b.id,
+      name: b.name,
+      city: b.city,
+      address: b.address,
+      currentRating: b.rating,
+      currentReviews: b.reviewCount
+    }));
+
+    const promptText = `Anda adalah Sistem Intelijen AI Performa Cabang. 
+Berikut adalah daftar cabang resmi dari merek "${brandName}":
+${JSON.stringify(branchSummaryList, null, 2)}
+
+Tugas Anda:
+Jalankan pencarian ulasan & rating Google Maps terbaru untuk setiap cabang tersebut.
+Update indikator performanya meliputi:
+- rating (float 1.0 - 5.0)
+- reviewCount (integer ulasan)
+- complaintCount (integer estimasi isu/komplain)
+- status ("Top" | "Medium" | "Attention Required")
+- trendScore ("improving" | "stable" | "declining")
+- positives (array string poin unggulan)
+- negatives (array string komplain utama)
+
+Kembalikan JSON array persis sesuai skema berikut tanpa mengubah ID, nama, alamat, atau kota cabang:
+[
+  {
+    "id": "id-cabang",
+    "rating": 4.9,
+    "reviewCount": 2890,
+    "complaintCount": 10,
+    "status": "Top",
+    "trendScore": "stable",
+    "positives": ["Poin positif 1", "Poin positif 2"],
+    "negatives": ["Poin negatif 1"]
+  }
+]`;
+
+    if (provider === "sumopod" || provider === "openai") {
+      const keyToUse = apiKey || process.env.SUMOPOD_API_KEY || process.env.OPENAI_API_KEY;
+      if (!keyToUse) {
+        res.status(400).json({ error: `API Key ${provider.toUpperCase()} belum disetel.` });
+        return;
+      }
+
+      let rawBase = baseUrl || "https://ai.sumopod.com/v1";
+      if (rawBase.includes("api.sumopod.com")) {
+        rawBase = rawBase.replace("api.sumopod.com", "ai.sumopod.com");
+      }
+      const targetBase = rawBase.replace(/\/+$/, "");
+      const targetUrl = `${targetBase}/chat/completions`;
+      const modelToUse = model || (provider === "sumopod" ? "gpt-4o" : "gpt-4o-mini");
+
+      const response = await fetch(targetUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${keyToUse}`,
+        },
+        body: JSON.stringify({
+          model: modelToUse,
+          messages: [{ role: "user", content: promptText }],
+          temperature: 0.2,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const jsonRes = await response.json();
+      const content = jsonRes.choices?.[0]?.message?.content || "[]";
+      const cleaned = content.replace(/```json/g, "").replace(/```/g, "").trim();
+      const updatedMetrics = JSON.parse(cleaned);
+
+      const updatedBranches = branches.map((branch: any) => {
+        const found = updatedMetrics.find((m: any) => m.id === branch.id || m.name === branch.name);
+        if (found) {
+          return { ...branch, ...found };
+        }
+        return branch;
+      });
+
+      res.json({
+        success: true,
+        branches: updatedBranches,
+        lastAISyncTimestamp: formattedTimestamp,
+      });
+      return;
+    }
+
+    // Default: Gemini with Search Grounding
+    const ai = getGeminiClient(apiKey);
+    const geminiModel = model || "gemini-3.6-flash";
+
+    const response = await ai.models.generateContent({
+      model: geminiModel,
+      contents: promptText,
+      config: {
+        tools: [{ googleSearch: {} }],
+        responseMimeType: "application/json",
+      },
+    });
+
+    const responseText = response.text || "[]";
+    let updatedMetrics;
+    try {
+      updatedMetrics = JSON.parse(responseText);
+    } catch (parseErr) {
+      const cleaned = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+      updatedMetrics = JSON.parse(cleaned);
+    }
+
+    const updatedBranches = branches.map((branch: any) => {
+      const found = Array.isArray(updatedMetrics)
+        ? updatedMetrics.find((m: any) => m.id === branch.id || m.name === branch.name)
+        : null;
+      if (found) {
+        return {
+          ...branch,
+          rating: typeof found.rating === "number" ? found.rating : branch.rating,
+          reviewCount: typeof found.reviewCount === "number" ? found.reviewCount : branch.reviewCount,
+          complaintCount: typeof found.complaintCount === "number" ? found.complaintCount : branch.complaintCount,
+          status: found.status || branch.status,
+          trendScore: found.trendScore || branch.trendScore,
+          positives: Array.isArray(found.positives) ? found.positives : branch.positives,
+          negatives: Array.isArray(found.negatives) ? found.negatives : branch.negatives,
+        };
+      }
+      return branch;
+    });
+
+    res.json({
+      success: true,
+      branches: updatedBranches,
+      lastAISyncTimestamp: formattedTimestamp,
+    });
+  } catch (err: any) {
+    console.error("Error in /api/sync-branch-performance:", err);
+    res.status(500).json({
+      error: "Gagal menarik indikator performa cabang via AI.",
+      message: err?.message || String(err),
+    });
+  }
+});
+
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

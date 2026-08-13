@@ -82,6 +82,61 @@ export default function App() {
   // Multi-Agent Execution State
   const [agentStates, setAgentStates] = useState<Record<string, AgentExecutionState>>({});
 
+  // Performance AI Sync State
+  const [isSyncingPerformance, setIsSyncingPerformance] = useState(false);
+
+  const handleSyncBranchPerformanceAI = async () => {
+    if (isSyncingPerformance || !report.branches || report.branches.length === 0) return;
+    setIsSyncingPerformance(true);
+    try {
+      const res = await fetch('/api/sync-branch-performance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brandName: report.brandName,
+          branches: report.branches,
+          provider: aiConfig.provider,
+          model: aiConfig.model,
+          apiKey: aiConfig.apiKey,
+          baseUrl: aiConfig.baseUrl,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.branches && Array.isArray(data.branches)) {
+          setReport((prev) => ({
+            ...prev,
+            branches: data.branches,
+            lastAISyncTimestamp: data.lastAISyncTimestamp || new Date().toLocaleTimeString('id-ID'),
+          }));
+        }
+      }
+    } catch (err) {
+      console.error('Error syncing branch performance:', err);
+    } finally {
+      setIsSyncingPerformance(false);
+    }
+  };
+
+  // Auto-Sync Performance Interval Timer
+  useEffect(() => {
+    const intervalSetting = aiConfig.autoSyncPerformanceInterval || 'off';
+    if (intervalSetting === 'off') return;
+
+    let ms = 60 * 60 * 1000;
+    if (intervalSetting === '15m') ms = 15 * 60 * 1000;
+    else if (intervalSetting === '1h') ms = 60 * 60 * 1000;
+    else if (intervalSetting === '6h') ms = 6 * 60 * 60 * 1000;
+    else if (intervalSetting === '24h') ms = 24 * 60 * 60 * 1000;
+
+    const timer = setInterval(() => {
+      handleSyncBranchPerformanceAI();
+    }, ms);
+
+    return () => clearInterval(timer);
+  }, [aiConfig.autoSyncPerformanceInterval, report.brandName]);
+
   const [searchState, setSearchState] = useState<SearchState>({
     isLoading: false,
     step: 'idle',
@@ -643,6 +698,11 @@ ${report.executiveSummary}
           selectedCompareIds={selectedCompareBranches.map((b) => b.id)}
           onToggleCompareBranch={handleToggleCompareBranch}
           onOpenCompareModal={() => setIsCompareModalOpen(true)}
+          onSyncBranchPerformanceAI={handleSyncBranchPerformanceAI}
+          isSyncingPerformance={isSyncingPerformance}
+          lastAISyncTimestamp={report.lastAISyncTimestamp}
+          autoSyncInterval={aiConfig.autoSyncPerformanceInterval || 'off'}
+          onOpenAISettings={() => setIsAISettingsOpen(true)}
         />
 
         {/* Section 2: Pemetaan Klaster Wilayah / Regional */}

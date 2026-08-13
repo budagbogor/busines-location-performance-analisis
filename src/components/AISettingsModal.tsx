@@ -234,6 +234,30 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
             </label>
           </div>
 
+          {/* Auto-Sync Performance AI Interval */}
+          <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="block text-slate-200 font-bold text-xs flex items-center gap-2">
+                <RefreshCw className="w-4 h-4 text-amber-400" />
+                Interval Auto-Sync Performance AI
+              </label>
+              <select
+                value={formData.autoSyncPerformanceInterval || 'off'}
+                onChange={(e) => setFormData({ ...formData, autoSyncPerformanceInterval: e.target.value as any })}
+                className="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 font-medium text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+                <option value="off">Matikan (Manual Trigger Sahaja)</option>
+                <option value="15m">Setiap 15 Menit</option>
+                <option value="1h">Setiap 1 Jam</option>
+                <option value="6h">Setiap 6 Jam</option>
+                <option value="24h">Setiap 24 Jam</option>
+              </select>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Menentukan seberapa sering AI menarik & memperbarui statistik rating/ulasan/komplain cabang secara otomatis di latar belakang.
+            </p>
+          </div>
+
           {/* Connection Test Output Banner */}
           {testResult && (
             <div

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Star, ArrowUpDown, Search, AlertCircle, CheckCircle, HelpCircle, Eye, AlertTriangle, TrendingUp, TrendingDown, Minus, ArrowRightLeft } from 'lucide-react';
+import { Star, ArrowUpDown, Search, AlertCircle, CheckCircle, HelpCircle, Eye, AlertTriangle, TrendingUp, TrendingDown, Minus, ArrowRightLeft, Sparkles, RefreshCw, Clock } from 'lucide-react';
 import { BranchData, BranchStatus } from '../types';
 
 interface BranchPerformanceTableProps {
@@ -10,6 +10,11 @@ interface BranchPerformanceTableProps {
   onToggleCompareBranch: (branch: BranchData) => void;
   onOpenCompareModal: () => void;
   currentBrandName?: string;
+  onSyncBranchPerformanceAI?: () => void;
+  isSyncingPerformance?: boolean;
+  lastAISyncTimestamp?: string;
+  autoSyncInterval?: string;
+  onOpenAISettings?: () => void;
 }
 
 export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
@@ -20,6 +25,11 @@ export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
   onToggleCompareBranch,
   onOpenCompareModal,
   currentBrandName,
+  onSyncBranchPerformanceAI,
+  isSyncingPerformance = false,
+  lastAISyncTimestamp,
+  autoSyncInterval = 'off',
+  onOpenAISettings,
 }) => {
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -115,19 +125,64 @@ export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
   return (
     <section className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl p-6 mb-8" id="tabel-komparasi">
       
-      {/* Section Title Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+      {/* Section Title Header & AI Trigger Controls */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
             <h3 className="text-xl font-bold text-white tracking-tight">
               1. Tabel Komparasi Performa Cabang
             </h3>
+            {lastAISyncTimestamp && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2.5 py-0.5 rounded-full">
+                <Clock className="w-3 h-3 text-emerald-400" />
+                Ditarik AI: {lastAISyncTimestamp}
+              </span>
+            )}
           </div>
           <p className="text-xs text-slate-400 mt-1">
             Seluruh cabang terdeteksi diurutkan dari rating Google Review tertinggi hingga terendah untuk identifikasi pemetaan jaringan.
           </p>
         </div>
+
+        {/* AI Performance Sync Button & Controls */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {onSyncBranchPerformanceAI && (
+            <button
+              onClick={onSyncBranchPerformanceAI}
+              disabled={isSyncingPerformance}
+              title="Tarik & perbarui rating, jumlah ulasan, serta komplain setiap cabang langsung menggunakan Google Search Grounding AI"
+              className={`px-4 py-2 rounded-xl text-xs font-bold shadow-lg inline-flex items-center gap-2 transition-all ${
+                isSyncingPerformance
+                  ? 'bg-slate-800 text-amber-400 border border-amber-500/50 cursor-wait'
+                  : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-950 shadow-amber-500/20 active:scale-95'
+              }`}
+            >
+              {isSyncingPerformance ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
+                  <span>AI Sedang Menarik Performance...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 text-slate-950 fill-slate-950" />
+                  <span>🤖 Tarik Performance Cabang via AI</span>
+                </>
+              )}
+            </button>
+          )}
+
+          {autoSyncInterval !== 'off' && (
+            <button
+              onClick={onOpenAISettings}
+              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-amber-500/30 rounded-xl text-[11px] font-semibold text-amber-300 flex items-center gap-1.5"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              Auto-Sync AI: {autoSyncInterval}
+            </button>
+          )}
+        </div>
+      </div>
 
         {/* Search & Filter Controls */}
         <div className="flex flex-wrap items-center gap-2">
@@ -191,7 +246,6 @@ export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
           )}
 
         </div>
-      </div>
 
       {/* Table Container */}
       <div className="overflow-x-auto rounded-xl border border-slate-800">

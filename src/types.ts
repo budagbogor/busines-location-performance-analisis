@@ -110,9 +110,12 @@ export interface FullIntelligenceReport {
   socialSentiment: SocialSentimentData;
   strategicRecommendations: StrategicRecommendation[];
   groundingSources?: Array<{ title: string; uri: string }>;
+  lastAISyncTimestamp?: string;
 }
 
 export type AIProvider = 'gemini' | 'sumopod' | 'openai';
+
+export type AutoSyncPerformanceInterval = 'off' | '15m' | '1h' | '6h' | '24h';
 
 export interface AIConfig {
   provider: AIProvider;
@@ -120,6 +123,7 @@ export interface AIConfig {
   apiKey: string;
   baseUrl: string;
   useOrchestration: boolean;
+  autoSyncPerformanceInterval?: AutoSyncPerformanceInterval;
 }
 
 export type AgentStatus = 'idle' | 'working' | 'completed' | 'error';
