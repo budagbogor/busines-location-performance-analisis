@@ -32,33 +32,64 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// API Test Connection Endpoint
+// API Test Connection Endpoint (Accurate Real-time Ping)
 app.post("/api/test-ai", async (req, res) => {
   try {
-    const { provider, model, apiKey, baseUrl } = req.body;
+    const { provider = "gemini", model, apiKey, baseUrl } = req.body;
 
     if (provider === "gemini") {
       const keyToUse = apiKey || process.env.GEMINI_API_KEY;
-      if (!keyToUse) {
-        res.status(400).json({ success: false, error: "API Key Gemini kosong. Harap masukkan API Key." });
+      if (!keyToUse || typeof keyToUse !== "string" || keyToUse.trim() === "") {
+        res.status(400).json({ success: false, error: "API Key Gemini kosong. Harap masukkan API Key di kolom input." });
         return;
       }
-      const ai = getGeminiClient(keyToUse);
-      const testModel = model || "gemini-3.6-flash";
-      const response = await ai.models.generateContent({
-        model: testModel,
-        contents: "Hello, test connection.",
-      });
-      if (response && response.text) {
-        res.json({ success: true, message: `Koneksi berhasil ke Gemini (${testModel})!` });
+
+      try {
+        const ai = getGeminiClient(keyToUse.trim());
+        const testModel = model || "gemini-3.6-flash";
+        const response = await ai.models.generateContent({
+          model: testModel,
+          contents: "Test connection ping",
+        });
+
+        if (response && response.text && response.text.trim().length > 0) {
+          res.json({
+            success: true,
+            message: `Koneksi terhubung & terverifikasi aktif ke Gemini (${testModel})!`,
+          });
+          return;
+        } else {
+          res.status(400).json({
+            success: false,
+            error: "Respon dari model Gemini tidak mengembalikan teks valid.",
+          });
+          return;
+        }
+      } catch (geminiErr: any) {
+        const rawMsg = geminiErr?.message || String(geminiErr);
+        let userMsg = rawMsg;
+
+        if (rawMsg.includes("API_KEY_INVALID") || rawMsg.includes("API key not valid") || rawMsg.includes("400") || rawMsg.includes("403")) {
+          userMsg = "API Key Gemini tidak valid atau ditolak. Pastikan Kunci API dari Google AI Studio sudah benar.";
+        } else if (rawMsg.includes("RESOURCE_EXHAUSTED") || rawMsg.includes("429")) {
+          userMsg = "Batas kuota penggunaan Gemini tercapai (429 Quota Exceeded).";
+        } else if (rawMsg.includes("NOT_FOUND") || rawMsg.includes("404")) {
+          userMsg = `Model Gemini (${model || "gemini-3.6-flash"}) tidak ditemukan atau tidak didukung pada region Anda.`;
+        }
+
+        res.status(400).json({
+          success: false,
+          error: `Gagal Uji Koneksi Gemini: ${userMsg}`,
+        });
         return;
       }
     } else if (provider === "sumopod" || provider === "openai") {
       const keyToUse = apiKey || process.env.SUMOPOD_API_KEY || process.env.OPENAI_API_KEY;
-      if (!keyToUse) {
+      if (!keyToUse || typeof keyToUse !== "string" || keyToUse.trim() === "") {
         res.status(400).json({ success: false, error: `API Key ${provider.toUpperCase()} kosong. Harap masukkan API Key.` });
         return;
       }
+
       let rawBase = baseUrl || "https://ai.sumopod.com/v1";
       if (rawBase.includes("api.sumopod.com")) {
         rawBase = rawBase.replace("api.sumopod.com", "ai.sumopod.com");
@@ -72,32 +103,44 @@ app.post("/api/test-ai", async (req, res) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${keyToUse}`,
+            Authorization: `Bearer ${keyToUse.trim()}`,
           },
           body: JSON.stringify({
             model: testModel,
-            messages: [{ role: "user", content: "Test connection ping" }],
-            max_tokens: 10,
+            messages: [{ role: "user", content: "Test ping" }],
+            max_tokens: 5,
           }),
         });
 
         if (fetchRes.ok) {
-          res.json({ success: true, message: `Koneksi terhubung ke ${provider.toUpperCase()} (${testModel})!` });
+          res.json({
+            success: true,
+            message: `Koneksi terhubung & terverifikasi aktif ke ${provider.toUpperCase()} (${testModel})!`,
+          });
           return;
         } else {
           const errText = await fetchRes.text();
-          res.status(400).json({ success: false, error: `HTTP ${fetchRes.status}: ${errText.substring(0, 150)}` });
+          let parsedError = errText;
+          try {
+            const errObj = JSON.parse(errText);
+            parsedError = errObj.error?.message || errObj.message || errText;
+          } catch (e) {}
+
+          res.status(400).json({
+            success: false,
+            error: `Gagal Koneksi ${provider.toUpperCase()} (HTTP ${fetchRes.status}): ${parsedError.substring(0, 150)}`,
+          });
           return;
         }
       } catch (networkErr: any) {
         res.status(500).json({
           success: false,
-          error: `Gagal terhubung ke host (${targetBase}). Pastikan URL Base API adalah https://ai.sumopod.com/v1 dan perangkat terhubung ke internet.`,
+          error: `Gagal terhubung ke host (${targetBase}). Pastikan URL Base API benar dan jaringan internet terhubung.`,
         });
         return;
       }
     } else {
-      res.status(400).json({ success: false, error: "Provider tidak dikenali." });
+      res.status(400).json({ success: false, error: "Provider AI tidak dikenali." });
       return;
     }
   } catch (err: any) {
