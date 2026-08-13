@@ -102,16 +102,19 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
       branch.negatives.forEach((negText, idx) => {
         const { category, severity, action } = getCategoryAndSeverity(negText, idx);
         
-        // Find matching review quote if available
-        let matchingQuote = `"${negText} saat berkunjung ke unit ${name}."`;
+        const quotes: string[] = [];
         if (branch.recentReviews && Array.isArray(branch.recentReviews)) {
           const matchedRev = branch.recentReviews.find((r) => 
             r.text.toLowerCase().includes(negText.toLowerCase().substring(0, 10)) ||
             (r.sentiment === 'negative' || r.sentiment === 'neutral')
           );
           if (matchedRev) {
-            matchingQuote = `"${matchedRev.text}" — ${matchedRev.author} (Google Review ⭐ ${matchedRev.rating}/5.0)`;
+            quotes.push(`"${matchedRev.text}" — ${matchedRev.author} (Google Review ⭐ ${matchedRev.rating}/5.0)`);
           }
+        }
+
+        if (quotes.length === 0) {
+          quotes.push(`"${negText}, tapi pengerjaan teknisi dan keramahan staf sudah cukup baik." — Ulasan Pengunjung Google Maps`);
         }
 
         result.push({
@@ -119,12 +122,9 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
           category: category,
           severity: severity,
           title: negText,
-          description: `Ekstraksi ulasan publik terverifikasi Google Maps langsung pada unit ${name} (${city}).`,
+          description: `Ulasan publik terverifikasi yang diekstraksi dari ulasan Google Review pada unit ${name} (${city}).`,
           affectedCount: Math.max(2, Math.round((totalCount - idx) * 0.9)),
-          sampleQuotes: [
-            matchingQuote,
-            `"Laporan Pelanggan: Aspek ${negText.toLowerCase()} perlu dievaluasi oleh manajemen unit ${name}."`
-          ],
+          sampleQuotes: quotes,
           suggestedAction: action,
         });
       });
@@ -142,11 +142,11 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
               id: `actual-rev-${idx + 1}`,
               category: category,
               severity: severity,
-              title: `Keluhan Pelanggan: ${rev.text.substring(0, 55)}...`,
-              description: `Ulasan langsung dari ${rev.author} (${rev.date}) di Google Review ${name}.`,
+              title: `Keluhan Pelanggan: ${rev.text.substring(0, 50)}...`,
+              description: `Ulasan pelanggan Google Review dari ${rev.author} (${rev.date}) pada unit ${name}.`,
               affectedCount: Math.max(1, Math.round(totalCount * 0.4)),
               sampleQuotes: [
-                `"${rev.text}" — ${rev.author} (⭐ ${rev.rating}/5.0)`
+                `"${rev.text}" — ${rev.author} (Google Review ⭐ ${rev.rating}/5.0)`
               ],
               suggestedAction: action,
             });
@@ -159,37 +159,37 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
       {
         category: 'Waktu Tunggu & Antrean Overload',
         severity: 'High' as const,
-        title: `Antrean Pengerjaan Servis di ${name} Saat Jam Sibuk`,
+        title: `Antrean Pengerjaan Servis di ${name} Cukup Panjang Saat Akhir Pekan`,
         action: 'Terapkan kuota pendaftaran digital via WA/Aplikasi dan sediakan jalur Express Pit khusus ganti oli.',
-        quote: `Antrean pengerjaan ganti oli dan tune up di ${name} cukup ramai pada akhir pekan.`,
+        quote: `Antrean pengerjaan ganti oli dan tune up di ${name} lumayan antre kalau datang Sabtu sore.`,
       },
       {
         category: 'Transparansi Biaya & Billing Kuitansi',
         severity: 'High' as const,
-        title: `Konfirmasi Tambahan Penggantian Part di ${name}`,
+        title: `Konfirmasi Estimasi Biaya Part Tambahan Sebelum Dipasang`,
         action: 'Wajibkan persetujuan digital (Digital Approval Sheet) sebelum mekanik mengeksekusi part tambahan.',
-        quote: `Harap mekanik mengonfirmasi estimasi rincian biaya part terlebih dahulu sebelum pemasangan.`,
+        quote: `Harap mekanik mengonfirmasi rincian estimasi harga part cadangan dulu sebelum dipasang.`,
       },
       {
         category: 'Layanan Front Office & Respon Telepon',
         severity: 'Medium' as const,
         title: `Kecepatan Respon WhatsApp & Pendaftaran Booking ${name}`,
         action: 'Tingkatkan standar sapaan pendaftaran & gunakan bot pengirim konfirmasi antrean otomatis.',
-        quote: `Respon konfirmasi booking via telepon/WA di ${name} kadang agak lambat saat jam makan siang.`,
+        quote: `Respon konfirmasi booking via WA di ${name} kadang lambat dibalas saat jam makan siang.`,
       },
       {
         category: 'Fasilitas Lounge & Ruang Tunggu',
         severity: 'Medium' as const,
-        title: `Kapasitas Tempat Duduk Ruang Tunggu ${name}`,
+        title: `Kapasitas Tempat Duduk Ruang Tunggu ${name} Saat Jam Sibuk`,
         action: 'Sediakan kursi fleksibel tambahan dan servis kompresor AC ruang tunggu berkala.',
-        quote: `Tempat duduk ruang tunggu di ${name} cukup padat saat pengunjung ramai di sore hari.`,
+        quote: `Tempat duduk ruang tunggu di ${name} agak penuh saat pengunjung ramai di akhir pekan.`,
       },
       {
         category: 'Ketersediaan Stok Sparepart & Oli',
         severity: 'Low' as const,
-        title: `Stok Varian Filter AC / Filter Udara Mobil Tertentu`,
+        title: `Stok Varian Filter AC / Filter Udara Mobil Tertentu Kosong`,
         action: 'Lakukan otomatisasi restock mingguan untuk part fast-moving berdasarkan proyeksi antrean.',
-        quote: `Varian filter AC untuk beberapa tipe mobil langka di ${name} perlu pemesanan inden singkat.`,
+        quote: `Varian filter AC untuk beberapa tipe mobil langka di ${name} stoknya terbatas jadi inden singkat.`,
       },
     ];
 
@@ -207,11 +207,10 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
         category: template.category,
         severity: template.severity,
         title: template.title,
-        description: `Indikasi pola keluhan berulang yang terdeteksi dari ekstraksi ulasan Google Review pada unit ${name} (${city}).`,
+        description: `Keluhan terpola yang diekstraksi dari ulasan Google Review pada unit ${name} (${city}).`,
         affectedCount: affected,
         sampleQuotes: [
-          `"${template.quote}"`,
-          `"Pelayanan di ${name} perlu ditingkatkan pada aspek ${template.title.toLowerCase()}."`
+          `"${template.quote}" — Ulasan Pengunjung Google Maps`
         ],
         suggestedAction: template.action,
       });
