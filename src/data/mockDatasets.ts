@@ -1436,20 +1436,29 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
       }
     ],
     trafficPattern: {
-      busyDays: ["Sabtu", "Minggu", "Jumat Malam"],
-      peakHours: "10.00 - 13.00 WIB & 16.00 - 19.00 WIB",
-      quietHours: "Senin & Selasa (11.00 - 14.00 WIB)",
+      busyDays: ["Sabtu", "Minggu", "Jumat SORE"],
+      peakHours: "09.30 - 12.00 WIB & 16.30 - 19.30 WIB (Setiap Hari 08.00 - 21.00 WIB)",
+      quietHours: "Senin & Selasa (13.00 - 15.00 WIB)",
       hourlyDistribution: [
-        { hour: "09:00", trafficLevel: 50, label: "Buka Bengkel" },
-        { hour: "11:00", trafficLevel: 90, label: "Puncak Siang" },
-        { hour: "13:00", trafficLevel: 65, label: "Sedang" },
-        { hour: "15:00", trafficLevel: 75, label: "Ramai" },
-        { hour: "17:00", trafficLevel: 92, label: "Puncak Pulang Kerja" },
-        { hour: "19:00", trafficLevel: 70, label: "Malam Padat" }
+        { hour: "08:00", trafficLevel: 48, label: "Buka Toko B-Quik (08.00 WIB)" },
+        { hour: "09:00", trafficLevel: 72, label: "Gelombang Pagi B-Quik" },
+        { hour: "10:00", trafficLevel: 94, label: "Puncak Pagi 30-Titik Pengecekan" },
+        { hour: "11:00", trafficLevel: 88, label: "Kapasitas Maksimal" },
+        { hour: "12:00", trafficLevel: 45, label: "Istirahat Siang" },
+        { hour: "13:00", trafficLevel: 60, label: "Gelombang Siang" },
+        { hour: "14:00", trafficLevel: 68, label: "Sedang" },
+        { hour: "15:00", trafficLevel: 75, label: "Persiapan Sore" },
+        { hour: "16:00", trafficLevel: 86, label: "Awal Sepulang Kerja" },
+        { hour: "17:00", trafficLevel: 98, label: "Puncak Pulang Kerja & Garansi Ban" },
+        { hour: "18:00", trafficLevel: 92, label: "Kapasitas Maksimal B-Quik" },
+        { hour: "19:00", trafficLevel: 72, label: "Servis Malam Express" },
+        { hour: "20:00", trafficLevel: 42, label: "Penutupan Kasir" },
+        { hour: "21:00", trafficLevel: 18, label: "Tutup Operasional B-Quik" }
       ],
-      summary: "Jam operasional B-Quik yang panjang (sampai 21.00 WIB) membuat traffic terdistribusi merata hingga malam hari, sangat disukai pekerja kantoran.",
+      summary: "Jam operasional B-Quik di seluruh cabang buka setiap hari pukul 08.00 hingga 21.00 WIB, memberikan fleksibilitas tinggi bagi pekerja kantoran & keluarga untuk perawatan kendaraan.",
       recommendations: [
-        "Gunakan Sig-Off Digital Pengukuran Jangka Sorong (Vernier Caliper) untuk menunjukkan milimeter pasti tebal kampas rem ke konsumen."
+        "Gunakan Sign-Off Digital Pengukuran Jangka Sorong (Vernier Caliper) untuk menunjukkan milimeter pasti tebal kampas rem ke konsumen.",
+        "Optimalkan Jalur Express Pit khusus ganti ban & 30-titik pengecekan gratis pada jam sibuk 08.00 - 11.00 WIB."
       ]
     },
     socialSentiment: {

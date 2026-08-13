@@ -89,6 +89,27 @@ export const TrafficPatternSection: React.FC<TrafficPatternSectionProps> = ({ pa
         { hour: "20:00", trafficLevel: 48, label: "Penutupan Kasir" },
         { hour: "21:00", trafficLevel: 22, label: "Tutup Operasional" },
       ];
+    } else if (bId.includes('bquik') || bId.includes('b-quik') || name.toLowerCase().includes('b-quik') || name.toLowerCase().includes('bquik')) {
+      // B-Quik Indonesia: Buka Setiap Hari Pukul 08.00 hingga 21.00 WIB
+      peakHours = "09.30 - 12.00 WIB & 16.30 - 19.30 WIB (Setiap Hari 08.00 - 21.00 WIB)";
+      quietHours = "Senin & Selasa (13.00 - 15.00 WIB)";
+      busyDays = ["Sabtu", "Minggu", "Jumat SORE"];
+      hourlyDistribution = [
+        { hour: "08:00", trafficLevel: 48, label: "Buka Toko B-Quik (08.00 WIB)" },
+        { hour: "09:00", trafficLevel: 72, label: "Gelombang Pagi B-Quik" },
+        { hour: "10:00", trafficLevel: 94, label: "Puncak Pagi 30-Titik Pengecekan" },
+        { hour: "11:00", trafficLevel: 88, label: "Kapasitas Maksimal" },
+        { hour: "12:00", trafficLevel: 45, label: "Istirahat Siang" },
+        { hour: "13:00", trafficLevel: 60, label: "Gelombang Siang" },
+        { hour: "14:00", trafficLevel: 68, label: "Sedang" },
+        { hour: "15:00", trafficLevel: 75, label: "Persiapan Sore" },
+        { hour: "16:00", trafficLevel: 86, label: "Awal Sepulang Kerja" },
+        { hour: "17:00", trafficLevel: 98, label: "Puncak Pulang Kerja & Garansi Ban" },
+        { hour: "18:00", trafficLevel: 92, label: "Kapasitas Maksimal B-Quik" },
+        { hour: "19:00", trafficLevel: 72, label: "Servis Malam Express" },
+        { hour: "20:00", trafficLevel: 42, label: "Penutupan Kasir" },
+        { hour: "21:00", trafficLevel: 18, label: "Tutup Operasional B-Quik" },
+      ];
     } else if (bId.includes('cipondoh') || name.toLowerCase().includes('cipondoh')) {
       // Cipondoh: Morning Heavy Peak (09:00 - 12:30)
       peakHours = "09.00 - 12.30 WIB (Pagi Hari)";
@@ -137,7 +158,7 @@ export const TrafficPatternSection: React.FC<TrafficPatternSectionProps> = ({ pa
       peakHours = `10.00 - 12.00 WIB & 17.00 - 19.00 WIB`;
     }
 
-    const summary = `Analisis pola kedatangan terverifikasi spesifik unit ${name} (${city}): Jam puncak keramaian terdeteksi pada ${peakHours} berdasarkan pemetaan data historis Google Review (${selectedBranch.reviewCount.toLocaleString('id-ID')} ulasan, Rating ${selectedBranch.rating.toFixed(1)} ⭐).`;
+    const summary = `Analisis pola kedatangan terverifikasi spesifik unit ${name} (${city}): Puncak keramaian terdeteksi pada ${peakHours} berdasarkan pemetaan data historis Google Review (${selectedBranch.reviewCount.toLocaleString('id-ID')} ulasan, Rating ${selectedBranch.rating.toFixed(1)} ⭐).`;
 
     return {
       busyDays,
@@ -156,6 +177,8 @@ export const TrafficPatternSection: React.FC<TrafficPatternSectionProps> = ({ pa
   };
 
   const currentPattern = activePattern();
+  const firstHourLabel = currentPattern.hourlyDistribution[0]?.hour || "09:00";
+  const startHourStr = firstHourLabel === "08:00" ? "08.00" : "09.00";
 
   return (
     <section className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl p-6 mb-8">
@@ -276,7 +299,7 @@ export const TrafficPatternSection: React.FC<TrafficPatternSectionProps> = ({ pa
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
-                Grafik Keramaian Unit per Jam (09.00 - 21.00 WIB)
+                Grafik Keramaian Unit per Jam ({startHourStr} - 21.00 WIB)
               </h4>
               <div className="flex items-center gap-3 text-[11px] text-slate-300">
                 <span className="flex items-center gap-1">
