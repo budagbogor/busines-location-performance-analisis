@@ -722,7 +722,7 @@ ${report.executiveSummary}
         <ComplaintCategoriesChart categories={report.complaintCategories} />
 
         {/* Section 5: Pattern Kedatangan & Tren Keramaian */}
-        <TrafficPatternSection pattern={report.trafficPattern} />
+        <TrafficPatternSection pattern={report.trafficPattern} branches={report.branches} />
 
         {/* Section 6: Analisis Media Sosial & Persepse Publik */}
         <SocialSentimentSection data={report.socialSentiment} />
