@@ -482,15 +482,122 @@ export const CSAutomationModal: React.FC<CSAutomationModalProps> = ({
                   className="mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-blue-500"
                 />
                 <div>
-                  <span className="font-bold text-purple-400 flex items-center gap-1">
-                    📈 Mentions / Postingan Viral di Media Sosial
+                  <span className="font-bold text-amber-300 flex items-center gap-1">
+                    🔥 Sebutan Viral & Postingan Tren Reputasi Bisnis
                   </span>
                   <p className="text-[11px] text-slate-400">
-                    Kirim alert jika postingan yang menyoroti unit bisnis mencapai &gt; 1.000+ views/shares.
+                    Notifikasi ketika terdapat postingan TikTok/Instagram yang mendapat lonjakan interaksi netizen tinggi.
                   </p>
                 </div>
               </label>
             </div>
+          </div>
+
+          {/* Kunci Integrasi API Medsos Live & Mode Direct Auto-Reply */}
+          <div className="bg-slate-800/80 border border-indigo-500/40 rounded-xl p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="font-bold text-slate-100 flex items-center gap-2 text-xs">
+                <Send className="w-4 h-4 text-indigo-400" />
+                🔑 Kunci Integrasi API Medsos Live (Instagram, TikTok & Google Reviews)
+              </label>
+              <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-extrabold uppercase border border-indigo-500/30">
+                DIRECT API DISPATCH
+              </span>
+            </div>
+            
+            <p className="text-[11px] text-slate-300 leading-relaxed">
+              Masukkan kunci API akun medsos resmi merek Anda agar aplikasi ini dapat menarik pertanyaan netizen secara real-time dan <strong>langsung mengirimkan balasan AI ke komentar/DM netizen</strong> dari dashboard ini.
+            </p>
+
+            {/* Input 1: Meta Page Access Token (Instagram & Facebook) */}
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold text-slate-300 flex items-center justify-between">
+                <span>📸 Meta Page Access Token (Instagram Business & Facebook)</span>
+                <span className="text-[10px] font-normal text-slate-400">Graph API v20.0</span>
+              </label>
+              <input
+                type="password"
+                value={formData.metaAccessToken || ''}
+                onChange={(e) => setFormData({ ...formData, metaAccessToken: e.target.value })}
+                placeholder="Masukkan Meta Graph API Access Token (EAABw...)"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            {/* Input 2: TikTok Business Access Token */}
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold text-slate-300 flex items-center justify-between">
+                <span>🎵 TikTok Business Open API Access Token</span>
+                <span className="text-[10px] font-normal text-slate-400">TikTok Developer API</span>
+              </label>
+              <input
+                type="password"
+                value={formData.tikTokAccessToken || ''}
+                onChange={(e) => setFormData({ ...formData, tikTokAccessToken: e.target.value })}
+                placeholder="Masukkan TikTok Access Token (act.example...)"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            {/* Input 3: Google Places / Business Profile API Key */}
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold text-slate-300 flex items-center justify-between">
+                <span>🗺️ Google Places & Business Profile API Key</span>
+                <span className="text-[10px] font-normal text-slate-400">Google Cloud Console</span>
+              </label>
+              <input
+                type="password"
+                value={formData.googleBusinessApiKey || ''}
+                onChange={(e) => setFormData({ ...formData, googleBusinessApiKey: e.target.value })}
+                placeholder="Masukkan Google API Key (AIzaSy...)"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            {/* Mode Direct Reply Choice */}
+            <div className="pt-2 border-t border-slate-700/60 space-y-2">
+              <label className="text-slate-200 font-bold text-xs flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-amber-400" />
+                Mode Pengiriman Balasan AI ke Medsos:
+              </label>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, directReplyMode: 'approval' })}
+                  className={`p-3 rounded-xl border text-left transition-all ${
+                    (formData.directReplyMode || 'approval') === 'approval'
+                      ? 'bg-blue-950/60 border-blue-500 text-white ring-1 ring-blue-500/40'
+                      : 'bg-slate-900 border-slate-700/80 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <div className="font-bold text-xs flex items-center gap-1">
+                    <span>1. Mode Approval CS (Rekomendasi)</span>
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    AI membuat draf balasan, CS meninjau lalu menekan tombol <strong>"🚀 Kirim Balasan Langsung"</strong>.
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, directReplyMode: 'auto_direct' })}
+                  className={`p-3 rounded-xl border text-left transition-all ${
+                    formData.directReplyMode === 'auto_direct'
+                      ? 'bg-emerald-950/60 border-emerald-500 text-white ring-1 ring-emerald-500/40'
+                      : 'bg-slate-900 border-slate-700/80 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <div className="font-bold text-xs flex items-center gap-1 text-emerald-300">
+                    <span>2. Mode Auto-Reply AI Direct (24/7)</span>
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    AI langsung mengirimkan balasan ke akun netizen secara otomatis saat pertanyaan masuk.
+                  </p>
+                </button>
+              </div>
+            </div>
+
           </div>
 
           {/* Simulation & Demo Section */}

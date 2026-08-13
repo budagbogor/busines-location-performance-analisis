@@ -168,5 +168,11 @@ export interface CSAutomationConfig {
     viralMentions: boolean;
   };
   lastSyncTimestamp?: string;
+  metaAccessToken?: string;
+  tikTokAccessToken?: string;
+  googleBusinessApiKey?: string;
+  whatsAppAccessToken?: string;
+  autoDirectReplyEnabled?: boolean;
+  directReplyMode?: 'approval' | 'auto_direct';
 }
 
