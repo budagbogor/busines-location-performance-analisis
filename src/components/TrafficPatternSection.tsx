@@ -96,7 +96,7 @@ export const TrafficPatternSection: React.FC<TrafficPatternSectionProps> = ({ pa
           <div>
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                Grafik Distribusi Kepadatan Unit per Jam (08.00 - 18.00)
+                Grafik Distribusi Kepadatan Unit per Jam Operasional (09.00 - 21.00 WIB)
               </h4>
               <div className="flex items-center gap-3 text-[11px]">
                 <span className="flex items-center gap-1">

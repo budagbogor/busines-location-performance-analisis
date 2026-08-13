@@ -209,14 +209,25 @@ Keluarkankan respon dalam bentuk JSON VALID murni (tanpa wrapper markdown \`\`\`
   ],
   "trafficPattern": {
     "busyDays": ["Sabtu", "Minggu", "Jumat SORE"],
-    "peakHours": "09:00 - 11:30 WIB & 13:30 - 15:30 WIB",
-    "quietHours": "Selasa & Rabu (08:00 - 10:00 WIB)",
+    "peakHours": "10:00 - 13:00 WIB & 17:00 - 19:30 WIB",
+    "quietHours": "Selasa & Rabu (13:00 - 15:00 WIB)",
     "hourlyDistribution": [
-      {"hour": "08:00", "trafficLevel": 35, "label": "Rendah"},
-      {"hour": "10:00", "trafficLevel": 90, "label": "Sangat Padat"}
+      {"hour": "09:00", "trafficLevel": 45, "label": "Buka Toko"},
+      {"hour": "10:00", "trafficLevel": 88, "label": "Puncak Pagi"},
+      {"hour": "11:00", "trafficLevel": 98, "label": "Kapasitas Maksimal"},
+      {"hour": "12:00", "trafficLevel": 55, "label": "Istirahat Siang"},
+      {"hour": "13:00", "trafficLevel": 85, "label": "Gelombang Siang"},
+      {"hour": "14:00", "trafficLevel: 92, "label": "Padat Siang"},
+      {"hour": "15:00", "trafficLevel": 65, "label": "Sedang"},
+      {"hour": "16:00", "trafficLevel": 72, "label": "Persiapan Pulang Kantor"},
+      {"hour": "17:00", "trafficLevel": 94, "label": "Puncak Pulang Kantor"},
+      {"hour": "18:00", "trafficLevel": 90, "label": "Padat Malam"},
+      {"hour": "19:00", "trafficLevel": 78, "label": "Servis Malam Express"},
+      {"hour": "20:00", "trafficLevel": 50, "label": "Penutupan Pendaftaran"},
+      {"hour": "21:00", "trafficLevel": 25, "label": "Tutup Operasional"}
     ],
-    "summary": "Analisis kedatangan menunjukkan lonjakan pada akhir pekan.",
-    "recommendations": ["Terapkan insentif diskon 15% untuk servis hari kerja."]
+    "summary": "Analisis kedatangan beroperasi penuh dari pukul 09.00 hingga 21.00 WIB.",
+    "recommendations": ["Terapkan insentif diskon untuk servis hari kerja & kuota malam."]
   },
   "socialSentiment": {
     "overallPositivePercentage": 72,

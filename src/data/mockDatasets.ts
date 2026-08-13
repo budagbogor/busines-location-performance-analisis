@@ -665,23 +665,27 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
     ],
     trafficPattern: {
       busyDays: ["Sabtu", "Minggu", "Jumat SORE"],
-      peakHours: "09.00 - 12.00 WIB & 13.30 - 16.00 WIB",
-      quietHours: "Selasa & Rabu (09.00 - 11.30 WIB)",
+      peakHours: "10.00 - 13.00 WIB & 17.00 - 19.30 WIB",
+      quietHours: "Selasa & Rabu (13.00 - 15.00 WIB)",
       hourlyDistribution: [
-        { hour: "08:00", trafficLevel: 40, label: "Awal Buka" },
-        { hour: "09:00", trafficLevel: 88, label: "Puncak Kedatangan" },
-        { hour: "10:00", trafficLevel: 98, label: "Kapasitas Maksimal" },
-        { hour: "11:00", trafficLevel: 85, label: "Padat" },
-        { hour: "12:00", trafficLevel: 52, label: "Istirahat Siang" },
-        { hour: "13:00", trafficLevel: 86, label: "Gelombang II" },
-        { hour: "14:00", trafficLevel: 82, label: "Padat" },
-        { hour: "15:00", trafficLevel: 62, label: "Sedang" },
-        { hour: "16:00", trafficLevel: 38, label: "Penurunan" }
+        { hour: "09:00", trafficLevel: 45, label: "Buka Toko" },
+        { hour: "10:00", trafficLevel: 88, label: "Puncak Pagi" },
+        { hour: "11:00", trafficLevel: 98, label: "Kapasitas Maksimal" },
+        { hour: "12:00", trafficLevel: 55, label: "Istirahat Siang" },
+        { hour: "13:00", trafficLevel: 85, label: "Gelombang Siang" },
+        { hour: "14:00", trafficLevel: 92, label: "Padat Siang" },
+        { hour: "15:00", trafficLevel: 65, label: "Sedang" },
+        { hour: "16:00", trafficLevel: 72, label: "Persiapan Pulang Kantor" },
+        { hour: "17:00", trafficLevel: 94, label: "Puncak Pulang Kantor" },
+        { hour: "18:00", trafficLevel: 90, label: "Padat Malam" },
+        { hour: "19:00", trafficLevel: 78, label: "Servis Malam Express" },
+        { hour: "20:00", trafficLevel: 50, label: "Penutupan Pendaftaran" },
+        { hour: "21:00", trafficLevel: 25, label: "Tutup Operasional" }
       ],
-      summary: "Trafik pengunjung terpusat pada akhir pekan (Sabtu-Minggu) pagi hingga siang hari, di mana pemilik kendaraan memanfaatkan hari libur untuk perawatan mesin & ganti oli berkala.",
+      summary: "Trafik pengunjung beroperasi penuh dari pukul 09.00 hingga 21.00 WIB, dengan lonjakan utama pada akhir pekan (pagi-siang) serta jam sepulang kerja (17.00 - 19.30 WIB) di mana pelanggan memanfaatkan waktu malam untuk perawatan mesin & ganti oli.",
       recommendations: [
-        "Terapkan kuota booking digital jam presisi untuk menekan antrean di cabang dengan trafik tinggi saat weekend.",
-        "Buka Jalur Express Pit khusus pengerjaan ganti oli mesin di bawah 25 menit."
+        "Terapkan kuota booking digital jam presisi untuk menekan antrean di cabang dengan trafik tinggi saat weekend & malam hari.",
+        "Buka Jalur Express Pit khusus pengerjaan ganti oli mesin di bawah 25 menit pada jam sibuk malam (17.00 - 20.00 WIB)."
       ]
     },
     socialSentiment: {
