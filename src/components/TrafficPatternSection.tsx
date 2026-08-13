@@ -110,6 +110,59 @@ export const TrafficPatternSection: React.FC<TrafficPatternSectionProps> = ({ pa
         { hour: "20:00", trafficLevel: 42, label: "Penutupan Kasir" },
         { hour: "21:00", trafficLevel: 18, label: "Tutup Operasional B-Quik" },
       ];
+    } else if (bId.includes('astra') || name.toLowerCase().includes('astra')) {
+      // Astra Otoservice: Buka Setiap Hari Pukul 08.00 - 18.00 WIB
+      peakHours = "08.30 - 11.30 WIB & 13.30 - 15.30 WIB (08.00 - 18.00 WIB)";
+      quietHours = "Selasa & Rabu (08.00 - 10.00 WIB)";
+      busyDays = ["Sabtu (Peak Utama)", "Minggu", "Jumat SORE"];
+      hourlyDistribution = [
+        { hour: "08:00", trafficLevel: 45, label: "Mulai Buka (08.00 WIB)" },
+        { hour: "09:00", trafficLevel: 92, label: "Puncak Kedatangan Pagi" },
+        { hour: "10:00", trafficLevel: 98, label: "Kapasitas Maksimal Pit" },
+        { hour: "11:00", trafficLevel: 85, label: "Padat Pagi" },
+        { hour: "12:00", trafficLevel: 60, label: "Istirahat Makan Siang" },
+        { hour: "13:00", trafficLevel: 80, label: "Gelombang II" },
+        { hour: "14:00", trafficLevel: 88, label: "Padat Siang" },
+        { hour: "15:00", trafficLevel: 70, label: "Sedang Sore" },
+        { hour: "16:00", trafficLevel: 55, label: "Penurunan Kunjungan" },
+        { hour: "17:00", trafficLevel: 35, label: "Persiapan Tutup" },
+        { hour: "18:00", trafficLevel: 15, label: "Tutup Operasional Astra (18.00 WIB)" },
+      ];
+    } else if (bId.includes('shop') || name.toLowerCase().includes('shop')) {
+      // Shop & Drive: Buka Setiap Hari Pukul 08.00 - 18.00 WIB
+      peakHours = "08.00 - 11.00 WIB & 15.30 - 17.30 WIB (08.00 - 18.00 WIB)";
+      quietHours = "Rabu & Kamis (11.00 - 14.00 WIB)";
+      busyDays = ["Sabtu", "Minggu", "Senin PAGI (Aki Mogok)"];
+      hourlyDistribution = [
+        { hour: "08:00", trafficLevel: 88, label: "Puncak Pagi Call Center Aki (08.00 WIB)" },
+        { hour: "09:00", trafficLevel: 78, label: "Pemeriksaan Aki & Oli" },
+        { hour: "10:00", trafficLevel: 72, label: "Sedang Pagi" },
+        { hour: "11:00", trafficLevel: 58, label: "Lancar" },
+        { hour: "12:00", trafficLevel: 42, label: "Istirahat Siang" },
+        { hour: "13:00", trafficLevel: 55, label: "Gelombang Siang" },
+        { hour: "14:00", trafficLevel: 65, label: "Sedang Siang" },
+        { hour: "15:00", trafficLevel: 82, label: "Gelombang Sore" },
+        { hour: "16:00", trafficLevel: 94, label: "Puncak Pulang Kerja" },
+        { hour: "17:00", trafficLevel: 88, label: "Padat Sore" },
+        { hour: "18:00", trafficLevel: 25, label: "Tutup Operasional Outlet (18.00 WIB)" },
+      ];
+    } else if (bId.includes('bos') || name.toLowerCase().includes('bos')) {
+      // Bengkel BOS: Buka Setiap Hari Pukul 08.00 - 17.00 WIB
+      peakHours = "09.00 - 12.00 WIB & 14.00 - 16.30 WIB (08.00 - 17.00 WIB)";
+      quietHours = "Selasa & Rabu (12.00 - 13.30 WIB)";
+      busyDays = ["Sabtu", "Minggu", "Jumat"];
+      hourlyDistribution = [
+        { hour: "08:00", trafficLevel: 40, label: "Buka Toko BOS (08.00 WIB)" },
+        { hour: "09:00", trafficLevel: 85, label: "Gelombang Pagi" },
+        { hour: "10:00", trafficLevel: 95, label: "Puncak Spooring & Cuci Mobil" },
+        { hour: "11:00", trafficLevel: 90, label: "Kapasitas Maksimal" },
+        { hour: "12:00", trafficLevel: 50, label: "Istirahat Siang" },
+        { hour: "13:00", trafficLevel: 72, label: "Sedang Siang" },
+        { hour: "14:00", trafficLevel: 88, label: "Gelombang Sore BOS" },
+        { hour: "15:00", trafficLevel: 92, label: "Puncak Sore" },
+        { hour: "16:00", trafficLevel: 70, label: "Penutupan Pendaftaran" },
+        { hour: "17:00", trafficLevel: 20, label: "Tutup Operasional BOS (17.00 WIB)" },
+      ];
     } else if (bId.includes('cipondoh') || name.toLowerCase().includes('cipondoh')) {
       // Cipondoh: Morning Heavy Peak (09:00 - 12:30)
       peakHours = "09.00 - 12.30 WIB (Pagi Hari)";
@@ -177,8 +230,11 @@ export const TrafficPatternSection: React.FC<TrafficPatternSectionProps> = ({ pa
   };
 
   const currentPattern = activePattern();
-  const firstHourLabel = currentPattern.hourlyDistribution[0]?.hour || "09:00";
-  const startHourStr = firstHourLabel === "08:00" ? "08.00" : "09.00";
+  const hourlyList = currentPattern.hourlyDistribution || [];
+  const firstHourLabel = hourlyList[0]?.hour || "09:00";
+  const lastHourLabel = hourlyList[hourlyList.length - 1]?.hour || "21:00";
+  const startHourStr = firstHourLabel.replace(":", ".");
+  const endHourStr = lastHourLabel.replace(":", ".");
 
   return (
     <section className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl p-6 mb-8">
@@ -299,7 +355,7 @@ export const TrafficPatternSection: React.FC<TrafficPatternSectionProps> = ({ pa
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
-                Grafik Keramaian Unit per Jam ({startHourStr} - 21.00 WIB)
+                Grafik Keramaian Unit per Jam ({startHourStr} - {endHourStr} WIB)
               </h4>
               <div className="flex items-center gap-3 text-[11px] text-slate-300">
                 <span className="flex items-center gap-1">
