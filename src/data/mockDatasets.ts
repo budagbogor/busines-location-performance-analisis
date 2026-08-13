@@ -542,10 +542,52 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         status: "Top",
         positives: [
           "Akses MERR Surabaya Timur sangat strategis",
-          "Fasilitas lounge bersih dan nyaman"
+          "Fasilitas lounge bersih dan nyaman",
+          "Mekanik sangat teliti dan transparan menjelaskan kondisi oli & rem"
         ],
         negatives: [
-          "Area parkir depan penuh saat jam makan siang"
+          "Area parkir depan outlet penuh saat jam makan siang",
+          "Waktu tunggu pengerjaan spooring balancing cukup panjang saat hari Sabtu",
+          "Respon pendaftaran antrean via WhatsApp kadang agak lambat di jam sibuk",
+          "Stok varian filter AC untuk beberapa tipe mobil langka perlu inden singkat"
+        ],
+        recentReviews: [
+          {
+            id: "rev-merr-1",
+            author: "Ahmad Rizky",
+            rating: 5,
+            date: "3 hari lalu",
+            text: "Lokasi strategis di MERR Surabaya. Pelayanan ramah, mekanik jujur jelaskan kondisi sparepart.",
+            sentiment: "positive",
+            tags: ["Lokasi Strategis", "Mekanik Jujur"]
+          },
+          {
+            id: "rev-merr-2",
+            author: "Dewi Lestari",
+            rating: 3,
+            date: "1 minggu lalu",
+            text: "Tempat parkir depan agak sempit saat datang jam makan siang, tapi pelayanan pendaftaran lumayan cepat.",
+            sentiment: "negative",
+            tags: ["Kapasitas Parkir", "Layanan Kasir"]
+          },
+          {
+            id: "rev-merr-3",
+            author: "Budi Santoso",
+            rating: 3,
+            date: "2 minggu lalu",
+            text: "Antrean hari Sabtu cukup panjang untuk spooring balancing, sebaiknya booking pendaftaran dari pagi.",
+            sentiment: "negative",
+            tags: ["Waktu Tunggu", "Spooring Balancing"]
+          },
+          {
+            id: "rev-merr-4",
+            author: "Hendra Wijaya",
+            rating: 4,
+            date: "1 bulan lalu",
+            text: "Respon WA pendaftaran saat jam sibuk sore agak lambat, tapi hasil pengerjaan tune up memuaskan.",
+            sentiment: "neutral",
+            tags: ["Respon WA", "Hasil Tune Up"]
+          }
         ],
         complaintCount: 7,
         trendScore: "improving"
