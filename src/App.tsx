@@ -102,17 +102,26 @@ export default function App() {
         }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.branches && Array.isArray(data.branches)) {
-          setReport((prev) => ({
-            ...prev,
-            branches: data.branches,
-            lastAISyncTimestamp: data.lastAISyncTimestamp || new Date().toLocaleTimeString('id-ID'),
-          }));
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        if (data.requiresApiKey) {
+          alert('API Key Gemini/Sumopod belum disetel. Membuka Pengaturan Engine AI...');
+          setIsAISettingsOpen(true);
+        } else {
+          alert(`Pemberitahuan Penarikan AI: ${data.error || data.message || 'Gagal menarik data'}`);
         }
+        return;
       }
-    } catch (err) {
+
+      if (data.branches && Array.isArray(data.branches)) {
+        setReport((prev) => ({
+          ...prev,
+          branches: data.branches,
+          lastAISyncTimestamp: data.lastAISyncTimestamp || new Date().toLocaleTimeString('id-ID'),
+        }));
+      }
+    } catch (err: any) {
       console.error('Error syncing branch performance:', err);
     } finally {
       setIsSyncingPerformance(false);

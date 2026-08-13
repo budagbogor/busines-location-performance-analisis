@@ -411,8 +411,19 @@ Kembalikan JSON array persis sesuai skema berikut tanpa mengubah ID, nama, alama
       return;
     }
 
+    // Check Gemini API key availability
+    const keyToUse = apiKey || process.env.GEMINI_API_KEY;
+    if (!keyToUse) {
+      res.status(400).json({
+        success: false,
+        requiresApiKey: true,
+        error: "API Key Gemini belum dikonfigurasi. Harap masukkan API Key di Pengaturan Engine AI.",
+      });
+      return;
+    }
+
     // Default: Gemini with Search Grounding
-    const ai = getGeminiClient(apiKey);
+    const ai = getGeminiClient(keyToUse);
     const geminiModel = model || "gemini-3.6-flash";
 
     const response = await ai.models.generateContent({
@@ -420,17 +431,18 @@ Kembalikan JSON array persis sesuai skema berikut tanpa mengubah ID, nama, alama
       contents: promptText,
       config: {
         tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
       },
     });
 
     const responseText = response.text || "[]";
-    let updatedMetrics;
+    let updatedMetrics = [];
     try {
-      updatedMetrics = JSON.parse(responseText);
-    } catch (parseErr) {
-      const cleaned = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+      const jsonMatch = responseText.match(/\[[\s\S]*\]/);
+      const rawJson = jsonMatch ? jsonMatch[0] : responseText;
+      const cleaned = rawJson.replace(/```json/g, "").replace(/```/g, "").trim();
       updatedMetrics = JSON.parse(cleaned);
+    } catch (parseErr) {
+      console.warn("Failed to parse JSON response from Gemini, using existing branches", parseErr);
     }
 
     const updatedBranches = branches.map((branch: any) => {
@@ -460,6 +472,7 @@ Kembalikan JSON array persis sesuai skema berikut tanpa mengubah ID, nama, alama
   } catch (err: any) {
     console.error("Error in /api/sync-branch-performance:", err);
     res.status(500).json({
+      success: false,
       error: "Gagal menarik indikator performa cabang via AI.",
       message: err?.message || String(err),
     });
