@@ -760,6 +760,7 @@ ${report.executiveSummary}
         branch={selectedBranch}
         initialTab={selectedBranchTab}
         onClose={() => setSelectedBranch(null)}
+        aiConfig={aiConfig}
       />
 
       {/* Head-to-Head Branch Comparison Modal */}

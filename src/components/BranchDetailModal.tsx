@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
-import { X, Star, ThumbsUp, ThumbsDown, AlertTriangle, TrendingDown, CheckCircle2, MessageSquare, MapPin, Calendar, Tag, Filter, ChevronRight, Wrench, ExternalLink, Navigation, Info, ShieldCheck } from 'lucide-react';
-import { BranchData } from '../types';
+import React, { useState, useEffect, useCallback } from 'react';
+import { X, Star, ThumbsUp, ThumbsDown, AlertTriangle, TrendingDown, CheckCircle2, MessageSquare, MapPin, Calendar, Tag, Filter, ChevronRight, Wrench, ExternalLink, Navigation, Info, ShieldCheck, RefreshCw, Loader2, AlertCircle, Radio } from 'lucide-react';
+import { BranchData, AIConfig } from '../types';
 
 interface BranchDetailModalProps {
   branch: BranchData | null;
   onClose: () => void;
   initialTab?: 'overview' | 'complaints';
+  aiConfig?: AIConfig;
+}
+
+interface RawGoogleReview {
+  id: string;
+  author: string;
+  rating: number;
+  date: string;
+  text: string;
+  sentiment: 'negative' | 'neutral';
+  tags?: string[];
 }
 
 export interface DetailedComplaintItem {
@@ -23,9 +34,62 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
   branch,
   onClose,
   initialTab = 'overview',
+  aiConfig,
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'complaints'>(initialTab);
   const [severityFilter, setSeverityFilter] = useState<'ALL' | 'High' | 'Medium' | 'Low'>('ALL');
+
+  // State untuk raw Google Review live-fetch
+  const [rawReviews, setRawReviews] = useState<RawGoogleReview[]>([]);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false);
+  const [reviewsFetched, setReviewsFetched] = useState(false);
+  const [reviewsError, setReviewsError] = useState<string | null>(null);
+  const [fetchedAt, setFetchedAt] = useState<string | null>(null);
+
+  const fetchLiveReviews = useCallback(async () => {
+    if (!branch) return;
+    setIsLoadingReviews(true);
+    setReviewsError(null);
+
+    try {
+      const payload: Record<string, string> = {
+        branchName: branch.name,
+        city: branch.city || '',
+        address: branch.address || '',
+        provider: aiConfig?.provider || 'gemini',
+        model: aiConfig?.model || 'gemini-3.6-flash',
+        apiKey: aiConfig?.apiKey || '',
+        baseUrl: aiConfig?.baseUrl || '',
+      };
+
+      const response = await fetch('/api/fetch-reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || `Server error HTTP ${response.status}`);
+      }
+
+      setRawReviews(Array.isArray(data.reviews) ? data.reviews : []);
+      setFetchedAt(data.fetchedAt || null);
+      setReviewsFetched(true);
+    } catch (err: any) {
+      setReviewsError(err?.message || 'Gagal mengambil ulasan dari Google Maps.');
+    } finally {
+      setIsLoadingReviews(false);
+    }
+  }, [branch, aiConfig]);
+
+  // Auto-fetch saat tab complaints pertama kali dibuka
+  useEffect(() => {
+    if (activeTab === 'complaints' && !reviewsFetched && !isLoadingReviews) {
+      fetchLiveReviews();
+    }
+  }, [activeTab, reviewsFetched, isLoadingReviews, fetchLiveReviews]);
 
   if (!branch) return null;
 
@@ -504,6 +568,182 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
           {/* TAB 2: DETAILED COMPLAINT LIST AUDIT PER UNIT USAHA */}
           {activeTab === 'complaints' && (
             <div className="space-y-5 animate-fadeIn">
+
+              {/* ===== SECTION: ULASAN GOOGLE REVIEW ASLI LIVE (1-3 BINTANG) ===== */}
+              <div className="rounded-2xl border border-slate-700 overflow-hidden">
+                {/* Header Section */}
+                <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                      <Star className="w-4 h-4 text-amber-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
+                        Teks Asli Google Review (Rating 1–3 ⭐)
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[9px] font-extrabold uppercase border border-emerald-500/40 flex items-center gap-1">
+                          <Radio className="w-2.5 h-2.5 animate-pulse" />
+                          LIVE dari Google Maps
+                        </span>
+                      </h4>
+                      <p className="text-[10px] text-slate-400 mt-0.5">
+                        Teks ulasan ditulis ulang sama persis dari Google Review • Diurutkan terbaru
+                        {fetchedAt && <span className="ml-1 text-slate-500">• Diambil: {fetchedAt}</span>}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Refresh Button */}
+                  <button
+                    onClick={() => { setReviewsFetched(false); fetchLiveReviews(); }}
+                    disabled={isLoadingReviews}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white text-[11px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-slate-600"
+                    title="Ambil ulang data terbaru dari Google Review"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${isLoadingReviews ? 'animate-spin' : ''}`} />
+                    {isLoadingReviews ? 'Mengambil...' : 'Refresh'}
+                  </button>
+                </div>
+
+                {/* Content Area */}
+                <div className="bg-slate-950/50 p-4">
+
+                  {/* Loading State */}
+                  {isLoadingReviews && (
+                    <div className="flex flex-col items-center justify-center py-10 gap-3">
+                      <div className="relative">
+                        <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+                        <div className="absolute inset-0 rounded-full bg-amber-400/10 animate-ping" />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm font-bold text-white">Mengambil ulasan Google Maps...</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          AI sedang mencari ulasan 1–3 bintang terbaru untuk {branch.name}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Error State */}
+                  {!isLoadingReviews && reviewsError && (
+                    <div className="flex flex-col items-center justify-center py-8 gap-3">
+                      <div className="w-10 h-10 rounded-full bg-rose-500/20 flex items-center justify-center">
+                        <AlertCircle className="w-5 h-5 text-rose-400" />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm font-bold text-rose-300">Gagal Mengambil Ulasan</p>
+                        <p className="text-[11px] text-slate-400 mt-1 max-w-sm">{reviewsError}</p>
+                      </div>
+                      <button
+                        onClick={() => { setReviewsFetched(false); fetchLiveReviews(); }}
+                        className="px-4 py-1.5 rounded-lg bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 text-xs font-bold border border-rose-500/30 transition-all flex items-center gap-1.5"
+                      >
+                        <RefreshCw className="w-3 h-3" /> Coba Lagi
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Empty State */}
+                  {!isLoadingReviews && !reviewsError && reviewsFetched && rawReviews.length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-8 gap-2">
+                      <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
+                        <Star className="w-5 h-5 text-slate-500" />
+                      </div>
+                      <p className="text-sm font-bold text-slate-300">Tidak Ada Ulasan 1–3 Bintang Ditemukan</p>
+                      <p className="text-[11px] text-slate-500 text-center max-w-sm">
+                        Google Review untuk unit ini mungkin tidak memiliki ulasan negatif yang terindeks saat ini, atau datanya belum tersedia via pencarian.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Reviews List */}
+                  {!isLoadingReviews && !reviewsError && rawReviews.length > 0 && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
+                          {rawReviews.length} ulasan ditemukan • Rating 1–3 ⭐ • Urutan: Terbaru
+                        </span>
+                        <div className="flex items-center gap-3">
+                          {[1, 2, 3].map(r => {
+                            const count = rawReviews.filter(rev => rev.rating === r).length;
+                            return count > 0 ? (
+                              <span key={r} className="text-[10px] text-slate-400">
+                                {[...Array(r)].map((_, i) => '⭐').join('')} {count}x
+                              </span>
+                            ) : null;
+                          })}
+                        </div>
+                      </div>
+
+                      {rawReviews.map((rev) => (
+                        <div
+                          key={rev.id}
+                          className={`p-4 rounded-xl border transition-all ${
+                            rev.rating === 1
+                              ? 'bg-rose-950/30 border-rose-800/50 hover:border-rose-600/60'
+                              : rev.rating === 2
+                              ? 'bg-orange-950/20 border-orange-800/40 hover:border-orange-600/50'
+                              : 'bg-amber-950/15 border-amber-800/30 hover:border-amber-600/40'
+                          }`}
+                        >
+                          {/* Review Header */}
+                          <div className="flex items-start justify-between mb-2.5">
+                            <div className="flex items-center gap-2.5">
+                              {/* Avatar initials */}
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0 ${
+                                rev.rating === 1 ? 'bg-rose-600/30 text-rose-300' :
+                                rev.rating === 2 ? 'bg-orange-600/30 text-orange-300' :
+                                'bg-amber-600/30 text-amber-300'
+                              }`}>
+                                {rev.author.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="text-xs font-bold text-white">{rev.author}</p>
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                  {/* Star rating */}
+                                  <div className="flex">
+                                    {[...Array(5)].map((_, i) => (
+                                      <Star
+                                        key={i}
+                                        className={`w-3 h-3 ${
+                                          i < rev.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-700'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                  <span className="text-[10px] text-slate-400">{rev.date}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Rating badge */}
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold shrink-0 ${
+                              rev.rating === 1 ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' :
+                              rev.rating === 2 ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40' :
+                              'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                            }`}>
+                              {rev.rating} / 5
+                            </span>
+                          </div>
+
+                          {/* Review Text — SAMA PERSIS dari Google Review */}
+                          <div className="bg-slate-900/70 rounded-lg p-3 border border-slate-800">
+                            <div className="text-[9px] text-slate-500 uppercase font-bold mb-1.5 flex items-center gap-1">
+                              <MessageSquare className="w-2.5 h-2.5" />
+                              Teks Asli Google Review (disalin sama persis):
+                            </div>
+                            <p className="text-xs text-slate-200 leading-relaxed">
+                              &ldquo;{rev.text}&rdquo;
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                </div>
+              </div>
+              {/* ===== END SECTION ULASAN ASLI ===== */}
+
               
               {/* Filter Severity Bar */}
               <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

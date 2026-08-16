@@ -672,6 +672,203 @@ app.post("/api/send-social-reply", async (req, res) => {
   }
 });
 
+// Endpoint: Ambil teks asli Google Review rating 1-3 bintang untuk satu cabang
+app.post("/api/fetch-reviews", async (req, res) => {
+  try {
+    const { branchName, city, address, provider = "gemini", model, apiKey, baseUrl } = req.body;
+
+    if (!branchName || typeof branchName !== "string") {
+      res.status(400).json({ error: "branchName wajib diisi." });
+      return;
+    }
+
+    const locationHint = address ? `${branchName}, ${address}, ${city || ""}` : `${branchName} ${city || ""}`;
+
+    const REVIEW_FETCH_PROMPT = `Anda adalah sistem ekstraksi ulasan Google Maps yang presisi.
+
+Tugas: Cari dan temukan semua ulasan Google Review untuk bisnis ini:
+"${locationHint}"
+
+INSTRUKSI KETAT:
+1. Cari ulasan Google Maps / Google Review untuk bisnis tersebut
+2. Ambil HANYA ulasan dengan rating bintang 1, 2, atau 3 (ulasan negatif/kritis)
+3. Salin teks ulasan SAMA PERSIS seperti yang ditulis reviewer, jangan ubah sepatah kata pun
+4. Urutkan dari ulasan TERBARU ke ulasan TERLAMA
+5. Sertakan: nama reviewer, tanggal ulasan, rating bintang, dan teks lengkap ulasan
+6. Jika menemukan ulasan berbahasa Indonesia maupun Inggris, sertakan keduanya
+
+Kembalikan HANYA JSON array valid (tanpa wrapper markdown) dengan format persis:
+[
+  {
+    "id": "rev-1",
+    "author": "Nama Reviewer",
+    "rating": 2,
+    "date": "X minggu lalu / X bulan lalu / tanggal spesifik",
+    "text": "Teks ulasan lengkap sama persis seperti yang ditulis reviewer di Google Maps",
+    "sentiment": "negative"
+  }
+]
+
+Jika tidak ada ulasan 1-3 bintang yang ditemukan, kembalikan array kosong: []
+PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di Google Maps.`;
+
+    const now = new Date();
+    const fetchedAt = `${now.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}, ${now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB`;
+
+    // --- Gemini with Google Search Grounding ---
+    if (provider === "gemini") {
+      const keyToUse = apiKey || process.env.GEMINI_API_KEY;
+      if (!keyToUse) {
+        res.status(400).json({ error: "API Key Gemini belum dikonfigurasi." });
+        return;
+      }
+
+      try {
+        const ai = getGeminiClient(keyToUse);
+        const geminiModel = model || "gemini-3.6-flash";
+
+        const response = await ai.models.generateContent({
+          model: geminiModel,
+          contents: REVIEW_FETCH_PROMPT,
+          config: {
+            tools: [{ googleSearch: {} }],
+            // NOTE: responseMimeType tidak bisa dipakai bersamaan dengan googleSearch grounding
+          },
+        });
+
+        const responseText = response.text || "[]";
+        let reviews: any[] = [];
+        try {
+          // Coba parse langsung dulu
+          const directParsed = JSON.parse(responseText.trim());
+          reviews = Array.isArray(directParsed) ? directParsed : (directParsed.reviews || []);
+        } catch {
+          // Coba ekstrak JSON array dari dalam teks
+          const cleaned = responseText.replace(/```json/gi, "").replace(/```/g, "").trim();
+          const match = cleaned.match(/\[[\s\S]*\]/);
+          if (match) {
+            try {
+              const parsed = JSON.parse(match[0]);
+              reviews = Array.isArray(parsed) ? parsed : [];
+            } catch {
+              reviews = [];
+            }
+          }
+        }
+
+        // Normalisasi & tambahkan field yang kurang
+        reviews = reviews
+          .filter((r: any) => r && typeof r.text === "string" && r.text.trim().length > 0)
+          .map((r: any, i: number) => ({
+            ...r,
+            id: r.id || `fetched-rev-${i + 1}`,
+            rating: typeof r.rating === "number" ? r.rating : parseInt(r.rating) || 2,
+            sentiment: (r.rating <= 2 ? "negative" : "neutral") as "negative" | "neutral",
+            tags: r.tags || [],
+          }));
+
+        res.json({
+          success: true,
+          reviews,
+          fetchedAt,
+          source: "gemini_google_search_grounding",
+          branchName,
+        });
+        return;
+      } catch (geminiErr: any) {
+        console.error("Gemini fetch-reviews error:", geminiErr?.message);
+        res.status(500).json({
+          error: `Gagal mengambil ulasan via Gemini: ${geminiErr?.message || String(geminiErr)}`,
+        });
+        return;
+      }
+    }
+
+
+    // --- OpenAI / Sumopod ---
+    if (provider === "sumopod" || provider === "openai") {
+      const keyToUse = apiKey || process.env.SUMOPOD_API_KEY || process.env.OPENAI_API_KEY;
+      if (!keyToUse) {
+        res.status(400).json({ error: `API Key ${provider.toUpperCase()} belum dikonfigurasi.` });
+        return;
+      }
+
+      let rawBase = baseUrl || "https://ai.sumopod.com/v1";
+      if (rawBase.includes("api.sumopod.com")) {
+        rawBase = rawBase.replace("api.sumopod.com", "ai.sumopod.com");
+      }
+      const targetBase = rawBase.replace(/\/+$/, "");
+      const targetUrl = `${targetBase}/chat/completions`;
+      const modelToUse = model || (provider === "sumopod" ? "gpt-4o" : "gpt-4o-mini");
+
+      try {
+        const response = await fetch(targetUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${keyToUse}`,
+          },
+          body: JSON.stringify({
+            model: modelToUse,
+            messages: [{ role: "user", content: REVIEW_FETCH_PROMPT }],
+            response_format: { type: "json_object" },
+            temperature: 0.1,
+          }),
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`HTTP ${response.status}: ${errText.substring(0, 200)}`);
+        }
+
+        const jsonRes = await response.json();
+        const content = jsonRes.choices?.[0]?.message?.content || "[]";
+        const cleaned = content.replace(/```json/g, "").replace(/```/g, "").trim();
+
+        let reviews = [];
+        try {
+          const parsed = JSON.parse(cleaned);
+          // Handle both array and object with reviews key
+          reviews = Array.isArray(parsed) ? parsed : (parsed.reviews || []);
+        } catch {
+          const match = cleaned.match(/\[[\s\S]*\]/);
+          reviews = match ? JSON.parse(match[0]) : [];
+        }
+
+        reviews = Array.isArray(reviews) ? reviews.map((r: any, i: number) => ({
+          ...r,
+          id: r.id || `fetched-rev-${i + 1}`,
+          sentiment: r.rating <= 2 ? "negative" : "neutral",
+          tags: r.tags || [],
+        })) : [];
+
+        res.json({
+          success: true,
+          reviews,
+          fetchedAt,
+          source: `${provider}_search`,
+          branchName,
+        });
+        return;
+      } catch (err: any) {
+        console.error("OpenAI/Sumopod fetch-reviews error:", err?.message);
+        res.status(500).json({
+          error: `Gagal mengambil ulasan via ${provider.toUpperCase()}: ${err?.message || String(err)}`,
+        });
+        return;
+      }
+    }
+
+    res.status(400).json({ error: "Provider AI tidak dikenali." });
+  } catch (err: any) {
+    console.error("Error in /api/fetch-reviews:", err);
+    res.status(500).json({
+      error: "Gagal memproses permintaan pengambilan ulasan.",
+      message: err?.message || String(err),
+    });
+  }
+});
+
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
