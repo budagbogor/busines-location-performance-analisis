@@ -204,7 +204,8 @@ app.get("/api/health", (_req, res) => {
 // API Test Connection Endpoint (Accurate Real-time Ping)
 app.post("/api/test-ai", async (req, res) => {
   try {
-    const { provider = "gemini", model, apiKey, baseUrl } = req.body;
+    const body = req.body || {};
+    const { provider = "gemini", model, apiKey, baseUrl } = body;
 
     if (provider === "gemini") {
       const keyToUse = apiKey || process.env.GEMINI_API_KEY;
@@ -738,7 +739,7 @@ Kembalikan JSON array persis sesuai skema berikut tanpa mengubah ID, nama, alama
 // Endpoint Uji Koneksi Kunci API Medsos Live
 app.post("/api/test-social-api", async (req, res) => {
   try {
-    const { metaAccessToken, tikTokAccessToken, googleBusinessApiKey } = req.body;
+    const { metaAccessToken, tikTokAccessToken, googleBusinessApiKey } = req.body || {};
     const results: Record<string, { success: boolean; message: string }> = {};
 
     // Test Meta Access Token (Instagram / Facebook)
@@ -781,7 +782,7 @@ app.post("/api/test-social-api", async (req, res) => {
 // Endpoint Pengiriman Balasan Langsung (Direct AI Reply Dispatcher)
 app.post("/api/send-social-reply", async (req, res) => {
   try {
-    const { inquiryId, platform, author, replyText, targetBranch, tokens } = req.body;
+    const { inquiryId, platform, author, replyText, targetBranch, tokens } = req.body || {};
 
     if (!replyText || typeof replyText !== "string") {
       res.status(400).json({ success: false, error: "Teks balasan wajib diisi." });
@@ -833,7 +834,7 @@ app.post("/api/send-social-reply", async (req, res) => {
     });
   } catch (err: any) {
     console.error("Error in /api/send-social-reply:", err);
-    res.status(500).json({
+    res.status(400).json({
       success: false,
       error: "Gagal mengirimkan balasan langsung.",
       message: err?.message || String(err),
@@ -844,7 +845,7 @@ app.post("/api/send-social-reply", async (req, res) => {
 // Endpoint: Ambil teks asli Google Review rating 1-3 bintang untuk satu cabang
 app.post("/api/fetch-reviews", async (req, res) => {
   try {
-    const { branchName, city, address, provider = "gemini", model, apiKey, baseUrl, forceRefresh } = req.body;
+    const { branchName, city, address, provider = "gemini", model, apiKey, baseUrl, forceRefresh } = req.body || {};
 
     if (!branchName || typeof branchName !== "string") {
       res.status(400).json({ error: "branchName wajib diisi." });
