@@ -263,7 +263,7 @@ app.post("/api/test-ai", async (req, res) => {
     } else if (provider === "sumopod" || provider === "openai") {
       const keyToUse = apiKey || process.env.SUMOPOD_API_KEY || process.env.OPENAI_API_KEY;
       if (!keyToUse || typeof keyToUse !== "string" || keyToUse.trim() === "") {
-        res.status(400).json({ success: false, error: `API Key ${provider.toUpperCase()} kosong. Harap masukkan API Key.` });
+        res.status(400).json({ success: false, error: `API Key ${provider.toUpperCase()} kosong. Harap masukkan API Key Sumopod Anda.` });
         return;
       }
 
@@ -273,9 +273,12 @@ app.post("/api/test-ai", async (req, res) => {
       }
       const targetBase = rawBase.replace(/\/+$/, "");
       const targetUrl = `${targetBase}/chat/completions`;
-      const testModel = model || (provider === "sumopod" ? "gpt-4o" : "gpt-4o-mini");
+      const testModel = model || (provider === "sumopod" ? "kimi-k3" : "gpt-4o-mini");
 
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+
         const fetchRes = await fetch(targetUrl, {
           method: "POST",
           headers: {
@@ -284,10 +287,11 @@ app.post("/api/test-ai", async (req, res) => {
           },
           body: JSON.stringify({
             model: testModel,
-            messages: [{ role: "user", content: "Test ping" }],
-            max_tokens: 5,
+            messages: [{ role: "user", content: "Test ping connection" }],
           }),
+          signal: controller.signal,
         });
+        clearTimeout(timeoutId);
 
         if (fetchRes.ok) {
           res.json({
@@ -305,14 +309,17 @@ app.post("/api/test-ai", async (req, res) => {
 
           res.status(400).json({
             success: false,
-            error: `Gagal Koneksi ${provider.toUpperCase()} (HTTP ${fetchRes.status}): ${parsedError.substring(0, 150)}`,
+            error: `Gagal Koneksi ${provider.toUpperCase()} (HTTP ${fetchRes.status}): ${parsedError.substring(0, 200)}`,
           });
           return;
         }
       } catch (networkErr: any) {
+        const isAbort = networkErr?.name === "AbortError";
         res.status(400).json({
           success: false,
-          error: `Gagal terhubung ke host (${targetBase}): ${networkErr?.message || String(networkErr)}. Pastikan URL Base API benar dan jaringan internet terhubung.`,
+          error: isAbort
+            ? `Timeout (8s) terlampaui saat menguji ke ${targetBase}. Pastikan API Key dan Base URL Sumopod benar.`
+            : `Gagal terhubung ke host (${targetBase}): ${networkErr?.message || String(networkErr)}`,
         });
         return;
       }
