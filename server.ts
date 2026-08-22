@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import pg from "pg";
@@ -1074,7 +1073,8 @@ PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di G
 });
 
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true, allowedHosts: true },
       appType: "spa",
