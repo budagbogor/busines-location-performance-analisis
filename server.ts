@@ -20,9 +20,10 @@ let _pgPool: pg.Pool | null = null;
 function getPgPool(): pg.Pool {
   if (!_pgPool) {
     const connectionString = process.env.DATABASE_URL || "postgresql://u2H8cz2EvssDm933X.jkt_001:ebb7d1b90d613b7d81198045@pgsql-dbas-jkt-001.sumobase.my.id:6432/dba994b0079ab7edb1";
+    const useSsl = process.env.DATABASE_SSL === "true";
     _pgPool = new Pool({
       connectionString,
-      ssl: { rejectUnauthorized: false },
+      ssl: useSsl ? { rejectUnauthorized: false } : false,
       connectionTimeoutMillis: 5000,
       idleTimeoutMillis: 30000,
       max: 10,
