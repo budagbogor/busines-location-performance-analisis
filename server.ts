@@ -19,7 +19,7 @@ const connectionString = process.env.DATABASE_URL || "postgresql://u2H8cz2EvssDm
 
 const pgPool = new Pool({
   connectionString,
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+  ssl: { rejectUnauthorized: false },
   connectionTimeoutMillis: 5000,
   idleTimeoutMillis: 30000,
   max: 10,
@@ -163,7 +163,9 @@ async function initPostgresDB() {
   }
 }
 
-initPostgresDB().catch(() => {});
+if (process.env.VERCEL !== "1") {
+  initPostgresDB().catch(() => {});
+}
 
 // Endpoint API untuk membaca ulasan tersimpan dari Database (PostgreSQL Sumobase / Drive G:)
 app.get("/api/saved-reviews", async (req, res) => {
