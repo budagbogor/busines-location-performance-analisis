@@ -14,21 +14,25 @@ const PORT = 3000;
 
 app.use(express.json({ limit: "10mb" }));
 
-// Cloud PostgreSQL Connection Pool (Sumobase)
-const connectionString = process.env.DATABASE_URL || "postgresql://u2H8cz2EvssDm933X.jkt_001:ebb7d1b90d613b7d81198045@pgsql-dbas-jkt-001.sumobase.my.id:6432/dba994b0079ab7edb1";
+// Cloud PostgreSQL Connection Pool (Sumobase) - Lazy Loaded
+let _pgPool: pg.Pool | null = null;
 
-const pgPool = new Pool({
-  connectionString,
-  ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 5000,
-  idleTimeoutMillis: 30000,
-  max: 10,
-});
-
-// Tangkap error idle pool agar tidak melempar uncaught error yang memicu crash 500 Vercel
-pgPool.on("error", (err) => {
-  console.warn("⚠️ Peringatan koneksi PostgreSQL pool idle:", err?.message || String(err));
-});
+function getPgPool(): pg.Pool {
+  if (!_pgPool) {
+    const connectionString = process.env.DATABASE_URL || "postgresql://u2H8cz2EvssDm933X.jkt_001:ebb7d1b90d613b7d81198045@pgsql-dbas-jkt-001.sumobase.my.id:6432/dba994b0079ab7edb1";
+    _pgPool = new Pool({
+      connectionString,
+      ssl: { rejectUnauthorized: false },
+      connectionTimeoutMillis: 5000,
+      idleTimeoutMillis: 30000,
+      max: 10,
+    });
+    _pgPool.on("error", (err) => {
+      console.warn("⚠️ Peringatan koneksi PostgreSQL pool idle:", err?.message || String(err));
+    });
+  }
+  return _pgPool;
+}
 
 // Local Disk Database Helper (Drive G:)
 const DB_PATH = path.join(process.cwd(), "data", "local-database.json");
@@ -74,7 +78,7 @@ async function saveBranchReviewsToDB(branchName: string, reviews: any[], fetched
   saveBranchReviewsToLocalDB(branchName, reviews, fetchedAt);
 
   try {
-    await pgPool.query(`
+    await getPgPool().query(`
       INSERT INTO branch_reviews (branch_name, reviews, fetched_at, last_sync)
       VALUES ($1, $2, $3, NOW())
       ON CONFLICT (branch_name)
@@ -88,7 +92,7 @@ async function saveBranchReviewsToDB(branchName: string, reviews: any[], fetched
 
 async function getBranchReviewsFromDB(branchName: string) {
   try {
-    const res = await pgPool.query(
+    const res = await getPgPool().query(
       `SELECT reviews, fetched_at FROM branch_reviews WHERE branch_name = $1`,
       [branchName]
     );
@@ -126,7 +130,7 @@ let isDbInitialized = false;
 async function initPostgresDB() {
   if (isDbInitialized) return;
   try {
-    const client = await pgPool.connect();
+    const client = await getPgPool().connect();
     try {
       await client.query(`
         CREATE TABLE IF NOT EXISTS branch_reviews (
@@ -168,7 +172,7 @@ if (process.env.VERCEL !== "1") {
 }
 
 // Endpoint API untuk membaca ulasan tersimpan dari Database (PostgreSQL Sumobase / Drive G:)
-app.get("/api/saved-reviews", async (req, res) => {
+app.get(["/api/saved-reviews", "/saved-reviews"], async (req, res) => {
   try {
     const { branchName } = req.query;
     if (!branchName || typeof branchName !== "string") {
@@ -205,12 +209,12 @@ function getGeminiClient(customApiKey?: string): GoogleGenAI {
 }
 
 // API Health Check
-app.get("/api/health", (_req, res) => {
+app.get(["/api/health", "/health"], (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
 // API Test Connection Endpoint (Accurate Real-time Ping)
-app.post("/api/test-ai", async (req, res) => {
+app.post(["/api/test-ai", "/test-ai"], async (req, res) => {
   try {
     const body = req.body || {};
     const { provider = "gemini", model, apiKey, baseUrl } = body;
@@ -446,7 +450,7 @@ Keluarkankan respon dalam bentuk JSON VALID murni (tanpa wrapper markdown \`\`\`
 `;
 
 // Deep Search Analysis Endpoint
-app.post("/api/analyze", async (req, res) => {
+app.post(["/api/analyze", "/analyze"], async (req, res) => {
   try {
     const { query, provider = "gemini", model = "gemini-3.6-flash", apiKey, baseUrl } = req.body;
     if (!query || typeof query !== "string") {
@@ -547,7 +551,7 @@ app.post("/api/analyze", async (req, res) => {
 });
 
 // Endpoint untuk menarik & memperbarui indikator performa cabang via AI Live Grounding
-app.post("/api/sync-branch-performance", async (req, res) => {
+app.post(["/api/sync-branch-performance", "/sync-branch-performance"], async (req, res) => {
   try {
     const { brandName = "Mobeng", branches = [], provider = "gemini", model = "gemini-3.6-flash", apiKey, baseUrl } = req.body;
     
@@ -752,7 +756,7 @@ Kembalikan JSON array persis sesuai skema berikut tanpa mengubah ID, nama, alama
 });
 
 // Endpoint Uji Koneksi Kunci API Medsos Live
-app.post("/api/test-social-api", async (req, res) => {
+app.post(["/api/test-social-api", "/test-social-api"], async (req, res) => {
   try {
     const { metaAccessToken, tikTokAccessToken, googleBusinessApiKey } = req.body || {};
     const results: Record<string, { success: boolean; message: string }> = {};
@@ -795,7 +799,7 @@ app.post("/api/test-social-api", async (req, res) => {
 });
 
 // Endpoint Pengiriman Balasan Langsung (Direct AI Reply Dispatcher)
-app.post("/api/send-social-reply", async (req, res) => {
+app.post(["/api/send-social-reply", "/send-social-reply"], async (req, res) => {
   try {
     const { inquiryId, platform, author, replyText, targetBranch, tokens } = req.body || {};
 
@@ -858,7 +862,7 @@ app.post("/api/send-social-reply", async (req, res) => {
 });
 
 // Endpoint: Ambil teks asli Google Review rating 1-3 bintang untuk satu cabang
-app.post("/api/fetch-reviews", async (req, res) => {
+app.post(["/api/fetch-reviews", "/fetch-reviews"], async (req, res) => {
   try {
     const { branchName, city, address, provider = "gemini", model, apiKey, baseUrl, forceRefresh } = req.body || {};
 
@@ -1072,6 +1076,17 @@ PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di G
       message: err?.message || String(err),
     });
   }
+});
+
+// Catch-all 404 handler for API routes
+app.use("/api/*", (_req, res) => {
+  res.status(404).json({ error: "Endpoint API tidak ditemukan." });
+});
+
+// Global Error Handler to prevent Vercel Serverless Function 500 crash
+app.use((err: any, _req: any, res: any, _next: any) => {
+  console.error("Unhandled Express Error:", err);
+  res.status(500).json({ error: err?.message || "Internal Server Error" });
 });
 
 async function startServer() {
