@@ -341,12 +341,12 @@ app.post(["/api/test-ai", "/test-ai"], async (req, res) => {
 // System Prompt for Business Intelligence
 const SYSTEM_PROMPT = `
 Anda adalah Pakar Intelijen Bisnis & Reputasi Perusahaan tingkat Executive (Enterprise Business & Reputation Intelligence Analyst).
-Tugas Anda adalah melakukan deep-search grounding dan analisis performa jaringan cabang/bengkel/retail untuk merek yang diberikan.
+Tugas Anda adalah melakukan deep-search grounding dan analisis performa jaringan cabang/bengkel/retail untuk merek yang diberikan dalam rentang **60 HARI TERAKHIR** (2 bulan terakhir).
 
 Anda HARUS menganalisis dan mendeteksi:
 1. Lokasi cabang-cabang asli/nyata dari merek tersebut di Indonesia (misal cabang di Jakarta, Surabaya, Bandung, Semarang, Medan, Makassar, Bali, dll.).
 2. Rating Google Review terbaru dan estimasi jumlah ulasan untuk setiap cabang.
-3. Keluhan pelanggan paling dominan (antrean lama, harga sparepart, mekanik kurang jujur, salah diagnosa, transparansi billing) dan poin positif utama.
+3. Keluhan pelanggan & isu dominan 60 HARI TERAKHIR (antrean lama, harga sparepart, mekanik kurang jujur, salah diagnosa, transparansi billing, parkir) serta estimasi jumlah isu komplain 60 hari terakhir (complaintCount).
 4. Pola keramaian dan jam sibuk (peak hours, hari tersibuk).
 5. Sentimen di media sosial (Instagram, TikTok, YouTube, Berita Online, X/Twitter).
 6. Rekomendasi strategis operasional konkret untuk manajemen eksekutif.
@@ -891,15 +891,15 @@ app.post(["/api/fetch-reviews", "/fetch-reviews"], async (req, res) => {
 
     const REVIEW_FETCH_PROMPT = `Anda adalah sistem ekstraksi ulasan Google Maps yang presisi.
 
-Tugas: Cari dan temukan semua ulasan Google Review untuk bisnis ini:
+Tugas: Cari dan temukan semua ulasan Google Review 60 HARI TERAKHIR (2 bulan terakhir) untuk bisnis ini:
 "${locationHint}"
 
 INSTRUKSI KETAT:
-1. Cari ulasan Google Maps / Google Review untuk bisnis tersebut
-2. Ambil HANYA ulasan dengan rating bintang 1, 2, atau 3 (ulasan negatif/kritis)
-3. Salin teks ulasan SAMA PERSIS seperti yang ditulis reviewer, jangan ubah sepatah kata pun
-4. Urutkan dari ulasan TERBARU ke ulasan TERLAMA
-5. Sertakan: nama reviewer, tanggal ulasan, rating bintang, dan teks lengkap ulasan
+1. Cari ulasan Google Maps / Google Review terbaru dalam rentang 60 HARI TERAKHIR (2 bulan terakhir)
+2. Utamakan & ambil ulasan dengan rating bintang 1, 2, atau 3 (ulasan negatif/kritis/komplain 60 hari terakhir)
+3. Salin teks ulasan SAMA PERSIS seperti yang ditulis reviewer di Google Maps, jangan ubah sepatah kata pun
+4. Urutkan dari ulasan TERBARU ke ulasan TERLAMA dalam rentang 60 hari terakhir
+5. Sertakan: nama reviewer, tanggal ulasan (misal "1 minggu lalu", "3 minggu lalu", "1 bulan lalu"), rating bintang, dan teks lengkap ulasan
 6. Jika menemukan ulasan berbahasa Indonesia maupun Inggris, sertakan keduanya
 
 Kembalikan HANYA JSON array valid (tanpa wrapper markdown) dengan format persis:
@@ -908,14 +908,14 @@ Kembalikan HANYA JSON array valid (tanpa wrapper markdown) dengan format persis:
     "id": "rev-1",
     "author": "Nama Reviewer",
     "rating": 2,
-    "date": "X minggu lalu / X bulan lalu / tanggal spesifik",
+    "date": "X minggu lalu / 1 bulan lalu (60 hari terakhir)",
     "text": "Teks ulasan lengkap sama persis seperti yang ditulis reviewer di Google Maps",
     "sentiment": "negative"
   }
 ]
 
 Jika tidak ada ulasan 1-3 bintang yang ditemukan, kembalikan array kosong: []
-PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di Google Maps.`;
+PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di Google Maps 60 hari terakhir.`;
 
     const now = new Date();
     const fetchedAt = `${now.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}, ${now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB`;
