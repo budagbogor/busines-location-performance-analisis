@@ -1,15 +1,176 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
+import pg from "pg";
 
 dotenv.config();
+
+const { Pool } = pg;
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json({ limit: "10mb" }));
+
+// Cloud PostgreSQL Connection Pool (Sumobase)
+const connectionString = process.env.DATABASE_URL || "postgresql://u2H8cz2EvssDm933X.jkt_001:ebb7d1b90d613b7d81198045@pgsql-dbas-jkt-001.sumobase.my.id:6432/dba994b0079ab7edb1";
+
+const pgPool = new Pool({
+  connectionString,
+  ssl: false,
+  connectionTimeoutMillis: 10000,
+});
+
+// Local Disk Database Helper (Drive G:)
+const DB_PATH = path.join(process.cwd(), "data", "local-database.json");
+
+function getLocalDatabase(): Record<string, any> {
+  try {
+    if (!fs.existsSync(DB_PATH)) {
+      const initial = { lastUpdated: new Date().toISOString(), branches: {} };
+      fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+      fs.writeFileSync(DB_PATH, JSON.stringify(initial, null, 2), "utf-8");
+      return initial;
+    }
+    const raw = fs.readFileSync(DB_PATH, "utf-8");
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error("Gagal membaca database lokal:", err);
+    return { lastUpdated: new Date().toISOString(), branches: {} };
+  }
+}
+
+function saveBranchReviewsToLocalDB(branchName: string, reviews: any[], fetchedAt: string) {
+  try {
+    const db = getLocalDatabase();
+    if (!db.branches) db.branches = {};
+    db.branches[branchName] = {
+      reviews,
+      fetchedAt,
+      lastSync: new Date().toISOString(),
+    };
+    db.lastUpdated = new Date().toISOString();
+    fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Gagal menyimpan ke database lokal:", err);
+  }
+}
+
+// Helper Dual-Storage (PostgreSQL Sumobase + Local Drive G:)
+async function saveBranchReviewsToDB(branchName: string, reviews: any[], fetchedAt: string) {
+  saveBranchReviewsToLocalDB(branchName, reviews, fetchedAt);
+
+  try {
+    await pgPool.query(`
+      INSERT INTO branch_reviews (branch_name, reviews, fetched_at, last_sync)
+      VALUES ($1, $2, $3, NOW())
+      ON CONFLICT (branch_name)
+      DO UPDATE SET reviews = $2, fetched_at = $3, last_sync = NOW();
+    `, [branchName, JSON.stringify(reviews), fetchedAt]);
+    console.log(`  💾 Ulasan ${branchName} tersimpan di Cloud PostgreSQL Sumobase`);
+  } catch (err: any) {
+    console.error("Gagal menyimpan ke Cloud PostgreSQL Sumobase:", err?.message || String(err));
+  }
+}
+
+async function getBranchReviewsFromDB(branchName: string) {
+  try {
+    const res = await pgPool.query(
+      `SELECT reviews, fetched_at FROM branch_reviews WHERE branch_name = $1`,
+      [branchName]
+    );
+    if (res.rows.length > 0) {
+      const row = res.rows[0];
+      const reviews = typeof row.reviews === 'string' ? JSON.parse(row.reviews) : row.reviews;
+      if (Array.isArray(reviews) && reviews.length > 0) {
+        return {
+          reviews,
+          fetchedAt: row.fetched_at || null,
+          source: "sumobase_postgresql_cloud",
+        };
+      }
+    }
+  } catch (err: any) {
+    console.warn("Gagal membaca dari Cloud PostgreSQL Sumobase, mencoba fallback Drive G:", err?.message);
+  }
+
+  const db = getLocalDatabase();
+  const branchRecord = db.branches?.[branchName];
+  if (branchRecord) {
+    return {
+      reviews: branchRecord.reviews || [],
+      fetchedAt: branchRecord.fetchedAt || null,
+      source: "local_database_g_drive",
+    };
+  }
+
+  return { reviews: [], fetchedAt: null, source: "none" };
+}
+
+// Inisialisasi Otomatis Skema PostgreSQL Sumobase & Migrasi Data
+async function initPostgresDB() {
+  try {
+    const client = await pgPool.connect();
+    try {
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS branch_reviews (
+          id SERIAL PRIMARY KEY,
+          branch_name VARCHAR(255) UNIQUE NOT NULL,
+          reviews JSONB NOT NULL,
+          fetched_at VARCHAR(255),
+          last_sync TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      console.log("  ✅ Tabel 'branch_reviews' terverifikasi di Cloud PostgreSQL Sumobase");
+
+      // Migrasi Data Eksisting dari Drive G: ke Cloud PostgreSQL Sumobase
+      const localDb = getLocalDatabase();
+      if (localDb.branches && Object.keys(localDb.branches).length > 0) {
+        for (const [bName, bData] of Object.entries<any>(localDb.branches)) {
+          if (bData && Array.isArray(bData.reviews) && bData.reviews.length > 0) {
+            await client.query(`
+              INSERT INTO branch_reviews (branch_name, reviews, fetched_at, last_sync)
+              VALUES ($1, $2, $3, NOW())
+              ON CONFLICT (branch_name)
+              DO UPDATE SET reviews = $2, fetched_at = $3, last_sync = NOW();
+            `, [bName, JSON.stringify(bData.reviews), bData.fetchedAt || null]);
+          }
+        }
+        console.log("  📦 Migrasi data dari Drive G: ke Cloud PostgreSQL Sumobase selesai!");
+      }
+    } finally {
+      client.release();
+    }
+  } catch (err: any) {
+    console.warn("  ⚠️ Koneksi Cloud PostgreSQL Sumobase:", err?.message || String(err));
+  }
+}
+
+initPostgresDB();
+
+// Endpoint API untuk membaca ulasan tersimpan dari Database (PostgreSQL Sumobase / Drive G:)
+app.get("/api/saved-reviews", async (req, res) => {
+  try {
+    const { branchName } = req.query;
+    if (!branchName || typeof branchName !== "string") {
+      res.status(400).json({ error: "branchName wajib diisi." });
+      return;
+    }
+
+    const data = await getBranchReviewsFromDB(branchName);
+    res.json({
+      success: true,
+      reviews: data.reviews,
+      fetchedAt: data.fetchedAt,
+      source: data.source,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: "Gagal membaca database." });
+  }
+});
 
 // Helper to get Gemini Client with custom or fallback API key
 function getGeminiClient(customApiKey?: string): GoogleGenAI {
@@ -675,11 +836,26 @@ app.post("/api/send-social-reply", async (req, res) => {
 // Endpoint: Ambil teks asli Google Review rating 1-3 bintang untuk satu cabang
 app.post("/api/fetch-reviews", async (req, res) => {
   try {
-    const { branchName, city, address, provider = "gemini", model, apiKey, baseUrl } = req.body;
+    const { branchName, city, address, provider = "gemini", model, apiKey, baseUrl, forceRefresh } = req.body;
 
     if (!branchName || typeof branchName !== "string") {
       res.status(400).json({ error: "branchName wajib diisi." });
       return;
+    }
+
+    // 1. Cek instan dari Database (Cloud PostgreSQL Sumobase / Drive G:)
+    if (!forceRefresh) {
+      const existing = await getBranchReviewsFromDB(branchName);
+      if (existing.reviews && existing.reviews.length > 0) {
+        res.json({
+          success: true,
+          reviews: existing.reviews,
+          fetchedAt: existing.fetchedAt || null,
+          source: existing.source,
+          branchName,
+        });
+        return;
+      }
     }
 
     const locationHint = address ? `${branchName}, ${address}, ${city || ""}` : `${branchName} ${city || ""}`;
@@ -767,6 +943,9 @@ PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di G
             tags: r.tags || [],
           }));
 
+        // Simpan otomatis ke Cloud PostgreSQL Sumobase & Database lokal Drive G:
+        await saveBranchReviewsToDB(branchName, reviews, fetchedAt);
+
         res.json({
           success: true,
           reviews,
@@ -812,7 +991,6 @@ PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di G
             model: modelToUse,
             messages: [{ role: "user", content: REVIEW_FETCH_PROMPT }],
             response_format: { type: "json_object" },
-            temperature: 0.1,
           }),
         });
 
@@ -841,6 +1019,9 @@ PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di G
           sentiment: r.rating <= 2 ? "negative" : "neutral",
           tags: r.tags || [],
         })) : [];
+
+        // Simpan otomatis ke Cloud PostgreSQL Sumobase & Database lokal Drive G:
+        await saveBranchReviewsToDB(branchName, reviews, fetchedAt);
 
         res.json({
           success: true,
@@ -872,7 +1053,7 @@ PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di G
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { middlewareMode: true, allowedHosts: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
@@ -884,9 +1065,30 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server AutoReputation AI running at http://localhost:${PORT}`);
-  });
+  const initialPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+
+  function listenOnPort(port: number) {
+    const server = app.listen(port, "0.0.0.0", () => {
+      console.log(`\n  🚀 Server AutoReputation AI berjalan di http://localhost:${port}\n`);
+    });
+
+    server.on("error", (err: any) => {
+      if (err.code === "EADDRINUSE") {
+        console.warn(`[Port ${port} terpakai] Mencoba mengalihkan server ke http://localhost:${port + 1}...`);
+        listenOnPort(port + 1);
+      } else {
+        console.error("Server error:", err);
+      }
+    });
+  }
+
+  if (process.env.VERCEL !== "1") {
+    listenOnPort(initialPort);
+  }
 }
 
-startServer();
+if (process.env.VERCEL !== "1") {
+  startServer();
+}
+
+export default app;

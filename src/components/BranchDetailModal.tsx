@@ -48,6 +48,13 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
 
   const fetchLiveReviews = useCallback(async () => {
     if (!branch) return;
+
+    if (!aiConfig?.apiKey || aiConfig.apiKey.trim() === '') {
+      setReviewsError('API Key belum dikonfigurasi. Harap masukkan API Key Anda di Pengaturan Mesin AI (ikon roda gigi) untuk menarik data ulasan live.');
+      setReviewsFetched(true);
+      return;
+    }
+
     setIsLoadingReviews(true);
     setReviewsError(null);
 
@@ -76,10 +83,10 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
 
       setRawReviews(Array.isArray(data.reviews) ? data.reviews : []);
       setFetchedAt(data.fetchedAt || null);
-      setReviewsFetched(true);
     } catch (err: any) {
       setReviewsError(err?.message || 'Gagal mengambil ulasan dari Google Maps.');
     } finally {
+      setReviewsFetched(true);
       setIsLoadingReviews(false);
     }
   }, [branch, aiConfig]);
@@ -90,6 +97,26 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
       fetchLiveReviews();
     }
   }, [activeTab, reviewsFetched, isLoadingReviews, fetchLiveReviews]);
+
+  // Muat data ulasan terverifikasi dari Database Lokal PC (Drive G:) saat modal dibuka
+  const loadSavedReviewsFromDB = useCallback(async () => {
+    if (!branch) return;
+    try {
+      const res = await fetch(`/api/saved-reviews?branchName=${encodeURIComponent(branch.name)}`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.reviews) && data.reviews.length > 0) {
+        setRawReviews(data.reviews);
+        setFetchedAt(data.fetchedAt);
+        setReviewsFetched(true);
+      }
+    } catch (err) {
+      console.warn('Gagal membaca ulasan tersimpan dari database lokal:', err);
+    }
+  }, [branch]);
+
+  useEffect(() => {
+    loadSavedReviewsFromDB();
+  }, [loadSavedReviewsFromDB]);
 
   if (!branch) return null;
 
@@ -108,179 +135,49 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
   const currentPlaceId = branch.placeId || defaultCoords[branch.id]?.placeId || `ChIJ_${branch.id}_placeid`;
   const mapsSearchUrl = branch.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${branch.name} ${branch.address || branch.city}`)}`;
 
-  // Generate EXACTLY branch.complaintCount granular complaint items across categories & severities
-  // Generate EXACTLY branch.complaintCount granular complaint items derived from actual branch negatives & Google Reviews
+  // HANYA ekstrak ulasan ASLI nyata dari Google Review (Database Lokal / Live AI) - TANPA TEMPLATE FIKTIF
   const generateDetailedComplaints = (): DetailedComplaintItem[] => {
-    const totalCount = branch.complaintCount || 5;
-    const name = branch.name;
-    const city = branch.city;
-    const result: DetailedComplaintItem[] = [];
+    if (!rawReviews || rawReviews.length === 0) {
+      return [];
+    }
 
-    // Category & Severity Classifier Helper
-    const getCategoryAndSeverity = (text: string, index: number) => {
-      const lower = text.toLowerCase();
-      if (lower.includes('parkir') || lower.includes('akses') || lower.includes('lokasi') || lower.includes('sempit') || lower.includes('padat')) {
-        return {
-          category: 'Aksesibilitas & Parkir Area',
-          severity: 'High' as const,
-          action: 'Atur sistem penataan parkir / jalur khusus antrean kendaraan di area depan outlet.',
-        };
+    return rawReviews.map((rev, idx) => {
+      const lower = rev.text.toLowerCase();
+      let category = 'Pelayanan & Operasional';
+      let severity: 'High' | 'Medium' | 'Low' = 'Medium';
+      let action = 'Tingkatkan standar SOP pelayanan dan evaluasi masukan pelanggan secara berkala.';
+
+      if (lower.includes('parkir') || lower.includes('akses') || lower.includes('lokasi') || lower.includes('sempit')) {
+        category = 'Aksesibilitas & Parkir Area';
+        severity = 'High';
+        action = 'Atur sistem penataan parkir / jalur khusus antrean kendaraan di area depan outlet.';
+      } else if (lower.includes('antrean') || lower.includes('tunggu') || lower.includes('lama') || lower.includes('sabtu')) {
+        category = 'Waktu Tunggu & Antrean Overload';
+        severity = 'High';
+        action = 'Terapkan kuota pendaftaran digital via WA/Aplikasi dan sediakan jalur Express Pit khusus ganti oli.';
+      } else if (lower.includes('stok') || lower.includes('kosong') || lower.includes('filter') || lower.includes('oli')) {
+        category = 'Ketersediaan Stok Sparepart & Oli';
+        severity = 'Medium';
+        action = 'Lakukan otomatisasi restock mingguan untuk part fast-moving berdasarkan proyeksi antrean.';
+      } else if (lower.includes('biaya') || lower.includes('harga') || lower.includes('nota') || lower.includes('kuitansi')) {
+        category = 'Transparansi Biaya & Billing Kuitansi';
+        severity = 'High';
+        action = 'Wajibkan persetujuan digital (Digital Approval Sheet) sebelum mekanik mengeksekusi part tambahan.';
       }
-      if (lower.includes('antrean') || lower.includes('tunggu') || lower.includes('lama') || lower.includes('molor') || lower.includes('sabtu')) {
-        return {
-          category: 'Waktu Tunggu & Antrean Overload',
-          severity: 'High' as const,
-          action: 'Terapkan kuota pendaftaran digital via WA/Aplikasi dan sediakan jalur Express Pit khusus ganti oli.',
-        };
-      }
-      if (lower.includes('stok') || lower.includes('kosong') || lower.includes('filter') || lower.includes('oli') || lower.includes('inden')) {
-        return {
-          category: 'Ketersediaan Stok Sparepart & Oli',
-          severity: 'Medium' as const,
-          action: 'Lakukan otomatisasi restock mingguan untuk part fast-moving berdasarkan proyeksi antrean.',
-        };
-      }
-      if (lower.includes('biaya') || lower.includes('harga') || lower.includes('nota') || lower.includes('edc') || lower.includes('kuitansi')) {
-        return {
-          category: 'Transparansi Biaya & Billing Kuitansi',
-          severity: 'High' as const,
-          action: 'Wajibkan persetujuan digital (Digital Approval Sheet) sebelum mekanik mengeksekusi part tambahan.',
-        };
-      }
-      if (lower.includes('whatsapp') || lower.includes('telepon') || lower.includes('respon') || lower.includes('kasir') || lower.includes('front')) {
-        return {
-          category: 'Layanan Front Office & Respon Telepon',
-          severity: 'Medium' as const,
-          action: 'Tingkatkan standar sapaan pendaftaran & gunakan bot pengirim konfirmasi antrean otomatis.',
-        };
-      }
+
       return {
-        category: index === 0 ? 'Waktu Tunggu & Antrean Overload' : index === 1 ? 'Layanan Front Office & Respon Telepon' : 'Fasilitas Lounge & Ruang Tunggu',
-        severity: (index === 0 ? 'High' : index < 3 ? 'Medium' : 'Low') as 'High' | 'Medium' | 'Low',
-        action: 'Tingkatkan standar SOP pelayanan dan evaluasi kapasitas fasilitas secara berkala.',
-      };
-    };
-
-    // 1. Extract Actual Branch Negatives (Primary Real Sources)
-    if (branch.negatives && Array.isArray(branch.negatives) && branch.negatives.length > 0) {
-      branch.negatives.forEach((negText, idx) => {
-        const { category, severity, action } = getCategoryAndSeverity(negText, idx);
-        
-        const quotes: string[] = [];
-        if (branch.recentReviews && Array.isArray(branch.recentReviews)) {
-          const matchedRev = branch.recentReviews.find((r) => 
-            r.text.toLowerCase().includes(negText.toLowerCase().substring(0, 10)) ||
-            (r.sentiment === 'negative' || r.sentiment === 'neutral')
-          );
-          if (matchedRev) {
-            quotes.push(`"${matchedRev.text}" — ${matchedRev.author} (Google Review ⭐ ${matchedRev.rating}/5.0)`);
-          }
-        }
-
-        if (quotes.length === 0) {
-          quotes.push(`"${negText}, tapi pengerjaan teknisi dan keramahan staf sudah cukup baik." — Ulasan Pengunjung Google Maps`);
-        }
-
-        result.push({
-          id: `actual-neg-${idx + 1}`,
-          category: category,
-          severity: severity,
-          title: negText,
-          description: `Ulasan publik terverifikasi yang diekstraksi dari ulasan Google Review pada unit ${name} (${city}).`,
-          affectedCount: Math.max(2, Math.round((totalCount - idx) * 0.9)),
-          sampleQuotes: quotes,
-          suggestedAction: action,
-        });
-      });
-    }
-
-    // 2. Extract Actual Negative Recent Reviews
-    if (branch.recentReviews && Array.isArray(branch.recentReviews)) {
-      branch.recentReviews
-        .filter((rev) => rev.sentiment === 'negative' || rev.rating <= 3)
-        .forEach((rev, idx) => {
-          const isDuplicate = result.some((r) => r.title.toLowerCase().includes(rev.text.substring(0, 15).toLowerCase()));
-          if (!isDuplicate) {
-            const { category, severity, action } = getCategoryAndSeverity(rev.text, result.length);
-            result.push({
-              id: `actual-rev-${idx + 1}`,
-              category: category,
-              severity: severity,
-              title: `Keluhan Pelanggan: ${rev.text.substring(0, 50)}...`,
-              description: `Ulasan pelanggan Google Review dari ${rev.author} (${rev.date}) pada unit ${name}.`,
-              affectedCount: Math.max(1, Math.round(totalCount * 0.4)),
-              sampleQuotes: [
-                `"${rev.text}" — ${rev.author} (Google Review ⭐ ${rev.rating}/5.0)`
-              ],
-              suggestedAction: action,
-            });
-          }
-        });
-    }
-
-    // 3. Fill remaining items up to totalCount with unit-contextual complaints
-    const contextualTemplates = [
-      {
-        category: 'Waktu Tunggu & Antrean Overload',
-        severity: 'High' as const,
-        title: `Antrean Pengerjaan Servis di ${name} Cukup Panjang Saat Akhir Pekan`,
-        action: 'Terapkan kuota pendaftaran digital via WA/Aplikasi dan sediakan jalur Express Pit khusus ganti oli.',
-        quote: `Antrean pengerjaan ganti oli dan tune up di ${name} lumayan antre kalau datang Sabtu sore.`,
-      },
-      {
-        category: 'Transparansi Biaya & Billing Kuitansi',
-        severity: 'High' as const,
-        title: `Konfirmasi Estimasi Biaya Part Tambahan Sebelum Dipasang`,
-        action: 'Wajibkan persetujuan digital (Digital Approval Sheet) sebelum mekanik mengeksekusi part tambahan.',
-        quote: `Harap mekanik mengonfirmasi rincian estimasi harga part cadangan dulu sebelum dipasang.`,
-      },
-      {
-        category: 'Layanan Front Office & Respon Telepon',
-        severity: 'Medium' as const,
-        title: `Kecepatan Respon WhatsApp & Pendaftaran Booking ${name}`,
-        action: 'Tingkatkan standar sapaan pendaftaran & gunakan bot pengirim konfirmasi antrean otomatis.',
-        quote: `Respon konfirmasi booking via WA di ${name} kadang lambat dibalas saat jam makan siang.`,
-      },
-      {
-        category: 'Fasilitas Lounge & Ruang Tunggu',
-        severity: 'Medium' as const,
-        title: `Kapasitas Tempat Duduk Ruang Tunggu ${name} Saat Jam Sibuk`,
-        action: 'Sediakan kursi fleksibel tambahan dan servis kompresor AC ruang tunggu berkala.',
-        quote: `Tempat duduk ruang tunggu di ${name} agak penuh saat pengunjung ramai di akhir pekan.`,
-      },
-      {
-        category: 'Ketersediaan Stok Sparepart & Oli',
-        severity: 'Low' as const,
-        title: `Stok Varian Filter AC / Filter Udara Mobil Tertentu Kosong`,
-        action: 'Lakukan otomatisasi restock mingguan untuk part fast-moving berdasarkan proyeksi antrean.',
-        quote: `Varian filter AC untuk beberapa tipe mobil langka di ${name} stoknya terbatas jadi inden singkat.`,
-      },
-    ];
-
-    let tIndex = 0;
-    while (result.length < totalCount && tIndex < 10) {
-      const template = contextualTemplates[tIndex % contextualTemplates.length];
-      tIndex++;
-
-      const isDup = result.some((r) => r.title.toLowerCase() === template.title.toLowerCase());
-      if (isDup) continue;
-
-      const affected = Math.max(1, Math.round((totalCount - result.length) * 0.7));
-      result.push({
-        id: `complaint-ctx-${result.length + 1}`,
-        category: template.category,
-        severity: template.severity,
-        title: template.title,
-        description: `Keluhan terpola yang diekstraksi dari ulasan Google Review pada unit ${name} (${city}).`,
-        affectedCount: affected,
+        id: rev.id || `real-rev-${idx + 1}`,
+        category,
+        severity: rev.rating <= 2 ? 'High' : severity,
+        title: `Ulasan Asli Google Review: ${rev.author} (Rating ${rev.rating}⭐)`,
+        description: `Ulasan publik asli terverifikasi dari Google Maps pada ${rev.date || 'baru-baru ini'}.`,
+        affectedCount: 1,
         sampleQuotes: [
-          `"${template.quote}" — Ulasan Pengunjung Google Maps`
+          `"${rev.text}" — ${rev.author} (${rev.date || 'Google Maps'})`
         ],
-        suggestedAction: template.action,
-      });
-    }
-
-    return result;
+        suggestedAction: action,
+      };
+    });
   };
 
   const detailedComplaints = generateDetailedComplaints();
@@ -353,33 +250,55 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
           </button>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="px-6 bg-slate-950/90 border-b border-slate-800 flex items-center gap-4 text-xs font-bold">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`py-3 border-b-2 transition-all flex items-center gap-1.5 ${
-              activeTab === 'overview'
-                ? 'border-blue-500 text-blue-400 font-extrabold'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <MessageSquare className="w-4 h-4" />
-            <span>Ringkasan & Sampel Ulasan</span>
-          </button>
+        {/* Navigation Tabs & Live Sync Action */}
+        <div className="px-6 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between gap-4 text-xs font-bold">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`py-3 border-b-2 transition-all flex items-center gap-1.5 ${
+                activeTab === 'overview'
+                  ? 'border-blue-500 text-blue-400 font-extrabold'
+                  : 'border-transparent text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>Ringkasan & Sampel Ulasan</span>
+            </button>
 
+            <button
+              onClick={() => setActiveTab('complaints')}
+              className={`py-3 border-b-2 transition-all flex items-center gap-1.5 ${
+                activeTab === 'complaints'
+                  ? 'border-rose-500 text-rose-400 font-extrabold'
+                  : 'border-transparent text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <AlertTriangle className="w-4 h-4 text-rose-400" />
+              <span>Detail List Isu Komplain ({branch.complaintCount} Isu Ditampilkan Presisi)</span>
+              <span className="px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 text-[10px]">
+                Klik untuk Audit
+              </span>
+            </button>
+          </div>
+
+          {/* Dedicated Live AI Review Extraction Button */}
           <button
-            onClick={() => setActiveTab('complaints')}
-            className={`py-3 border-b-2 transition-all flex items-center gap-1.5 ${
-              activeTab === 'complaints'
-                ? 'border-rose-500 text-rose-400 font-extrabold'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
+            onClick={fetchLiveReviews}
+            disabled={isLoadingReviews}
+            className="px-3 py-1.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-[11px] rounded-lg shadow-md flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
+            title="Klik untuk menarik ulasan publik Google Review secara real-time via AI"
           >
-            <AlertTriangle className="w-4 h-4 text-rose-400" />
-            <span>Detail List Isu Komplain ({branch.complaintCount} Isu Ditampilkan Presisi)</span>
-            <span className="px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 text-[10px]">
-              Klik untuk Audit
-            </span>
+            {isLoadingReviews ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>Menarik Ulasan Live AI...</span>
+              </>
+            ) : (
+              <>
+                <RefreshCw className="w-3.5 h-3.5 text-slate-950" />
+                <span>⚡ Extraksi Live Ulasan AI</span>
+              </>
+            )}
           </button>
         </div>
 
