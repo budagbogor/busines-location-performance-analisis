@@ -294,9 +294,9 @@ app.post("/api/test-ai", async (req, res) => {
           return;
         }
       } catch (networkErr: any) {
-        res.status(500).json({
+        res.status(400).json({
           success: false,
-          error: `Gagal terhubung ke host (${targetBase}). Pastikan URL Base API benar dan jaringan internet terhubung.`,
+          error: `Gagal terhubung ke host (${targetBase}): ${networkErr?.message || String(networkErr)}. Pastikan URL Base API benar dan jaringan internet terhubung.`,
         });
         return;
       }
@@ -305,7 +305,7 @@ app.post("/api/test-ai", async (req, res) => {
       return;
     }
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err?.message || String(err) });
+    res.status(400).json({ success: false, error: err?.message || String(err) });
   }
 });
 
