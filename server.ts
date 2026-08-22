@@ -20,8 +20,15 @@ const connectionString = process.env.DATABASE_URL || "postgresql://u2H8cz2EvssDm
 
 const pgPool = new Pool({
   connectionString,
-  ssl: false,
-  connectionTimeoutMillis: 10000,
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+  connectionTimeoutMillis: 5000,
+  idleTimeoutMillis: 30000,
+  max: 10,
+});
+
+// Tangkap error idle pool agar tidak melempar uncaught error yang memicu crash 500 Vercel
+pgPool.on("error", (err) => {
+  console.warn("⚠️ Peringatan koneksi PostgreSQL pool idle:", err?.message || String(err));
 });
 
 // Local Disk Database Helper (Drive G:)

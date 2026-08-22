@@ -113,8 +113,19 @@ export async function testAIConnection(config: AIConfig): Promise<{ success: boo
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(config),
     });
+
+    const contentType = res.headers.get('content-type') || '';
+    let data: any = {};
+    if (contentType.includes('application/json')) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      return {
+        success: false,
+        message: `Koneksi Vercel Serverless (HTTP ${res.status}): ${text.substring(0, 120)}`,
+      };
+    }
     
-    const data = await res.json();
     if (res.ok && data.success) {
       return { success: true, message: data.message || 'Koneksi ke Engine AI berhasil!' };
     } else {
