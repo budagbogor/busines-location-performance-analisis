@@ -29,6 +29,9 @@ const DB_PATH = path.join(process.cwd(), "data", "local-database.json");
 
 function getLocalDatabase(): Record<string, any> {
   try {
+    if (process.env.VERCEL === "1") {
+      return { lastUpdated: new Date().toISOString(), branches: {} };
+    }
     if (!fs.existsSync(DB_PATH)) {
       const initial = { lastUpdated: new Date().toISOString(), branches: {} };
       fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
@@ -44,6 +47,7 @@ function getLocalDatabase(): Record<string, any> {
 }
 
 function saveBranchReviewsToLocalDB(branchName: string, reviews: any[], fetchedAt: string) {
+  if (process.env.VERCEL === "1") return; // Vercel filesystem is read-only, Cloud PostgreSQL handles storage
   try {
     const db = getLocalDatabase();
     if (!db.branches) db.branches = {};
@@ -110,8 +114,11 @@ async function getBranchReviewsFromDB(branchName: string) {
   return { reviews: [], fetchedAt: null, source: "none" };
 }
 
-// Inisialisasi Otomatis Skema PostgreSQL Sumobase & Migrasi Data
+// Inisialisasi Otomatis Skema PostgreSQL Sumobase & Migrasi Data (Serverless Safe)
+let isDbInitialized = false;
+
 async function initPostgresDB() {
+  if (isDbInitialized) return;
   try {
     const client = await pgPool.connect();
     try {
@@ -124,22 +131,23 @@ async function initPostgresDB() {
           last_sync TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
+      isDbInitialized = true;
       console.log("  ✅ Tabel 'branch_reviews' terverifikasi di Cloud PostgreSQL Sumobase");
 
-      // Migrasi Data Eksisting dari Drive G: ke Cloud PostgreSQL Sumobase
-      const localDb = getLocalDatabase();
-      if (localDb.branches && Object.keys(localDb.branches).length > 0) {
-        for (const [bName, bData] of Object.entries<any>(localDb.branches)) {
-          if (bData && Array.isArray(bData.reviews) && bData.reviews.length > 0) {
-            await client.query(`
-              INSERT INTO branch_reviews (branch_name, reviews, fetched_at, last_sync)
-              VALUES ($1, $2, $3, NOW())
-              ON CONFLICT (branch_name)
-              DO UPDATE SET reviews = $2, fetched_at = $3, last_sync = NOW();
-            `, [bName, JSON.stringify(bData.reviews), bData.fetchedAt || null]);
+      if (process.env.VERCEL !== "1") {
+        const localDb = getLocalDatabase();
+        if (localDb.branches && Object.keys(localDb.branches).length > 0) {
+          for (const [bName, bData] of Object.entries<any>(localDb.branches)) {
+            if (bData && Array.isArray(bData.reviews) && bData.reviews.length > 0) {
+              await client.query(`
+                INSERT INTO branch_reviews (branch_name, reviews, fetched_at, last_sync)
+                VALUES ($1, $2, $3, NOW())
+                ON CONFLICT (branch_name)
+                DO UPDATE SET reviews = $2, fetched_at = $3, last_sync = NOW();
+              `, [bName, JSON.stringify(bData.reviews), bData.fetchedAt || null]);
+            }
           }
         }
-        console.log("  📦 Migrasi data dari Drive G: ke Cloud PostgreSQL Sumobase selesai!");
       }
     } finally {
       client.release();
@@ -149,7 +157,7 @@ async function initPostgresDB() {
   }
 }
 
-initPostgresDB();
+initPostgresDB().catch(() => {});
 
 // Endpoint API untuk membaca ulasan tersimpan dari Database (PostgreSQL Sumobase / Drive G:)
 app.get("/api/saved-reviews", async (req, res) => {
