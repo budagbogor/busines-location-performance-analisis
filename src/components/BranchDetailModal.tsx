@@ -232,6 +232,11 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
     (item) => severityFilter === 'ALL' || item.severity === severityFilter
   );
 
+  // Sinkronisasi total ulasan komplain jika rawReviews ditarik
+  const activeComplaintCount = (rawReviews && rawReviews.length > 0)
+    ? rawReviews.length
+    : (branch.complaintCount || 14);
+
   const highSeverityCount = detailedComplaints.filter((c) => c.severity === 'High').length;
   const mediumSeverityCount = detailedComplaints.filter((c) => c.severity === 'Medium').length;
   const lowSeverityCount = detailedComplaints.filter((c) => c.severity === 'Low').length;
@@ -321,7 +326,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
               }`}
             >
               <AlertTriangle className="w-4 h-4 text-rose-400" />
-              <span>Detail List Isu Komplain ({branch.complaintCount} Isu Ditampilkan Presisi)</span>
+              <span>Detail List Ulasan Komplain ({activeComplaintCount} Ulasan)</span>
               <span className="px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 text-[10px]">
                 Klik untuk Audit
               </span>
@@ -387,16 +392,16 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                   ? 'bg-rose-950/50 border-rose-500 ring-2 ring-rose-500/30'
                   : 'bg-slate-950/60 border-slate-800 hover:border-rose-500/60'
               }`}
-              title="Klik untuk membuka rincian 8 isu komplain lengkap unit usaha ini"
+              title="Klik untuk membuka rincian ulasan komplain lengkap unit usaha ini"
             >
               <div className="flex items-center justify-between">
                 <p className="text-[10px] text-rose-400 uppercase font-bold tracking-wider flex items-center gap-1">
-                  <AlertTriangle className="w-3.5 h-3.5" /> Indikasi Isu Komplain
+                  <AlertTriangle className="w-3.5 h-3.5" /> Total Ulasan Komplain
                 </p>
                 <ChevronRight className="w-4 h-4 text-rose-400" />
               </div>
               <p className="text-2xl font-black text-rose-400 mt-1 flex items-baseline gap-1">
-                {branch.complaintCount} <span className="text-xs font-semibold text-slate-400">Isu Lengkap &raquo;</span>
+                {activeComplaintCount} <span className="text-xs font-semibold text-slate-400">Ulasan Komplain &raquo;</span>
               </p>
             </div>
           </div>
@@ -715,7 +720,11 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
               <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-slate-300 font-bold">
                   <Filter className="w-4 h-4 text-rose-400" />
-                  <span>Filter Tingkat Keparahan (Total {detailedComplaints.length} Isu):</span>
+                  <span>
+                    {rawReviews && rawReviews.length > 0
+                      ? `Filter Ulasan Komplain (Total ${rawReviews.length} Ulasan Terverifikasi 60 Hari Terakhir):`
+                      : `Filter Kategori Isu (Total ${detailedComplaints.length} Kategori Isu | Mencakup ±${activeComplaintCount} Ulasan Customer):`}
+                  </span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-1.5">

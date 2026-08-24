@@ -374,7 +374,7 @@ export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => onSelectBranch(branch, 'complaints')}
-                          title="Klik untuk melihat detail list isu komplain unit usaha ini"
+                          title="Klik untuk melihat detail list ulasan komplain unit usaha ini"
                           className={`px-2 py-0.5 rounded text-xs font-bold transition-all flex items-center gap-1 cursor-pointer hover:scale-105 hover:underline ${
                             branch.complaintCount > 50 
                               ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30' 
@@ -382,7 +382,7 @@ export const BranchPerformanceTable: React.FC<BranchPerformanceTableProps> = ({
                           }`}
                         >
                           <AlertTriangle className="w-3 h-3 text-rose-400" />
-                          <span>{branch.complaintCount} Isu &raquo;</span>
+                          <span>{branch.complaintCount} Ulasan Komplain &raquo;</span>
                         </button>
 
                         {/* Trend indicator */}
