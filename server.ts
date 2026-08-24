@@ -278,14 +278,47 @@ app.post(["/api/test-ai", "/test-ai"], async (req, res) => {
         rawBase = rawBase.replace("api.sumopod.com", "ai.sumopod.com");
       }
       const targetBase = rawBase.replace(/\/+$/, "");
-      const targetUrl = `${targetBase}/chat/completions`;
+      const modelsUrl = `${targetBase}/models`;
       const testModel = model || (provider === "sumopod" ? "kimi-k3" : "gpt-4o-mini");
 
+      // 1. Coba verifikasi cepat via GET /models (respon super cepat ~150ms)
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 25000);
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
 
-        const fetchRes = await fetch(targetUrl, {
+        const modelsRes = await fetch(modelsUrl, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${keyToUse.trim()}`,
+          },
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+
+        if (modelsRes.ok) {
+          res.json({
+            success: true,
+            message: `Koneksi terhubung & terverifikasi aktif ke ${provider.toUpperCase()} (${testModel})!`,
+          });
+          return;
+        } else if (modelsRes.status === 401 || modelsRes.status === 403) {
+          res.status(400).json({
+            success: false,
+            error: `API Key ${provider.toUpperCase()} tidak valid atau ditolak (HTTP ${modelsRes.status}).`,
+          });
+          return;
+        }
+      } catch (e: any) {
+        // Lanjutkan ke fallback chat completion jika GET /models tidak tersedia
+      }
+
+      // 2. Fallback: POST /chat/completions
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+        const chatUrl = `${targetBase}/chat/completions`;
+        const fetchRes = await fetch(chatUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -325,7 +358,7 @@ app.post(["/api/test-ai", "/test-ai"], async (req, res) => {
         res.status(400).json({
           success: false,
           error: isAbort
-            ? `Timeout (25s) terlampaui saat menguji ke ${targetBase}. Pastikan API Key dan Base URL Sumopod benar.`
+            ? `Timeout terlampaui saat menguji ke ${targetBase}. Pastikan API Key dan Base URL Sumopod benar.`
             : `Gagal terhubung ke host (${targetBase}): ${networkErr?.message || String(networkErr)}`,
         });
         return;
@@ -1094,21 +1127,6 @@ app.use((err: any, _req: any, res: any, _next: any) => {
 });
 
 async function startServer() {
-  if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
-    const { createServer: createViteServer } = await import("vite");
-    const vite = await createViteServer({
-      server: { middlewareMode: true, allowedHosts: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (_req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
-  }
-
   const initialPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
   function listenOnPort(port: number) {
@@ -1128,6 +1146,26 @@ async function startServer() {
 
   if (process.env.VERCEL !== "1") {
     listenOnPort(initialPort);
+  }
+
+  if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
+    try {
+      const { createServer: createViteServer } = await import("vite");
+      const vite = await createViteServer({
+        server: { middlewareMode: true, allowedHosts: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+      console.log("  ⚡ Vite Dev Middleware terpasang!");
+    } catch (viteErr) {
+      console.error("Vite setup error:", viteErr);
+    }
+  } else {
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(distPath, "index.html"));
+    });
   }
 }
 
