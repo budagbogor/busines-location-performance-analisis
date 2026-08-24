@@ -283,7 +283,7 @@ app.post(["/api/test-ai", "/test-ai"], async (req, res) => {
 
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        const timeoutId = setTimeout(() => controller.abort(), 25000);
 
         const fetchRes = await fetch(targetUrl, {
           method: "POST",
@@ -293,7 +293,8 @@ app.post(["/api/test-ai", "/test-ai"], async (req, res) => {
           },
           body: JSON.stringify({
             model: testModel,
-            messages: [{ role: "user", content: "Test ping connection" }],
+            messages: [{ role: "user", content: "ping" }],
+            max_tokens: 5,
           }),
           signal: controller.signal,
         });
@@ -324,7 +325,7 @@ app.post(["/api/test-ai", "/test-ai"], async (req, res) => {
         res.status(400).json({
           success: false,
           error: isAbort
-            ? `Timeout (8s) terlampaui saat menguji ke ${targetBase}. Pastikan API Key dan Base URL Sumopod benar.`
+            ? `Timeout (25s) terlampaui saat menguji ke ${targetBase}. Pastikan API Key dan Base URL Sumopod benar.`
             : `Gagal terhubung ke host (${targetBase}): ${networkErr?.message || String(networkErr)}`,
         });
         return;
