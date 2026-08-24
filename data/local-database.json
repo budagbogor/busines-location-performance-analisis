@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-22T12:07:22.783Z",
+  "lastUpdated": "2026-08-24T12:28:17.290Z",
   "branches": {
     "Mobeng Brigjen Katamso": {
       "reviews": [],
@@ -8,8 +8,13 @@
     },
     "Mobeng Citraland": {
       "reviews": [],
-      "fetchedAt": "22 Agustus 2026, 19.07 WIB",
-      "lastSync": "2026-08-22T12:07:22.783Z"
+      "fetchedAt": "24 Agustus 2026, 19.28 WIB",
+      "lastSync": "2026-08-24T12:28:17.290Z"
+    },
+    "Mobeng Ahmad Yani": {
+      "reviews": [],
+      "fetchedAt": "24 Agustus 2026, 18.25 WIB",
+      "lastSync": "2026-08-24T11:25:43.962Z"
     }
   }
 }

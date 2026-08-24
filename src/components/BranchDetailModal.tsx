@@ -59,7 +59,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
     setReviewsError(null);
 
     try {
-      const payload: Record<string, string> = {
+      const payload: Record<string, string | number> = {
         branchName: branch.name,
         city: branch.city || '',
         address: branch.address || '',
@@ -67,6 +67,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
         model: aiConfig?.model || 'gemini-3.6-flash',
         apiKey: aiConfig?.apiKey || '',
         baseUrl: aiConfig?.baseUrl || '',
+        months: 6,
       };
 
       const response = await fetch('/api/fetch-reviews', {
@@ -135,12 +136,12 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
   const currentPlaceId = branch.placeId || defaultCoords[branch.id]?.placeId || `ChIJ_${branch.id}_placeid`;
   const mapsSearchUrl = branch.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${branch.name} ${branch.address || branch.city}`)}`;
 
-  // Ekstrak ulasan ASLI Google Review (Database / Live AI) atau Fallback Indikasi Isu 60 Hari Terakhir
+  // Ekstrak ulasan ASLI Google Review (Database / Live AI) atau Fallback Indikasi Isu 6 Bulan Terakhir
   const generateDetailedComplaints = (): DetailedComplaintItem[] => {
     if (rawReviews && rawReviews.length > 0) {
       return rawReviews.map((rev, idx) => {
         const lower = rev.text.toLowerCase();
-        let category = 'Pelayanan & Operasional (60 Hari Terakhir)';
+        let category = 'Pelayanan & Operasional (6 Bulan Terakhir)';
         let severity: 'High' | 'Medium' | 'Low' = 'Medium';
         let action = 'Tingkatkan standar SOP pelayanan dan evaluasi masukan pelanggan secara berkala.';
 
@@ -166,18 +167,18 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
           id: rev.id || `real-rev-${idx + 1}`,
           category,
           severity: rev.rating <= 2 ? 'High' : severity,
-          title: `Ulasan Google Review (60 Hari Terakhir): ${rev.author} (${rev.rating}⭐)`,
-          description: `Ulasan terverifikasi publik Google Maps dalam rentang 60 hari terakhir pada ${rev.date || 'baru-baru ini'}.`,
+          title: `Ulasan Google Review (6 Bulan Terakhir): ${rev.author} (${rev.rating}⭐)`,
+          description: `Ulasan terverifikasi publik Google Maps dalam rentang 6 bulan terakhir pada ${rev.date || 'baru-baru ini'}.`,
           affectedCount: 1,
           sampleQuotes: [
-            `"${rev.text}" — ${rev.author} (${rev.date || 'Google Maps 60 Hari Terakhir'})`
+            `"${rev.text}" — ${rev.author} (${rev.date || 'Google Maps 6 Bulan Terakhir'})`
           ],
           suggestedAction: action,
         };
       });
     }
 
-    // Fallback jika ulasan live belum ditarik: tampilkan daftar isu terdeteksi 60 hari terakhir dari branch.negatives
+    // Fallback jika ulasan live belum ditarik: tampilkan daftar isu terdeteksi 6 bulan terakhir dari branch.negatives
     const negatives = branch.negatives && branch.negatives.length > 0 
       ? branch.negatives 
       : [
@@ -188,7 +189,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
 
     return negatives.map((negItem, idx) => {
       const lower = negItem.toLowerCase();
-      let category = 'Pelayanan & Operasional (60 Hari Terakhir)';
+      let category = 'Pelayanan & Operasional (6 Bulan Terakhir)';
       let severity: 'High' | 'Medium' | 'Low' = idx % 2 === 0 ? 'High' : 'Medium';
       let action = 'Tingkatkan standar SOP operasional dan kecepatan layanan cabang.';
 
@@ -216,11 +217,11 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
         id: `neg-issue-${idx + 1}`,
         category,
         severity,
-        title: `Indikasi Isu Komplain 60 Hari Terakhir: ${negItem}`,
-        description: `Indikator keluhan terdeteksi dari audit ulasan 60 hari terakhir pada unit usaha ${branch.name}.`,
+        title: `Indikasi Isu Komplain 6 Bulan Terakhir: ${negItem}`,
+        description: `Indikator keluhan terdeteksi dari audit ulasan 6 bulan terakhir pada unit usaha ${branch.name}.`,
         affectedCount: affectedEst,
         sampleQuotes: [
-          `"${negItem} — terdeteksi pada ulasan Google Review 60 hari terakhir"`
+          `"${negItem} — terdeteksi pada ulasan Google Review 6 bulan terakhir"`
         ],
         suggestedAction: action,
       };
@@ -722,7 +723,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                   <Filter className="w-4 h-4 text-rose-400" />
                   <span>
                     {rawReviews && rawReviews.length > 0
-                      ? `Filter Ulasan Komplain (Total ${rawReviews.length} Ulasan Terverifikasi 60 Hari Terakhir):`
+                      ? `Filter Ulasan Komplain (Total ${rawReviews.length} Ulasan Terverifikasi 6 Bulan Terakhir (180 Hari)):`
                       : `Filter Kategori Isu (Total ${detailedComplaints.length} Kategori Isu | Mencakup ±${activeComplaintCount} Ulasan Customer):`}
                   </span>
                 </div>
