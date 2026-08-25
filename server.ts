@@ -908,7 +908,182 @@ app.post(["/api/send-social-reply", "/send-social-reply"], async (req, res) => {
   }
 });
 
-// Endpoint: Ambil teks asli Google Review rating 1-3 bintang untuk satu cabang
+// Endpoint: Batch audit Google Review data untuk SEMUA cabang Mobeng
+app.post(["/api/batch-audit-reviews"], async (req, res) => {
+  try {
+    const { provider = "sumopod", model, apiKey, baseUrl, months = 6 } = req.body || {};
+
+    // Ambil daftar cabang dari mockDatasets (dikirim dari frontend atau hardcoded)
+    const branches: Array<{ name: string; city: string; address: string }> = req.body.branches || [];
+    if (!branches.length) {
+      res.status(400).json({ error: "Daftar cabang (branches) wajib diisi." });
+      return;
+    }
+
+    const monthsNum = typeof months === "number" ? months : parseInt(months) || 6;
+    const daysNum = monthsNum * 30;
+    const results: any[] = [];
+    let processedCount = 0;
+
+    console.log(`\n🔍 BATCH AUDIT DIMULAI: ${branches.length} cabang, provider: ${provider}\n`);
+
+    for (const branch of branches) {
+      processedCount++;
+      const locationHint = branch.address
+        ? `${branch.name}, ${branch.address}, ${branch.city || ""}`
+        : `${branch.name} ${branch.city || ""}`;
+
+      console.log(`  [${processedCount}/${branches.length}] Audit: ${branch.name}...`);
+
+      const AUDIT_PROMPT = `Anda adalah sistem audit data Google Maps yang presisi dan akurat.
+
+Tugas: Cari informasi AKURAT terkini untuk bisnis bengkel mobil ini di Google Maps:
+"${locationHint}"
+
+INSTRUKSI KETAT:
+1. Cari bisnis ini di Google Maps dan temukan data AKURAT berikut:
+   a. Rating bintang rata-rata saat ini (misal: 4.8, 5.0, dll)
+   b. Jumlah total ulasan saat ini (misal: 89, 2750, dll)
+   c. Semua ulasan dalam ${daysNum} HARI TERAKHIR (${monthsNum} bulan) yang mengandung KELUHAN, KRITIK, SARAN, atau MASUKAN NEGATIF — dari rating bintang 1 SAMPAI 5
+      - Termasuk ulasan bintang 4 atau 5 yang di dalamnya menyebutkan kekurangan/saran perbaikan
+      - Contoh: ulasan bintang 5 yang berisi "pelayanan bagus tapi parkir sempit" tetap harus diambil karena ada unsur kritik
+
+2. Salin teks ulasan SAMA PERSIS seperti yang ditulis reviewer
+3. Urutkan dari TERBARU ke TERLAMA
+4. Jika bisnis ini benar-benar TIDAK memiliki ulasan bernada negatif/kritik dalam ${monthsNum} bulan terakhir, kembalikan reviews sebagai array kosong
+
+Kembalikan HANYA JSON valid (tanpa wrapper markdown) dengan format:
+{
+  "branchName": "${branch.name}",
+  "currentRating": 4.8,
+  "totalReviews": 2750,
+  "reviews": [
+    {
+      "id": "rev-1",
+      "author": "Nama Reviewer",
+      "rating": 4,
+      "date": "X bulan lalu",
+      "text": "Teks ulasan lengkap sama persis",
+      "sentiment": "negative"
+    }
+  ]
+}
+
+PENTING: 
+- Jangan buat data fiktif. Hanya data yang benar-benar ada di Google Maps.
+- Jika tidak yakin dengan data, lebih baik kosongkan daripada mengarang.
+- Rating dan jumlah ulasan HARUS sesuai dengan yang tampil di Google Maps saat ini.`;
+
+      try {
+        let auditResult: any = null;
+
+        if (provider === "sumopod" || provider === "openai") {
+          const keyToUse = apiKey || process.env.SUMOPOD_API_KEY || process.env.OPENAI_API_KEY;
+          if (!keyToUse) {
+            results.push({ branchName: branch.name, error: "API Key tidak tersedia", success: false });
+            continue;
+          }
+
+          let rawBase = baseUrl || process.env.SUMOPOD_BASE_URL || "https://ai.sumopod.com/v1";
+          if (rawBase.includes("api.sumopod.com")) rawBase = rawBase.replace("api.sumopod.com", "ai.sumopod.com");
+          const targetBase = rawBase.replace(/\/+$/, "");
+          const targetUrl = `${targetBase}/chat/completions`;
+          const modelToUse = model || "gpt-4o";
+
+          const response = await fetch(targetUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${keyToUse}` },
+            body: JSON.stringify({
+              model: modelToUse,
+              messages: [{ role: "user", content: AUDIT_PROMPT }],
+              response_format: { type: "json_object" },
+            }),
+          });
+
+          if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errText.substring(0, 200)}`);
+          }
+
+          const jsonRes = await response.json();
+          const content = jsonRes.choices?.[0]?.message?.content || "{}";
+          const cleaned = content.replace(/```json/g, "").replace(/```/g, "").trim();
+          auditResult = JSON.parse(cleaned);
+        } else if (provider === "gemini") {
+          const keyToUse = apiKey || process.env.GEMINI_API_KEY;
+          if (!keyToUse) {
+            results.push({ branchName: branch.name, error: "Gemini API Key tidak tersedia", success: false });
+            continue;
+          }
+          const ai = getGeminiClient(keyToUse);
+          const geminiModel = model || "gemini-3.6-flash";
+          const response = await ai.models.generateContent({
+            model: geminiModel,
+            contents: AUDIT_PROMPT,
+            config: { tools: [{ googleSearch: {} }] },
+          });
+          const responseText = response.text || "{}";
+          const cleaned = responseText.replace(/```json/gi, "").replace(/```/g, "").trim();
+          const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+          auditResult = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+        }
+
+        if (auditResult) {
+          const reviews = Array.isArray(auditResult.reviews) ? auditResult.reviews
+            .filter((r: any) => r && typeof r.text === "string" && r.text.trim().length > 0)
+            .map((r: any, i: number) => ({
+              ...r,
+              id: r.id || `audit-rev-${i + 1}`,
+              rating: typeof r.rating === "number" ? r.rating : parseInt(r.rating) || 3,
+              sentiment: r.rating <= 2 ? "negative" : r.rating <= 3 ? "neutral" : "mixed",
+              tags: r.tags || [],
+            })) : [];
+
+          const now = new Date();
+          const fetchedAt = `${now.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}, ${now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB`;
+
+          // Simpan ke database
+          await saveBranchReviewsToDB(branch.name, reviews, fetchedAt);
+
+          results.push({
+            branchName: branch.name,
+            success: true,
+            currentRating: auditResult.currentRating || null,
+            totalReviews: auditResult.totalReviews || null,
+            complaintReviewsFound: reviews.length,
+            reviews,
+            fetchedAt,
+          });
+
+          console.log(`  ✅ ${branch.name}: Rating ${auditResult.currentRating}, ${auditResult.totalReviews} ulasan, ${reviews.length} komplain ditemukan`);
+        }
+      } catch (err: any) {
+        console.error(`  ❌ ${branch.name}: ${err?.message}`);
+        results.push({ branchName: branch.name, error: err?.message || String(err), success: false });
+      }
+
+      // Delay 2 detik antar request agar tidak kena rate limit
+      if (processedCount < branches.length) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+
+    console.log(`\n✅ BATCH AUDIT SELESAI: ${results.filter(r => r.success).length}/${branches.length} berhasil\n`);
+
+    res.json({
+      success: true,
+      totalBranches: branches.length,
+      successCount: results.filter(r => r.success).length,
+      failedCount: results.filter(r => !r.success).length,
+      results,
+    });
+  } catch (err: any) {
+    console.error("Error in /api/batch-audit-reviews:", err);
+    res.status(500).json({ error: "Gagal memproses batch audit.", message: err?.message || String(err) });
+  }
+});
+
+// Endpoint: Ambil ulasan Google Review bernada komplain/kritik untuk satu cabang
 app.post(["/api/fetch-reviews", "/fetch-reviews"], async (req, res) => {
   try {
     const { branchName, city, address, provider = "gemini", model, apiKey, baseUrl, forceRefresh, months = 6 } = req.body || {};
@@ -944,10 +1119,12 @@ Tugas: Cari dan temukan semua ulasan Google Review ${daysNum} HARI TERAKHIR (${m
 
 INSTRUKSI KETAT:
 1. Cari ulasan Google Maps / Google Review terbaru dalam rentang ${daysNum} HARI TERAKHIR (${monthsNum} bulan ke belakang)
-2. Ambil ulasan dari rating bintang 1 sampai 5 (utamakan ulasan negatif/kritis/komplain bintang 1, 2, 3 serta ulasan 4 & 5 jika ada dalam rentang ${monthsNum} bulan ke belakang)
+2. Ambil SEMUA ulasan yang mengandung KELUHAN, KRITIK, SARAN, atau MASUKAN NEGATIF — dari rating bintang 1 SAMPAI 5
+   - Termasuk ulasan bintang 4 atau 5 yang di dalamnya menyebutkan kekurangan atau saran perbaikan
+   - Contoh: ulasan bintang 5 "pelayanan bagus tapi parkir sempit" tetap harus diambil
 3. Salin teks ulasan SAMA PERSIS seperti yang ditulis reviewer di Google Maps, jangan ubah sepatah kata pun
 4. Urutkan dari ulasan TERBARU ke ulasan TERLAMA dalam rentang ${monthsNum} bulan ke belakang
-5. Sertakan: nama reviewer, tanggal ulasan (misal "1 minggu lalu", "1 bulan lalu", "3 bulan lalu", "${monthsNum} bulan lalu"), rating bintang, dan teks lengkap ulasan
+5. Sertakan: nama reviewer, tanggal ulasan (misal "1 minggu lalu", "1 bulan lalu", "3 bulan lalu"), rating bintang, dan teks lengkap ulasan
 6. Jika menemukan ulasan berbahasa Indonesia maupun Inggris, sertakan keduanya
 
 Kembalikan HANYA JSON array valid (tanpa wrapper markdown) dengan format persis:
@@ -955,14 +1132,14 @@ Kembalikan HANYA JSON array valid (tanpa wrapper markdown) dengan format persis:
   {
     "id": "rev-1",
     "author": "Nama Reviewer",
-    "rating": 2,
+    "rating": 4,
     "date": "X bulan lalu (dalam rentang ${monthsNum} bulan terakhir)",
     "text": "Teks ulasan lengkap sama persis seperti yang ditulis reviewer di Google Maps",
     "sentiment": "negative"
   }
 ]
 
-Jika tidak ada ulasan yang ditemukan, kembalikan array kosong: []
+Jika tidak ada ulasan bernada komplain/kritik yang ditemukan, kembalikan array kosong: []
 PENTING: Jangan buat ulasan fiktif. Hanya salin ulasan yang benar-benar ada di Google Maps dalam rentang ${monthsNum} bulan ke belakang.`;
 
     const now = new Date();

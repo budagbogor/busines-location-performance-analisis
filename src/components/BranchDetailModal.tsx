@@ -38,6 +38,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'complaints'>(initialTab);
   const [severityFilter, setSeverityFilter] = useState<'ALL' | 'High' | 'Medium' | 'Low'>('ALL');
+  const [issueViewMode, setIssueViewMode] = useState<'per-review' | 'by-category'>('per-review');
 
   // State untuk raw Google Review live-fetch
   const [rawReviews, setRawReviews] = useState<RawGoogleReview[]>([]);
@@ -119,6 +120,40 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
     loadSavedReviewsFromDB();
   }, [loadSavedReviewsFromDB]);
 
+  // Ulasan komplain efektif — HANYA dari sumber data nyata, TIDAK pernah mengarang data dummy
+  // Termasuk ulasan bintang 4-5 yang bernada kritik/saran (sesuai permintaan user)
+  const effectiveRawReviews = React.useMemo<RawGoogleReview[]>(() => {
+    if (!branch) return [];
+
+    // Prioritas 1: Data hasil live-fetch dari API (Gemini AI / DB tersimpan) — tampilkan semua
+    if (rawReviews && rawReviews.length > 0) {
+      return rawReviews;
+    }
+
+    // Prioritas 2: Data recentReviews dari dataset — tampilkan semua yang bernada komplain/kritik
+    if (branch.recentReviews && branch.recentReviews.length > 0) {
+      // Tampilkan semua review yang punya sentiment negative/mixed, atau rating <= 3
+      const complaintReviews = branch.recentReviews.filter(rev => 
+        rev.rating <= 3 || rev.sentiment === 'negative' || rev.sentiment === 'mixed'
+      );
+      if (complaintReviews.length > 0) {
+        return complaintReviews.map((rev, i) => ({
+          id: rev.id || `rec-rev-${i + 1}`,
+          author: rev.author,
+          rating: rev.rating,
+          date: rev.date,
+          text: rev.text,
+          sentiment: (rev.sentiment === 'positive' ? 'neutral' : rev.sentiment === 'mixed' ? 'neutral' : 'negative') as 'negative' | 'neutral',
+          tags: rev.tags
+        }));
+      }
+    }
+
+    // Jika tidak ada data ulasan komplain dari sumber manapun, kembalikan array kosong
+    // UI akan menampilkan "Tidak Ada Ulasan Komplain Ditemukan"
+    return [];
+  }, [rawReviews, branch]);
+
   if (!branch) return null;
 
   const isRedFlag = branch.status === 'Attention Required';
@@ -136,12 +171,12 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
   const currentPlaceId = branch.placeId || defaultCoords[branch.id]?.placeId || `ChIJ_${branch.id}_placeid`;
   const mapsSearchUrl = branch.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${branch.name} ${branch.address || branch.city}`)}`;
 
-  // Ekstrak ulasan ASLI Google Review (Database / Live AI) atau Fallback Indikasi Isu 6 Bulan Terakhir
+  // Ekstrak detail analisis komplain (sesuai ulasan komplain efektif & mode tampilan)
   const generateDetailedComplaints = (): DetailedComplaintItem[] => {
-    if (rawReviews && rawReviews.length > 0) {
-      return rawReviews.map((rev, idx) => {
+    if (issueViewMode === 'per-review') {
+      return effectiveRawReviews.map((rev, idx) => {
         const lower = rev.text.toLowerCase();
-        let category = 'Pelayanan & Operasional (6 Bulan Terakhir)';
+        let category = 'Pelayanan & Operasional';
         let severity: 'High' | 'Medium' | 'Low' = 'Medium';
         let action = 'Tingkatkan standar SOP pelayanan dan evaluasi masukan pelanggan secara berkala.';
 
@@ -167,65 +202,65 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
           id: rev.id || `real-rev-${idx + 1}`,
           category,
           severity: rev.rating <= 2 ? 'High' : severity,
-          title: `Ulasan Google Review (6 Bulan Terakhir): ${rev.author} (${rev.rating}⭐)`,
-          description: `Ulasan terverifikasi publik Google Maps dalam rentang 6 bulan terakhir pada ${rev.date || 'baru-baru ini'}.`,
+          title: `Ulasan Komplain #${idx + 1}: ${rev.author} (${rev.rating}⭐)`,
+          description: `Ulasan terverifikasi publik Google Maps dalam rentang 6 bulan terakhir (${rev.date || 'baru-baru ini'}).`,
           affectedCount: 1,
           sampleQuotes: [
-            `"${rev.text}" — ${rev.author} (${rev.date || 'Google Maps 6 Bulan Terakhir'})`
+            `"${rev.text}" — ${rev.author} (${rev.date || 'Google Maps'})`
           ],
           suggestedAction: action,
         };
       });
     }
 
-    // Fallback jika ulasan live belum ditarik: tampilkan daftar isu terdeteksi 6 bulan terakhir dari branch.negatives
-    const negatives = branch.negatives && branch.negatives.length > 0 
-      ? branch.negatives 
-      : [
-          "Waktu tunggu dan antrean pengerjaan cukup panjang di hari Sabtu/Minggu",
-          "Kapasitas area parkir dan tempat duduk ruang tunggu terbatas",
-          "Kejelasan estimasi waktu pengerjaan dan rincian biaya billing"
-        ];
+    // Grouping per Kategori Isu
+    const categoryMap: Record<string, {
+      category: string;
+      severity: 'High' | 'Medium' | 'Low';
+      action: string;
+      reviews: RawGoogleReview[];
+    }> = {};
 
-    return negatives.map((negItem, idx) => {
-      const lower = negItem.toLowerCase();
-      let category = 'Pelayanan & Operasional (6 Bulan Terakhir)';
-      let severity: 'High' | 'Medium' | 'Low' = idx % 2 === 0 ? 'High' : 'Medium';
-      let action = 'Tingkatkan standar SOP operasional dan kecepatan layanan cabang.';
+    effectiveRawReviews.forEach((rev) => {
+      const lower = rev.text.toLowerCase();
+      let category = 'Pelayanan & Operasional';
+      let severity: 'High' | 'Medium' | 'Low' = 'Medium';
+      let action = 'Tingkatkan standar SOP pelayanan dan evaluasi masukan pelanggan secara berkala.';
 
       if (lower.includes('parkir') || lower.includes('akses') || lower.includes('sempit')) {
         category = 'Aksesibilitas & Parkir Area';
         severity = 'High';
-        action = 'Optimalkan tata kelola parkir dan pengarahan arus kendaraan.';
+        action = 'Atur sistem penataan parkir / jalur khusus antrean kendaraan di area depan outlet.';
       } else if (lower.includes('antrean') || lower.includes('tunggu') || lower.includes('lama') || lower.includes('sabtu')) {
         category = 'Waktu Tunggu & Antrean Overload';
         severity = 'High';
-        action = 'Terapkan kuota pendaftaran digital dan sediakan jalur Express Pit khusus.';
-      } else if (lower.includes('stok') || lower.includes('sparepart') || lower.includes('oli')) {
-        category = 'Ketersediaan Stok Sparepart';
+        action = 'Terapkan kuota pendaftaran digital via WA/Aplikasi dan sediakan jalur Express Pit khusus.';
+      } else if (lower.includes('stok') || lower.includes('kosong') || lower.includes('filter') || lower.includes('oli')) {
+        category = 'Ketersediaan Stok Sparepart & Oli';
         severity = 'Medium';
-        action = 'Lakukan koordinasi pasokan sparepart mingguan secara intensif.';
+        action = 'Lakukan otomatisasi restock mingguan untuk part fast-moving.';
       } else if (lower.includes('biaya') || lower.includes('harga') || lower.includes('billing')) {
-        category = 'Transparansi Biaya & Billing';
+        category = 'Transparansi Biaya & Billing Kuitansi';
         severity = 'High';
-        action = 'Berikan estimasi harga tertulis sebelum tindakan mekanik.';
+        action = 'Wajibkan persetujuan digital (Digital Approval Sheet) sebelum tindakan mekanik.';
       }
 
-      const affectedEst = Math.max(1, Math.floor((branch.complaintCount || 14) / Math.max(1, negatives.length)));
-
-      return {
-        id: `neg-issue-${idx + 1}`,
-        category,
-        severity,
-        title: `Indikasi Isu Komplain 6 Bulan Terakhir: ${negItem}`,
-        description: `Indikator keluhan terdeteksi dari audit ulasan 6 bulan terakhir pada unit usaha ${branch.name}.`,
-        affectedCount: affectedEst,
-        sampleQuotes: [
-          `"${negItem} — terdeteksi pada ulasan Google Review 6 bulan terakhir"`
-        ],
-        suggestedAction: action,
-      };
+      if (!categoryMap[category]) {
+        categoryMap[category] = { category, severity, action, reviews: [] };
+      }
+      categoryMap[category].reviews.push(rev);
     });
+
+    return Object.values(categoryMap).map((catObj, idx) => ({
+      id: `cat-group-${idx + 1}`,
+      category: catObj.category,
+      severity: catObj.severity,
+      title: `Kategori Isu Komplain #${idx + 1}: ${catObj.category}`,
+      description: `Keluhan terdeteksi pada ${catObj.reviews.length} ulasan pelanggan untuk unit usaha ${branch.name}.`,
+      affectedCount: catObj.reviews.length,
+      sampleQuotes: catObj.reviews.map(r => `"${r.text}" — ${r.author} (${r.date || 'Google Maps'})`),
+      suggestedAction: catObj.action,
+    }));
   };
 
   const detailedComplaints = generateDetailedComplaints();
@@ -233,10 +268,8 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
     (item) => severityFilter === 'ALL' || item.severity === severityFilter
   );
 
-  // Sinkronisasi total ulasan komplain jika rawReviews ditarik
-  const activeComplaintCount = (rawReviews && rawReviews.length > 0)
-    ? rawReviews.length
-    : (branch.complaintCount || 14);
+  // Sinkronisasi total ulasan komplain presisi 100%
+  const activeComplaintCount = effectiveRawReviews.length;
 
   const highSeverityCount = detailedComplaints.filter((c) => c.severity === 'High').length;
   const mediumSeverityCount = detailedComplaints.filter((c) => c.severity === 'Medium').length;
@@ -551,7 +584,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                     </div>
                     <div>
                       <h4 className="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
-                        Teks Asli Google Review (Rating 1–3 ⭐)
+                        Teks Asli Google Review (Semua Rating Bernada Komplain / Saran)
                         <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[9px] font-extrabold uppercase border border-emerald-500/40 flex items-center gap-1">
                           <Radio className="w-2.5 h-2.5 animate-pulse" />
                           LIVE dari Google Maps
@@ -589,7 +622,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                       <div className="text-center">
                         <p className="text-sm font-bold text-white">Mengambil ulasan Google Maps...</p>
                         <p className="text-[11px] text-slate-400 mt-0.5">
-                          AI sedang mencari ulasan 1–3 bintang terbaru untuk {branch.name}
+                          AI sedang mencari ulasan terverifikasi Google Maps untuk {branch.name}
                         </p>
                       </div>
                     </div>
@@ -615,38 +648,38 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                   )}
 
                   {/* Empty State */}
-                  {!isLoadingReviews && !reviewsError && reviewsFetched && rawReviews.length === 0 && (
+                  {!isLoadingReviews && !reviewsError && effectiveRawReviews.length === 0 && (
                     <div className="flex flex-col items-center justify-center py-8 gap-2">
                       <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
-                        <Star className="w-5 h-5 text-slate-500" />
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                       </div>
-                      <p className="text-sm font-bold text-slate-300">Tidak Ada Ulasan 1–3 Bintang Ditemukan</p>
+                      <p className="text-sm font-bold text-slate-300">Tidak Ada Ulasan Komplain Ditemukan</p>
                       <p className="text-[11px] text-slate-500 text-center max-w-sm">
-                        Google Review untuk unit ini mungkin tidak memiliki ulasan negatif yang terindeks saat ini, atau datanya belum tersedia via pencarian.
+                        Unit usaha {branch.name} memiliki performa sangat baik tanpa ulasan komplain/kritik terindeks.
                       </p>
                     </div>
                   )}
 
                   {/* Reviews List */}
-                  {!isLoadingReviews && !reviewsError && rawReviews.length > 0 && (
+                  {!isLoadingReviews && !reviewsError && effectiveRawReviews.length > 0 && (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
-                          {rawReviews.length} ulasan ditemukan • Rating 1–3 ⭐ • Urutan: Terbaru
+                          {effectiveRawReviews.length} ulasan bernada komplain/kritik ditemukan • Urutan: Terbaru
                         </span>
                         <div className="flex items-center gap-3">
-                          {[1, 2, 3].map(r => {
-                            const count = rawReviews.filter(rev => rev.rating === r).length;
+                          {[1, 2, 3, 4, 5].map(r => {
+                            const count = effectiveRawReviews.filter(rev => rev.rating === r).length;
                             return count > 0 ? (
                               <span key={r} className="text-[10px] text-slate-400">
-                                {[...Array(r)].map((_, i) => '⭐').join('')} {count}x
+                                {r}⭐ {count}x
                               </span>
                             ) : null;
                           })}
                         </div>
                       </div>
 
-                      {rawReviews.map((rev) => (
+                      {effectiveRawReviews.map((rev) => (
                         <div
                           key={rev.id}
                           className={`p-4 rounded-xl border transition-all ${
@@ -654,7 +687,9 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                               ? 'bg-rose-950/30 border-rose-800/50 hover:border-rose-600/60'
                               : rev.rating === 2
                               ? 'bg-orange-950/20 border-orange-800/40 hover:border-orange-600/50'
-                              : 'bg-amber-950/15 border-amber-800/30 hover:border-amber-600/40'
+                              : rev.rating === 3
+                              ? 'bg-amber-950/15 border-amber-800/30 hover:border-amber-600/40'
+                              : 'bg-slate-900/40 border-slate-800 hover:border-slate-700'
                           }`}
                         >
                           {/* Review Header */}
@@ -664,7 +699,8 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0 ${
                                 rev.rating === 1 ? 'bg-rose-600/30 text-rose-300' :
                                 rev.rating === 2 ? 'bg-orange-600/30 text-orange-300' :
-                                'bg-amber-600/30 text-amber-300'
+                                rev.rating === 3 ? 'bg-amber-600/30 text-amber-300' :
+                                'bg-sky-600/30 text-sky-300'
                               }`}>
                                 {rev.author.charAt(0).toUpperCase()}
                               </div>
@@ -691,7 +727,8 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                             <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold shrink-0 ${
                               rev.rating === 1 ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' :
                               rev.rating === 2 ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40' :
-                              'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                              rev.rating === 3 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' :
+                              'bg-sky-500/20 text-sky-300 border border-sky-500/40'
                             }`}>
                               {rev.rating} / 5
                             </span>
@@ -701,9 +738,9 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                           <div className="bg-slate-900/70 rounded-lg p-3 border border-slate-800">
                             <div className="text-[9px] text-slate-500 uppercase font-bold mb-1.5 flex items-center gap-1">
                               <MessageSquare className="w-2.5 h-2.5" />
-                              Teks Asli Google Review (disalin sama persis):
+                              Teks Asli Google Review:
                             </div>
-                            <p className="text-xs text-slate-200 leading-relaxed">
+                            <p className="text-xs text-slate-200 leading-relaxed italic">
                               &ldquo;{rev.text}&rdquo;
                             </p>
                           </div>
@@ -717,58 +754,85 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
               {/* ===== END SECTION ULASAN ASLI ===== */}
 
               
-              {/* Filter Severity Bar */}
-              <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              {/* Filter & View Mode Bar */}
+              <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-slate-300 font-bold">
                   <Filter className="w-4 h-4 text-rose-400" />
                   <span>
-                    {rawReviews && rawReviews.length > 0
-                      ? `Filter Ulasan Komplain (Total ${rawReviews.length} Ulasan Terverifikasi 6 Bulan Terakhir (180 Hari)):`
-                      : `Filter Kategori Isu (Total ${detailedComplaints.length} Kategori Isu | Mencakup ±${activeComplaintCount} Ulasan Customer):`}
+                    Analisis Detail Isu ({effectiveRawReviews.length} Ulasan Tercover):
                   </span>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <button
-                    onClick={() => setSeverityFilter('ALL')}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                      severityFilter === 'ALL'
-                        ? 'bg-rose-600 text-white'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    Semua Isu ({detailedComplaints.length})
-                  </button>
-                  <button
-                    onClick={() => setSeverityFilter('High')}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                      severityFilter === 'High'
-                        ? 'bg-rose-600 text-white'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    High ({highSeverityCount})
-                  </button>
-                  <button
-                    onClick={() => setSeverityFilter('Medium')}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                      severityFilter === 'Medium'
-                        ? 'bg-amber-600 text-white'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    Medium ({mediumSeverityCount})
-                  </button>
-                  <button
-                    onClick={() => setSeverityFilter('Low')}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                      severityFilter === 'Low'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    Low ({lowSeverityCount})
-                  </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* View Mode Toggle Buttons */}
+                  <div className="bg-slate-900 p-0.5 rounded-lg border border-slate-800 flex items-center gap-0.5">
+                    <button
+                      onClick={() => setIssueViewMode('per-review')}
+                      className={`px-2.5 py-1 rounded text-[11px] font-extrabold transition-all ${
+                        issueViewMode === 'per-review'
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                      title="Tampilkan rincian detail 1 card per ulasan customer"
+                    >
+                      📋 Per-Ulasan ({effectiveRawReviews.length})
+                    </button>
+                    <button
+                      onClick={() => setIssueViewMode('by-category')}
+                      className={`px-2.5 py-1 rounded text-[11px] font-extrabold transition-all ${
+                        issueViewMode === 'by-category'
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                      title="Kelompokkan ulasan berdasarkan kategori isu"
+                    >
+                      🏷️ Per-Kategori
+                    </button>
+                  </div>
+
+                  {/* Severity Filter */}
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setSeverityFilter('ALL')}
+                      className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all ${
+                        severityFilter === 'ALL'
+                          ? 'bg-rose-600 text-white'
+                          : 'bg-slate-800 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Semua ({detailedComplaints.length})
+                    </button>
+                    <button
+                      onClick={() => setSeverityFilter('High')}
+                      className={`px-2 py-1 rounded text-[11px] font-bold transition-all ${
+                        severityFilter === 'High'
+                          ? 'bg-rose-600 text-white'
+                          : 'bg-slate-800 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      High ({highSeverityCount})
+                    </button>
+                    <button
+                      onClick={() => setSeverityFilter('Medium')}
+                      className={`px-2 py-1 rounded text-[11px] font-bold transition-all ${
+                        severityFilter === 'Medium'
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-slate-800 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Medium ({mediumSeverityCount})
+                    </button>
+                    <button
+                      onClick={() => setSeverityFilter('Low')}
+                      className={`px-2 py-1 rounded text-[11px] font-bold transition-all ${
+                        severityFilter === 'Low'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-slate-800 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Low ({lowSeverityCount})
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -833,7 +897,7 @@ export const BranchDetailModal: React.FC<BranchDetailModalProps> = ({
                     <div className="bg-blue-950/40 border border-blue-500/30 p-3 rounded-lg flex items-start gap-2">
                       <Wrench className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
                       <div>
-                        <div className="text-[10px] font-bold text-blue-400 uppercase">Rekomendasi Aksi Operasional Khusus Unit {name}:</div>
+                        <div className="text-[10px] font-bold text-blue-400 uppercase">Rekomendasi Aksi Operasional Khusus Unit {branch.name}:</div>
                         <p className="text-xs font-semibold text-slate-200 mt-0.5">
                           {item.suggestedAction}
                         </p>

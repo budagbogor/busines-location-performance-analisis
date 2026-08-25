@@ -1,0 +1,1413 @@
+{
+  "br-mobeng-bsd": {
+    "rating": 4.6,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Ruang tunggu terlalu padat dan kurang nyaman",
+      "Harga servis dinilai lebih tinggi dibanding bengkel lain di sekitar"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Ahmad S.",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Servis cukup baik, tapi waktu tunggunya lama sekali saat akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Tina R.",
+        "rating": 4,
+        "date": "1 bulan lalu",
+        "text": "Pengerjaan rapi dan mekanik ramah, namun ruang tunggu agak padat pas siang.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Daniel T.",
+        "rating": 4,
+        "date": "5 bulan lalu",
+        "text": "Harga lumayan tinggi dibanding yang lain meskipun kualitasnya oke.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-karawaci": {
+    "rating": 4.5,
+    "reviewCount": 325,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan terlalu lama",
+      "Komunikasi dengan mekanik kadang kurang jelas",
+      "Harga suku cadang sedikit di atas rata-rata"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-101",
+        "author": "Andi Saputra",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan cukup baik, tapi waktu tunggu bisa sampai 2 jam di akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-102",
+        "author": "Ratna Sari",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Hasil pekerjaan bagus, namun komunikasi dengan mekanik perlu ditingkatkan.",
+        "sentiment": "positive",
+        "tags": [
+          "Komunikasi",
+          "Kualitas Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-103",
+        "author": "Budi Wijaya",
+        "rating": 4,
+        "date": "5 bulan lalu",
+        "text": "Harga servis dan suku cadang agak mahal dibanding tempat lain.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Suku Cadang"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-cipondoh": {
+    "rating": 4.6,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu bisa cukup lama di hari kerja",
+      "Beberapa kali ada keluhan mengenai harga yang dianggap sedikit mahal",
+      "Ruang tunggu kurang nyaman saat ramai"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-101",
+        "author": "Andi Setiawan",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanannya cukup baik, tetapi waktu tunggu terlalu lama meskipun bukan akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu"
+        ]
+      },
+      {
+        "id": "rev-102",
+        "author": "Budi Nugraha",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Harga sedikit mahal dibanding tempat lain, tetapi kualitas pengerjaan bagus.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga"
+        ]
+      },
+      {
+        "id": "rev-103",
+        "author": "Siti Marlina",
+        "rating": 4,
+        "date": "1 bulan lalu",
+        "text": "Mekanik ramah dan profesional, tetapi ruang tunggu kurang nyaman saat lagi ramai.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Mekanik"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-pondok-betung": {
+    "rating": 4.7,
+    "reviewCount": 298,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Harga sedikit lebih mahal dibandingkan dengan bengkel lain di sekitar",
+      "Ruang parkir terbatas saat jam sibuk"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Andy Pratama",
+        "rating": 3,
+        "date": "2 minggu lalu",
+        "text": "Pelayanan bagus, namun waktu tunggu pada akhir pekan bisa sangat lama.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Dewi Anggraini",
+        "rating": 4,
+        "date": "1 bulan lalu",
+        "text": "Kualitas servis oke, tapi harga sedikit di atas rata-rata.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Kualitas"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Budi Santoso",
+        "rating": 3,
+        "date": "3 bulan lalu",
+        "text": "Parkir sering penuh kalau kesini jam sibuk.",
+        "sentiment": "neutral",
+        "tags": [
+          "Parkir"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-gading-serpong": {
+    "rating": 4.6,
+    "reviewCount": 312,
+    "negatives": [
+      "Waktu tunggu terlalu lama saat akhir pekan",
+      "Pelayanan pelanggan bisa lebih ramah",
+      "Harga service sedikit lebih mahal dibanding bengkel lain"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-201",
+        "author": "Andi Susanto",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan di bengkel ini cukup baik, namun saya harus menunggu lebih dari 2 jam untuk ganti oli saat akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-205",
+        "author": "Siti Nurhaliza",
+        "rating": 4,
+        "date": "1 bulan lalu",
+        "text": "Harga service sedikit mahal, tapi kualitas pengerjaan bagus.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Kualitas"
+        ]
+      },
+      {
+        "id": "rev-208",
+        "author": "Budi Prasetyo",
+        "rating": 2,
+        "date": "3 bulan lalu",
+        "text": "Mekanik kurang ramah dan komunikasi kurang baik saat menjelaskan masalah mobil saya.",
+        "sentiment": "negative",
+        "tags": [
+          "Pelayanan",
+          "Komunikasi"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-harapan-indah": {
+    "rating": 4.6,
+    "reviewCount": 385,
+    "negatives": [
+      "Waktu tunggu cukup lama pada saat sibuk",
+      "Harga servis sedikit lebih mahal dibandingkan tempat lain",
+      "Lokasi parkir sering penuh"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Andi Setiawan",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan oke, tetapi waktu tunggu terlalu lama pada akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Rina Astuti",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Hasil servis memuaskan, tapi harga sedikit lebih mahal dibandingkan bengkel lainnya.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Kualitas"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Budi Prasetyo",
+        "rating": 2,
+        "date": "5 bulan lalu",
+        "text": "Lokasi parkir sering penuh dan perlu menunggu lama hanya untuk dapat tempat.",
+        "sentiment": "negative",
+        "tags": [
+          "Parkir",
+          "Waktu Tunggu"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-jemursari": {
+    "rating": 4.7,
+    "reviewCount": 123,
+    "negatives": [
+      "Waktu tunggu cukup lama terutama saat akhir pekan",
+      "Harga sedikit lebih mahal dibandingkan bengkel lain",
+      "Parkir terbatas terutama saat ramai"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Budi Setiawan",
+        "rating": 3,
+        "date": "3 bulan lalu",
+        "text": "Pelayanan cukup baik, tetapi waktu tunggu terlalu lama saat akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Anita Chandra",
+        "rating": 4,
+        "date": "4 bulan lalu",
+        "text": "Hasil pengerjaan bagus, cuma harga agak mahal dibandingkan bengkel lain.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Kualitas"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Riko Sugiharto",
+        "rating": 5,
+        "date": "2 bulan lalu",
+        "text": "Pelayanannya memuaskan, hanya saja parkir sering penuh di hari ramai.",
+        "sentiment": "positive",
+        "tags": [
+          "Parkir",
+          "Pelayanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-citraland": {
+    "rating": 4.7,
+    "reviewCount": 365,
+    "negatives": [
+      "Waktu tunggu yang lama pada akhir pekan",
+      "Harga sedikit tinggi dibandingkan bengkel lain",
+      "Ketersediaan ruang parkir yang terbatas"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Firman H.",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan cukup baik, tetapi harga lebih tinggi daripada bengkel lain. Kalau bisa, harga lebih kompetitif.",
+        "sentiment": "neutral",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Sari P.",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Pengerjaan cepat, tetapi waktu tunggu di akhir pekan bisa lebih dari 1 jam. Sebaiknya tambah staf di hari sibuk.",
+        "sentiment": "positive",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Agus B.",
+        "rating": 4,
+        "date": "5 bulan lalu",
+        "text": "Ruang tunggu bersih dan nyaman, namun parkir terbatas. Perlu alternatif parkir untuk pengunjung.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Parkir"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-cinere": {
+    "rating": 4.5,
+    "reviewCount": 200,
+    "negatives": [
+      "Harga jasa lebih tinggi dibanding bengkel lain di area sekitar",
+      "Ruang tunggu kurang nyaman saat bengkel ramai",
+      "Waktu tunggu pengerjaan bisa lama terutama saat akhir pekan"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Dwi Setiawan",
+        "rating": 3,
+        "date": "2 minggu lalu",
+        "text": "Pelayanan cukup baik, namun harga agak tinggi dibanding tempat lain.",
+        "sentiment": "neutral",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Sinta Rahmawati",
+        "rating": 4,
+        "date": "1 minggu lalu",
+        "text": "Ruang tunggu tidak nyaman jika sedang ramai, di luar itu servis memuaskan.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Servis"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Taufik Hidayat",
+        "rating": 2,
+        "date": "3 bulan lalu",
+        "text": "Waktu tunggu lama sekali di akhir pekan, perlu peningkatan manajemen waktu.",
+        "sentiment": "negative",
+        "tags": [
+          "Waktu Tunggu",
+          "Manajemen"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-kupang": {
+    "rating": 4.2,
+    "reviewCount": 287,
+    "negatives": [
+      "Waktu tunggu yang lama selama akhir pekan",
+      "Ruang tunggu sering kali penuh dan tidak nyaman",
+      "Harga jasa yang dianggap sedikit mahal dibanding bengkel lain"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-105",
+        "author": "Indra Pratama",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan cukup baik, tapi waktu tunggu di akhir pekan lama sekali.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-203",
+        "author": "Dewi Kartika",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Sebenarnya puas dengan hasil layanan, namun ruang tunggunya sering penuh, semoga bisa diperluas.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-308",
+        "author": "Arif Wijaya",
+        "rating": 3,
+        "date": "5 bulan lalu",
+        "text": "Harga servis agak mahal jika dibandingkan dengan bengkel lain di sekitar sini.",
+        "sentiment": "neutral",
+        "tags": [
+          "Harga"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-galuhmas": {
+    "rating": 4.5,
+    "reviewCount": 230,
+    "negatives": [
+      "Waktu tunggu lama saat weekend",
+      "Harga servis cukup mahal dibanding tempat lain",
+      "Kesulitan komunikasi dengan beberapa mekanik"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Adi Nugroho",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Servisnya bagus tapi nungguinnya lama banget, apalagi pas weekend.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Rina Putri",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Pelayanan memuaskan, meskipun harga servisnya lebih mahal dari tempat lain.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Budi Santoso",
+        "rating": 3,
+        "date": "4 bulan lalu",
+        "text": "Mekaniknya kurang bisa menjelaskan kerusakan dengan jelas.",
+        "sentiment": "neutral",
+        "tags": [
+          "Komunikasi"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-jababeka": {
+    "rating": 4.7,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Harga jasa sedikit lebih mahal dibandingkan tempat lain"
+    ],
+    "complaintCount": 2,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Budi Santoso",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan cukup baik tapi waktu tunggu lama, terutama kalau datang di akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Siti Aisyah",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Mekaniknya oke, cuma harga sedikit mahal dibandingkan bengkel lain di kawasan ini.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-kopo": {
+    "rating": 4.6,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu terlalu lama selama akhir pekan",
+      "Harga servis terkadang tidak konsisten",
+      "Kesulitan parkir di hari sibuk"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Andi Santoso",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan cukup baik, tetapi harus menunggu lebih dari 2 jam untuk perbaikan sederhana pada hari Sabtu.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Rina Wulandari",
+        "rating": 4,
+        "date": "5 bulan lalu",
+        "text": "Harga servis kadang tidak sesuai dengan yang tertera di pricelist. Mohon diperbaiki.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Dony Pratama",
+        "rating": 2,
+        "date": "3 bulan lalu",
+        "text": "Parkir sangat sulit saat weekend, perlu penambahan area parkir.",
+        "sentiment": "negative",
+        "tags": [
+          "Parkir"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-sunter": {
+    "rating": 4.7,
+    "reviewCount": 257,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Harga servis lebih mahal dibandingkan tempat lain",
+      "Ruang tunggu kadang terlalu penuh"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-101",
+        "author": "Arif S.",
+        "rating": 3,
+        "date": "3 bulan lalu",
+        "text": "Servisnya bagus, tapi harga lebih mahal dibandingkan tempat lain. Waktu tunggu di akhir pekan juga cukup panjang.",
+        "sentiment": "neutral",
+        "tags": [
+          "Harga",
+          "Waktu Tunggu"
+        ]
+      },
+      {
+        "id": "rev-102",
+        "author": "Lisa M.",
+        "rating": 4,
+        "date": "2 bulan lalu",
+        "text": "Mekaniknya ahli dan servicenya cepat, tapi ruang tunggu kadang terlalu penuh.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-103",
+        "author": "Budi H.",
+        "rating": 4,
+        "date": "1 bulan lalu",
+        "text": "Pengerjaan rapi dan mekanik ramah, namun ruang tunggu agak padat pas siang.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Pelayanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-tole-iskandar": {
+    "rating": 4.6,
+    "reviewCount": 530,
+    "negatives": [
+      "Waktu tunggu lama saat akhir pekan",
+      "Harga sedikit lebih tinggi dibanding bengkel lain",
+      "Ruang tunggu kecil dan bisa penuh saat ramai"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-101",
+        "author": "Andi",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan bagus, tapi waktu tunggu terlalu lama, terutama di akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu"
+        ]
+      },
+      {
+        "id": "rev-102",
+        "author": "Dewi",
+        "rating": 4,
+        "date": "4 bulan lalu",
+        "text": "Hasil servis memuaskan, meskipun harga sedikit tinggi dibanding bengkel lain.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-103",
+        "author": "Budi",
+        "rating": 4,
+        "date": "5 bulan lalu",
+        "text": "Ruang tunggu agak kecil, bisa jadi penuh kalau lagi ramai.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-lenteng-agung": {
+    "rating": 4.6,
+    "reviewCount": 200,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Ruang tunggu kurang nyaman saat ramai",
+      "Harga jasa cukup tinggi dibandingkan bengkel sekitar"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Adi Santoso",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pengerjaan cukup bagus tapi harga jasa lebih mahal dibandingkan bengkel lain.",
+        "sentiment": "neutral",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Siti Rahmawati",
+        "rating": 4,
+        "date": "1 bulan lalu",
+        "text": "Mekaniknya ramah dan sangat membantu, namun waktu tunggu di akhir pekan cukup panjang.",
+        "sentiment": "positive",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Rahmat Hidayat",
+        "rating": 3,
+        "date": "3 minggu lalu",
+        "text": "Ruang tunggu kurang nyaman ketika bengkel sedang ramai.",
+        "sentiment": "neutral",
+        "tags": [
+          "Ruang Tunggu"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-mustika-jaya": {
+    "rating": 4.8,
+    "reviewCount": 100,
+    "negatives": [],
+    "complaintCount": 0,
+    "recentReviews": []
+  },
+  "br-mobeng-jati-asih": {
+    "rating": 4.3,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Harga jasa yang agak mahal",
+      "Kesulitan mencari tempat parkir saat ramai"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Ahmad R.",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Mekanik profesional, namun waktu tunggu di akhir pekan sangat lama.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Budi Santoso",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Harga perbaikan agak mahal dibanding tempat lain, tetapi pelayanannya bagus.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Siti Aisyah",
+        "rating": 4,
+        "date": "5 bulan lalu",
+        "text": "Tempat parkir suka penuh, terutama saat sore.",
+        "sentiment": "positive",
+        "tags": [
+          "Parkir"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-merr": {
+    "rating": 4.5,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Harga jasa tergolong mahal",
+      "Ruang tunggu tidak terlalu nyaman saat ramai"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Ahmad T.",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pengerjaan mobilnya cukup bagus tapi harga jasa lumayan mahal.",
+        "sentiment": "neutral",
+        "tags": [
+          "Harga"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Rina S.",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Ruang tunggu perlu diperbaiki, tidak nyaman saat penuh. Pelayanan ramah.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Budi P.",
+        "rating": 3,
+        "date": "1 minggu lalu",
+        "text": "Waktu tunggu terlalu lama saat akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-hankam": {
+    "rating": 4.9,
+    "reviewCount": 256,
+    "negatives": [
+      "Waktu tunggu lama terutama saat ramai",
+      "Area parkir yang terbatas"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-34",
+        "author": "Andi Susanto",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan bagus tetapi waktu tunggu terlalu lama, perlu tambahan mekanik.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-57",
+        "author": "Budi Hartono",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Bengkel bagus dan mekanik cukup informatif, tapi parkirnya sempit.",
+        "sentiment": "positive",
+        "tags": [
+          "Parkir",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-92",
+        "author": "Citra Dewi",
+        "rating": 2,
+        "date": "4 bulan lalu",
+        "text": "Harga terlalu mahal dibandingkan bengkel lain, perlu pengecekan tarif.",
+        "sentiment": "negative",
+        "tags": [
+          "Harga"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-cileungsi": {
+    "rating": 4.3,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Parkir terbatas terutama saat ramai",
+      "Komunikasi dengan mekanik perlu ditingkatkan"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Aditya Putra",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan lumayan baik, tapi harus menunggu lama saat akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Siti Nurhaliza",
+        "rating": 4,
+        "date": "1 bulan lalu",
+        "text": "Pengerjaan cepat dan hasil bagus, namun parkir agak susah saat ramai.",
+        "sentiment": "positive",
+        "tags": [
+          "Parkir",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Budi Santoso",
+        "rating": 2,
+        "date": "3 minggu lalu",
+        "text": "Mekanik tidak menjelaskan dengan jelas masalah pada mobil saya.",
+        "sentiment": "negative",
+        "tags": [
+          "Komunikasi",
+          "Pelayanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-duren-sawit": {
+    "rating": 4.7,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Harga servis lebih tinggi dibanding bengkel lain",
+      "Susunan ruang tunggu perlu diperbaiki untuk kenyamanan"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Budi Santoso",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pengerjaan bagus tapi waktu tunggu di akhir pekan sangat lama. Semoga bisa diperbaiki.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Ani Lestari",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Harganya agak tinggi, tapi kualitasnya memuaskan. Mungkin bisa ada promo.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Kualitas"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Rudi Hartono",
+        "rating": 4,
+        "date": "5 bulan lalu",
+        "text": "Mekanik ramah dan cekatan, namun ruang tunggu kurang nyaman untuk menunggu lama.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Pelayanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-brigjen-katamso": {
+    "rating": 4.6,
+    "reviewCount": 305,
+    "negatives": [
+      "Waktu tunggu pengerjaan cukup lama khususnya pada hari libur",
+      "Komunikasi dengan mekanik kurang jelas saat menjelaskan kerusakan",
+      "Parkir sering penuh dan sulit saat akhir pekan"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-309",
+        "author": "Andi Setiawan",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Bengkel cukup baik, tetapi waktu tunggu terasa lama. Komunikasi dengan mekanik perlu ditingkatkan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Komunikasi"
+        ]
+      },
+      {
+        "id": "rev-312",
+        "author": "Rina Kusuma",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Pelayanan bagus, hasil pekerjaan memuaskan, namun parkirnya sempit kalau pas weekend.",
+        "sentiment": "positive",
+        "tags": [
+          "Pelayanan",
+          "Parkir"
+        ]
+      },
+      {
+        "id": "rev-315",
+        "author": "Budi Santoso",
+        "rating": 5,
+        "date": "1 bulan lalu",
+        "text": "Sangat memuaskan, tapi perlu memperbaiki ruang tunggu agar lebih nyaman.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-mulyosari": {
+    "rating": 4.5,
+    "reviewCount": 389,
+    "negatives": [
+      "Waktu tunggu pengerjaan terlalu lama saat akhir pekan",
+      "Komunikasi mekanik perlu ditingkatkan untuk penjelasan yang lebih jelas",
+      "Harga servis sedikit lebih tinggi dibandingkan dengan bengkel lain di sekitar"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Rina Putri",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanan cukup baik, namun waktu tunggu terlalu lama, terutama saat akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Budi Santoso",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Mekanik cukup ramah, tapi penjelasan mengenai kerusakan mobil kurang jelas.",
+        "sentiment": "positive",
+        "tags": [
+          "Komunikasi Mekanik",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Lia Hartono",
+        "rating": 4,
+        "date": "1 bulan lalu",
+        "text": "Harganya agak mahal dibandingkan bengkel lain, tapi servisnya memuaskan.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-ahmad-yani-malang": {
+    "rating": 4.6,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu yang lama terutama saat akhir pekan",
+      "Harga jasa yang sedikit di atas rata-rata",
+      "Ruang tunggu yang kurang nyaman dan sering penuh"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Rizky D.",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pengerjaan cukup detail, tapi waktu tunggu lama jika datang saat akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Andi S.",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Pelayanan oke tetapi ruang tunggunya perlu perbaikan, sering penuh.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Sari P.",
+        "rating": 4,
+        "date": "1 bulan lalu",
+        "text": "Mekanik ramah dan pengerjaan bagus, tapi harga sedikit mahal.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-cemengkalang": {
+    "rating": 4.7,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu terlalu lama pada jam sibuk",
+      "Harga servis agak mahal dibanding bengkel lain",
+      "Tempat parkir terbatas terutama saat akhir pekan"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-23",
+        "author": "Ahmad Surya",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Servisnya sih bagus, tapi dua jam menunggu rasanya bisa lebih dipercepat apalagi saat weekend.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu"
+        ]
+      },
+      {
+        "id": "rev-34",
+        "author": "Rina Sari",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Bengkel ini pekerjaannya detail, walau menurut saya harganya agak mahal sedikit dibanding tempat lain.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga"
+        ]
+      },
+      {
+        "id": "rev-47",
+        "author": "Budi Hartono",
+        "rating": 2,
+        "date": "1 bulan lalu",
+        "text": "Mekaniknya ramah, namun tempat parkir sering penuh dan harus menunggu lama untuk mendapatkan ruang.",
+        "sentiment": "negative",
+        "tags": [
+          "Parkir"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-kupang-surabaya": {
+    "rating": 4.8,
+    "reviewCount": 350,
+    "negatives": [
+      "Waktu tunggu pengerjaan di akhir pekan cukup panjang",
+      "Harga servis sedikit lebih mahal dibandingkan bengkel lain",
+      "Ruang tunggu perlu ditingkatkan kenyamanannya"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Budi Santoso",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pengerjaan cukup baik, tetapi waktu tunggu lama dan harga sedikit mahal.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Harga"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Siti Rahmawati",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Pelayanan bagus dan mekanik informatif. Sayangnya, ruang tunggu kurang nyaman.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Ali Joko",
+        "rating": 5,
+        "date": "5 bulan lalu",
+        "text": "Layanan memuaskan, hanya perlu mengurangi waktu tunggu saat akhir pekan.",
+        "sentiment": "positive",
+        "tags": [
+          "Waktu Tunggu",
+          "Pelayanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-manukan": {
+    "rating": 4.6,
+    "reviewCount": 198,
+    "negatives": [
+      "Harga servis bengkel terasa mahal bagi sebagian pelanggan",
+      "Waktu tunggu cukup lama ketika hari sibuk",
+      "Kualitas komunikasi mekanik perlu ditingkatkan"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-1",
+        "author": "Dian W.",
+        "rating": 3,
+        "date": "3 bulan lalu",
+        "text": "Tempatnya cukup strategis, tetapi harga servisnya lebih mahal dibanding bengkel lain.",
+        "sentiment": "neutral",
+        "tags": [
+          "Harga",
+          "Lokasi"
+        ]
+      },
+      {
+        "id": "rev-2",
+        "author": "Rudi S.",
+        "rating": 4,
+        "date": "2 bulan lalu",
+        "text": "Pengerjaan bagus, tetapi butuh waktu lama untuk mendapatkan giliran.",
+        "sentiment": "positive",
+        "tags": [
+          "Waktu Tunggu",
+          "Pengerjaan"
+        ]
+      },
+      {
+        "id": "rev-3",
+        "author": "Linda M.",
+        "rating": 2,
+        "date": "1 bulan lalu",
+        "text": "Komunikasi dengan mekanik agak sulit dan kurang jelas.",
+        "sentiment": "negative",
+        "tags": [
+          "Komunikasi",
+          "Layanan"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-merr-surabaya": {
+    "rating": 4.6,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu pengerjaan lama saat akhir pekan",
+      "Ruang tunggu tidak nyaman",
+      "Harga servis cukup mahal"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-101",
+        "author": "Agus Setiawan",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Pelayanannya baik, tapi harus menunggu lama kalau datang hari Sabtu. Ruang tunggu perlu diperbaiki.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Ruang Tunggu"
+        ]
+      },
+      {
+        "id": "rev-102",
+        "author": "Sinta Dewi",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Bengkel bagus, mekanik paham betul masalah mobil saya. Harga sedikit di atas rata-rata, sebaiknya ada promo harga.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga",
+          "Pelayanan",
+          "Promo"
+        ]
+      },
+      {
+        "id": "rev-103",
+        "author": "Budi Santoso",
+        "rating": 2,
+        "date": "1 minggu lalu",
+        "text": "Mekaniknya baik dan sopan, tetapi ngerjainnya kelamaan dan tempat menunggunya panas.",
+        "sentiment": "negative",
+        "tags": [
+          "Waktu Tunggu",
+          "Ruang Tunggu"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-pandegiling": {
+    "rating": 4.7,
+    "reviewCount": 315,
+    "negatives": [
+      "Waktu tunggu bisa cukup lama saat akhir pekan",
+      "Harga sedikit lebih mahal dibanding bengkel sekitar",
+      "Ruang tunggu perlu perbaikan agar lebih nyaman"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-45",
+        "author": "Budi Santoso",
+        "rating": 3,
+        "date": "3 bulan lalu",
+        "text": "Pelayanan cukup baik, tapi harga lebih mahal dibandingkan bengkel lain.",
+        "sentiment": "neutral",
+        "tags": [
+          "Harga",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-123",
+        "author": "Sari Indah",
+        "rating": 4,
+        "date": "2 bulan lalu",
+        "text": "Mekaniknya ramah dan profesional, namun ruang tunggu perlu perbaikan.",
+        "sentiment": "positive",
+        "tags": [
+          "Ruang Tunggu",
+          "Pelayanan"
+        ]
+      },
+      {
+        "id": "rev-202",
+        "author": "Agus Wirawan",
+        "rating": 3,
+        "date": "1 bulan lalu",
+        "text": "Waktu tunggu terlalu lama ketika akhir pekan.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu"
+        ]
+      }
+    ]
+  },
+  "br-mobeng-taman-waru": {
+    "rating": 4.5,
+    "reviewCount": 320,
+    "negatives": [
+      "Waktu tunggu yang lama terutama pada hari akhir pekan",
+      "Lokasi parkir sempit dan sulit saat jam sibuk",
+      "Harga jasa tergolong cukup tinggi dibandingkan bengkel sejenis"
+    ],
+    "complaintCount": 3,
+    "recentReviews": [
+      {
+        "id": "rev-23",
+        "author": "Fauzi Setyawan",
+        "rating": 3,
+        "date": "2 bulan lalu",
+        "text": "Hasil pengerjaan cukup baik, tapi harus menunggu berjam-jam dan parkirnya susah.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu",
+          "Parkir"
+        ]
+      },
+      {
+        "id": "rev-47",
+        "author": "Rina Aditya",
+        "rating": 4,
+        "date": "3 bulan lalu",
+        "text": "Servisnya lumayan cepat, namun harga agak mahal dibanding tempat lain.",
+        "sentiment": "positive",
+        "tags": [
+          "Harga"
+        ]
+      },
+      {
+        "id": "rev-64",
+        "author": "Imam Basuki",
+        "rating": 3,
+        "date": "1 bulan lalu",
+        "text": "Untuk weekend, harus sabar sekali karena sangat ramai dan waktu tunggu bisa lebih dari dua jam.",
+        "sentiment": "neutral",
+        "tags": [
+          "Waktu Tunggu"
+        ]
+      }
+    ]
+  }
+}

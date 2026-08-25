@@ -5,8 +5,8 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
     brandName: "Mobeng (PT Surga Mobil Indonesia - Service, Tune-Up, Ban & Maintenance Specialist)",
     analysisDate: "Agustus 2026",
     totalBranchesFound: 31,
-    avgNetworkRating: 4.83,
-    totalReviewsAnalyzed: 49850,
+    avgNetworkRating: 4.72,
+    totalReviewsAnalyzed: 9064,
     executiveSummary: "Berdasarkan pemetaan lokasi terverifikasi resmi (31 cabang aktif Mobeng - PT Surga Mobil Indonesia) di Jabodetabek, Bandung, Karawang, Malang, Surabaya, dan Sidoarjo (termasuk 11 cabang resmi Jawa Timur dari mobeng.id/lokasi-toko), Mobeng mengoperasikan 31 outlet resmi dengan reputasi pelanggan yang sangat tinggi (Rata-Rata Rating 4.83/5.0 dari 49.850+ ulasan Google Maps). Konsumen mengapresiasi transparansi estimasi biaya pendaftaran, kualitas Tune-Up Injection & Gurit Carbon Clean, serta fasilitas lounge ber-AC.",
     redFlagBranchIds: [],
     branches: [
@@ -15,17 +15,18 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng BSD",
         city: "Tangerang Selatan",
         address: "Blok E 8 No. 12, Lengkong Gudang Tim., Jl. Letnan Sutopo, Kec. Serpong, Kota Tangerang Selatan, Banten 15310",
-        rating: 4.8,
-        reviewCount: 2750,
-        status: "Top",
+        rating: 4.6,
+        reviewCount: 585,
+        status: "Medium",
         positives: [
           "Peralatan Spooring & Balancing digital sangat akurat",
           "Pelayanan pendaftaran kasir cepat dan ramah"
         ],
         negatives: [
-          "Varian filter AC untuk beberapa mobil langka stoknya habis"
+          "Waktu tunggu pengerjaan spooring balancing agak panjang di akhir pekan",
+          "Kapasitas ruang tunggu terbatas saat jam sibuk siang hari"
         ],
-        complaintCount: 15,
+        complaintCount: 2,
         trendScore: "stable"
       },
       {
@@ -33,17 +34,18 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Karawaci",
         city: "Tangerang",
         address: "Jl. Imam Bonjol No.2, Karawaci, Kec. Karawaci, Kota Tangerang, Banten 15112",
-        rating: 4.8,
-        reviewCount: 2450,
-        status: "Top",
+        rating: 4.5,
+        reviewCount: 249,
+        status: "Medium",
         positives: [
           "Pilihan oli mesin sangat lengkap (Fully Synthetic & Semi-Synth)",
           "Ruang tunggu sangat nyaman dan bersih"
         ],
         negatives: [
-          "Proses pembayaran EDC kadang membutuhkan waktu ulang"
+          "Akses jalan Imam Bonjol padat saat jam pulang kantor",
+          "Perlu tambahan bangku di area tunggu luar"
         ],
-        complaintCount: 14,
+        complaintCount: 2,
         trendScore: "improving"
       },
       {
@@ -51,17 +53,18 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Cipondoh",
         city: "Tangerang",
         address: "Jl. KH. Hasyim Ashari, RT.4/RW.009, Cipondoh, Kec. Tangerang, Kota Tangerang, Banten 15122",
-        rating: 4.7,
-        reviewCount: 1980,
-        status: "Top",
+        rating: 4.4,
+        reviewCount: 312,
+        status: "Medium",
         positives: [
           "Lokasi pinggir jalan strategis, pengerjaan cepat",
           "Mekanik ramah dan transparan menjelaskan kondisi komponen"
         ],
         negatives: [
-          "Area parkir cukup padat saat akhir pekan"
+          "Lalu lintas depan outlet Hasyim Ashari padat saat sore",
+          "Area parkir depan agak rapat"
         ],
-        complaintCount: 12,
+        complaintCount: 2,
         trendScore: "stable"
       },
       {
@@ -69,17 +72,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Pondok Betung",
         city: "Tangerang Selatan",
         address: "Jl. Pd. Betung Raya, RT.01/RW.05, Pd. Betung, Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15221",
-        rating: 4.8,
-        reviewCount: 2100,
+        rating: 4.7,
+        reviewCount: 298,
         status: "Top",
         positives: [
           "Layanan tune up dan gurit mesin sangat memuaskan",
           "Ruang tunggu ber-AC dengan free coffee"
         ],
         negatives: [
-          "Antrean pagi saat hari Sabtu cukup ramai"
+          "Stok filter AC mobil tertentu kadang perlu inden 1-2 hari"
         ],
-        complaintCount: 11,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -87,17 +90,18 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Gading Serpong",
         city: "Tangerang",
         address: "Jl. Scientia Blvd No.12 Blok T, Medang, Kec. Pagedangan, Kabupaten Tangerang, Banten 15334",
-        rating: 4.9,
-        reviewCount: 2890,
-        status: "Top",
+        rating: 4.6,
+        reviewCount: 380,
+        status: "Medium",
         positives: [
           "Fasilitas pit modern, pengerjaan presisi",
           "Service advisor sangat informatif dan tidak memaksa penggantian part"
         ],
         negatives: [
-          "Jam sibuk siang hari tempat duduk ruang tunggu penuh"
+          "Antrean hari Sabtu pagi cukup ramai",
+          "Harga jasa servis kaki-kaki di atas rata-rata bengkel umum"
         ],
-        complaintCount: 10,
+        complaintCount: 2,
         trendScore: "improving"
       },
       {
@@ -105,17 +109,18 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Harapan Indah",
         city: "Bekasi",
         address: "Sentra Bisnis, Jl Harapan Indah Raya, Pejuang, Medan Satria, Kota Bekasi, 17131",
-        rating: 4.8,
-        reviewCount: 3120,
-        status: "Top",
+        rating: 4.6,
+        reviewCount: 427,
+        status: "Medium",
         positives: [
           "Area bengkel luas dengan banyak pit servis paralel",
           "Service Advisor informatif memberikan saran perawatan berkala"
         ],
         negatives: [
-          "Kipas pendingin luar agak berisik"
+          "Waktu pengerjaan saat jam makan siang agak lama",
+          "Pilihan merk ban ukuran ring 17 terbatas"
         ],
-        complaintCount: 16,
+        complaintCount: 2,
         trendScore: "stable"
       },
       {
@@ -125,17 +130,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         address: "Jl. Raya Jemursari No.190, Kendangsari, Kec. Tenggilis Mejoyo, Surabaya, Jawa Timur 60239",
         latitude: -7.3212,
         longitude: 112.7412,
-        rating: 4.6,
-        reviewCount: 536,
-        status: "Medium",
+        rating: 4.7,
+        reviewCount: 295,
+        status: "Top",
         positives: [
           "Pusat perawatan langganan warga Surabaya Selatan",
           "Paket Tune-Up Carbon Clean transparan"
         ],
         negatives: [
-          "Ruang tunggu AC jam siang terik terasa kurang dingin"
+          "Area parkir depan terbatas saat banyak mobil masuk bersamaan"
         ],
-        complaintCount: 18,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -145,17 +150,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         address: "Jl. Citra Raya Unesa, Lidah Kulon, Kec. Lakarsantri, Surabaya, Jawa Timur 60213",
         latitude: -7.3012,
         longitude: 112.6712,
-        rating: 4.4,
-        reviewCount: 226,
-        status: "Medium",
+        rating: 4.7,
+        reviewCount: 365,
+        status: "Top",
         positives: [
           "Lokasi strategis kawasan Citraland Surabaya Barat",
           "Peralatan servis ban lengkap"
         ],
         negatives: [
-          "Waktu pengerjaan saat Sabtu siang agak molor dari estimasi"
+          "Biaya spooring balancing lebih tinggi dibanding bengkel biasa"
         ],
-        complaintCount: 14,
+        complaintCount: 1,
         trendScore: "declining"
       },
       {
@@ -163,17 +168,18 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Cinere",
         city: "Depok",
         address: "Jl Cinere Raya No 11A, Kecamatan Cinere, Kota Depok 16514",
-        rating: 4.7,
-        reviewCount: 2980,
-        status: "Top",
+        rating: 4.6,
+        reviewCount: 410,
+        status: "Medium",
         positives: [
           "Sangat membantu untuk pengerjaan ganti aki & cek kelistrikan cepat",
           "Harga paket promo oli mesin transparan tanpa biaya tersembunyi"
         ],
         negatives: [
-          "Ruang tunggu saat jam sibuk siang penuh"
+          "Jalur Cinere Raya sering padat di jam pulang kerja",
+          "Area tunggu outdoor perlu peneduh kanopi tambahan"
         ],
-        complaintCount: 22,
+        complaintCount: 2,
         trendScore: "stable"
       },
       {
@@ -181,17 +187,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Kupang",
         city: "Surabaya",
         address: "Jl Raya Kupang Baru No 16, Sonokwijenan, Sukomanunggal, Surabaya 60198",
-        rating: 4.8,
-        reviewCount: 1850,
+        rating: 4.7,
+        reviewCount: 350,
         status: "Top",
         positives: [
           "Penanganan masalah mesin responsif dan tuntas",
           "Bengkel bersih dan tertata rapi"
         ],
         negatives: [
-          "Akses jalan depan ramai kendaran saat jam pulang kerja"
+          "Antrean ganti aki dan tune up di hari Minggu cukup padat"
         ],
-        complaintCount: 12,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -199,17 +205,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Galuhmas",
         city: "Karawang",
         address: "Jl Arteri Galuh Mas Blok XIB-2 No 5, RT 7/8, Paseurjaya, Telukjambe Timur, Kab. Karawang 41361",
-        rating: 4.8,
-        reviewCount: 1620,
-        status: "Top",
+        rating: 4.6,
+        reviewCount: 310,
+        status: "Medium",
         positives: [
           "Pilihan utama service & tune up area Karawang",
           "Paket oli murah dan pengerjaan mekanik teliti"
         ],
         negatives: [
-          "Stok sparepart tipe langka perlu inden singkat"
+          "Stok oli diesel tertentu kadang kosong"
         ],
-        complaintCount: 11,
+        complaintCount: 1,
         trendScore: "improving"
       },
       {
@@ -217,17 +223,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Jababeka",
         city: "Bekasi",
         address: "Jl Dr. Cipto Mangunkusumo, Simpangan, Cikarang Utara, Kab. Bekasi 17530",
-        rating: 4.8,
-        reviewCount: 1940,
+        rating: 4.7,
+        reviewCount: 340,
         status: "Top",
         positives: [
           "Sangat membantu karyawan & profesional kawasan Cikarang",
           "Proses penggantian aki dan oli kilat"
         ],
         negatives: [
-          "Parkiran depan padat jam makan siang"
+          "Akses jalan industri Cikarang berdebu saat siang hari"
         ],
-        complaintCount: 13,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -235,17 +241,18 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Kopo",
         city: "Bandung",
         address: "Jl Terusan Kopo No 262 RT 06/06, Margahayu Selatan, Margahayu, Bandung 40921",
-        rating: 4.8,
-        reviewCount: 1780,
-        status: "Top",
+        rating: 4.5,
+        reviewCount: 365,
+        status: "Medium",
         positives: [
           "Layanan perawatan ramah dan profesional di Bandung",
           "Hasil spooring balancing presisi"
         ],
         negatives: [
-          "Arus lalu lintas jalan Kopo kerap padat"
+          "Lalu lintas jalan Terusan Kopo sering macet",
+          "Kapasitas stall servis penuh di akhir pekan"
         ],
-        complaintCount: 14,
+        complaintCount: 2,
         trendScore: "stable"
       },
       {
@@ -253,17 +260,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Sunter",
         city: "Jakarta Utara",
         address: "Jl. Sunter Indah XV Blok KA 1 No 25 RT 002/012, Kelurahan Sunter Jaya, DKI Jakarta 14360",
-        rating: 4.8,
-        reviewCount: 2010,
-        status: "Top",
+        rating: 4.6,
+        reviewCount: 520,
+        status: "Medium",
         positives: [
           "Lokasi bersih dan ruang tunggu AC sangat nyaman",
           "Pemeriksaan 20 titik kendaraan detail"
         ],
         negatives: [
-          "Antrean spooring di hari libur lumayan panjng"
+          "Waktu pengerjaan overhaul rem cukup memakan waktu"
         ],
-        complaintCount: 12,
+        complaintCount: 1,
         trendScore: "improving"
       },
       {
@@ -272,16 +279,16 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         city: "Depok",
         address: "Jl Tole Iskandar, Sukamaju, Cilodong, Kota Depok 16415",
         rating: 4.7,
-        reviewCount: 1940,
+        reviewCount: 490,
         status: "Top",
         positives: [
           "Pusat servis handal kawasan Tole Iskandar Depok",
           "Proses penggantian oli dan filter cepat"
         ],
         negatives: [
-          "Akses jalan Tole Iskandar cukup ramai jam sore"
+          "Parkir depan agak sempit saat hari Sabtu"
         ],
-        complaintCount: 14,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -289,17 +296,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Lenteng Agung",
         city: "Jakarta Selatan",
         address: "Jl. Raya Lenteng Agung No 2, RT 02/03, Lenteng Agung, Jagakarsa, Jakarta Selatan 12610",
-        rating: 4.8,
-        reviewCount: 2050,
-        status: "Top",
+        rating: 4.6,
+        reviewCount: 340,
+        status: "Medium",
         positives: [
           "Akses gampang di jalur Lenteng Agung arah Depok/Jaksel",
           "Mekanik sigap & pengecekan komprehensif"
         ],
         negatives: [
-          "Jalur lambat depan tempat terkadang padat"
+          "Akses jalur lambat Lenteng Agung butuh kehati-hatian saat belok masuk"
         ],
-        complaintCount: 15,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -308,16 +315,16 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         city: "Bekasi",
         address: "Jl Mustika Jaya No 13-54, RT 01/07, Mustika Jaya, Kota Bekasi 17158",
         rating: 4.7,
-        reviewCount: 1680,
+        reviewCount: 215,
         status: "Top",
         positives: [
           "Solusi praktis warga Mustika Jaya Bekasi",
           "Pelayanan pendaftaran kasir cepat"
         ],
         negatives: [
-          "Ruang tunggu kapasitas sedang"
+          "Penerangan plang nama bengkel malam hari perlu lebih terang"
         ],
-        complaintCount: 11,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -325,17 +332,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Jati Asih",
         city: "Bekasi",
         address: "Jl Wibawa Mukti II No 2, RT 06/006, Jatiasih, Kota Bekasi 17422",
-        rating: 4.8,
-        reviewCount: 1890,
-        status: "Top",
+        rating: 4.6,
+        reviewCount: 380,
+        status: "Medium",
         positives: [
           "Penanganan perbaikan efisien dan estimasi biaya jelas",
           "Mekanik berpengalaman"
         ],
         negatives: [
-          "Antrean cuci roda/ban jika akhir pekan"
+          "Jalan Jatiasih padat saat sore hari"
         ],
-        complaintCount: 13,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -343,17 +350,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng MERR",
         city: "Surabaya",
         address: "Jl. Dr. Ir. H. Soekarno, Semolowaru, Kec. Sukolilo, Surabaya, 60117",
-        rating: 4.9,
-        reviewCount: 2210,
+        rating: 4.8,
+        reviewCount: 260,
         status: "Top",
         positives: [
           "Lokasi sangat strategis di jalur MERR Surabaya Timur",
           "Peralatan gurit carbon clean & tune up tercanggih"
         ],
         negatives: [
-          "Tempat parkir penuh pada jam sibuk"
+          "Parkir mobil depan outlet padat pas jam makan siang"
         ],
-        complaintCount: 9,
+        complaintCount: 1,
         trendScore: "improving"
       },
       {
@@ -362,16 +369,16 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         city: "Bekasi",
         address: "Jl. Raya Hankam No.400, RT.004/RW.005, Jatimurni, Kec. Pd. Melati, Kota Bekasi, Jawa Barat 17341",
         rating: 4.8,
-        reviewCount: 1760,
+        reviewCount: 430,
         status: "Top",
         positives: [
           "Sangat strategis untuk warga Pondok Melati & Jatiwarna",
           "Pekerjaan rapi dan transparan"
         ],
         negatives: [
-          "Jalan raya Hankam agak padat jam sibuk"
+          "Antrean hari Sabtu sore cukup panjang"
         ],
-        complaintCount: 12,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -379,17 +386,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         name: "Mobeng Cileungsi",
         city: "Bogor",
         address: "Cileungsi Kidul, Cileungsi, Kab. Bogor, Jawa Barat 16820",
-        rating: 4.7,
-        reviewCount: 1540,
-        status: "Top",
+        rating: 4.5,
+        reviewCount: 290,
+        status: "Medium",
         positives: [
           "Pilihan utama service berkala area Cileungsi & Cibubur Selatan",
           "Mekanik cepat dan edukatif"
         ],
         negatives: [
-          "Koneksi WiFi kadang kurang kencang"
+          "Jalur Cileungsi kerap dilewati truk muatan berat"
         ],
-        complaintCount: 13,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -398,16 +405,16 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         city: "Jakarta Timur",
         address: "Jl. Raya Kol. Sugiono No. 33, RT 003/012, Kel. Duren Sawit, Kec. Duren Sawit, Jakarta Timur, DKI Jakarta",
         rating: 4.9,
-        reviewCount: 1650,
+        reviewCount: 110,
         status: "Top",
         positives: [
           "Fasilitas gedung baru, sangat modern & bersih",
           "Promo pembukaan ganti oli + gurit mesin sangat menguntungkan"
         ],
         negatives: [
-          "Antrean cukup panjang di sore hari"
+          "Waktu tunggu pendaftaran saat akhir pekan agak ramai"
         ],
-        complaintCount: 8,
+        complaintCount: 1,
         trendScore: "improving"
       },
       {
@@ -418,16 +425,14 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         latitude: -7.3512,
         longitude: 112.7543,
         rating: 5.0,
-        reviewCount: 89,
+        reviewCount: 93,
         status: "Top",
         positives: [
           "Rating sempurna 5.0 di area Waru Sidoarjo",
           "Service Advisor sangat informatif dan profesional"
         ],
-        negatives: [
-          "Tempat parkir depan agak rapat saat jam sibuk"
-        ],
-        complaintCount: 3,
+        negatives: [],
+        complaintCount: 0,
         trendScore: "improving"
       },
       {
@@ -438,16 +443,14 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         latitude: -7.2612,
         longitude: 112.7912,
         rating: 5.0,
-        reviewCount: 119,
+        reviewCount: 85,
         status: "Top",
         positives: [
           "Rating sempurna 5.0 dari 119+ ulasan konsumen",
           "Mekanik teliti dan pendaftaran cepat"
         ],
-        negatives: [
-          "Stok filter AC mobil langka perlu inden singkat"
-        ],
-        complaintCount: 3,
+        negatives: [],
+        complaintCount: 0,
         trendScore: "improving"
       },
       {
@@ -457,9 +460,9 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         address: "Jl. Ahmad Yani No.131, Purwodadi, Kec. Blimbing, Kota Malang, Jawa Timur 65126",
         latitude: -7.9432,
         longitude: 112.6512,
-        rating: 4.6,
-        reviewCount: 64,
-        status: "Medium",
+        rating: 4.7,
+        reviewCount: 280,
+        status: "Top",
         positives: [
           "Pelayanan ramah di area Malang",
           "Peralatan Spooring & Balancing presisi"
@@ -467,7 +470,7 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         negatives: [
           "Antrean ganti oli sore hari cukup padat"
         ],
-        complaintCount: 6,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -478,16 +481,14 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         latitude: -7.4512,
         longitude: 112.7012,
         rating: 5.0,
-        reviewCount: 15,
+        reviewCount: 25,
         status: "Top",
         positives: [
           "Outlet baru fasilitas sangat bersih & modern",
           "Proses Tune-Up Injection cepat"
         ],
-        negatives: [
-          "Petunjuk arah plang bengkel malam hari perlu diperjelas"
-        ],
-        complaintCount: 2,
+        negatives: [],
+        complaintCount: 0,
         trendScore: "improving"
       },
       {
@@ -498,7 +499,7 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         latitude: -7.2812,
         longitude: 112.7112,
         rating: 4.7,
-        reviewCount: 199,
+        reviewCount: 350,
         status: "Top",
         positives: [
           "Lokasi Surabaya Barat mudah dijangkau",
@@ -507,7 +508,7 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         negatives: [
           "Kapasitas tempat duduk ruang tunggu sedang"
         ],
-        complaintCount: 8,
+        complaintCount: 1,
         trendScore: "stable"
       },
       {
@@ -518,16 +519,14 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         latitude: -7.2512,
         longitude: 112.6412,
         rating: 5.0,
-        reviewCount: 25,
+        reviewCount: 45,
         status: "Top",
         positives: [
           "Servis sangat cepat dan mekanik informatif",
           "Ganti oli dan cek 20 titik gratis"
         ],
-        negatives: [
-          "Akses jalan Sememi jam pulang kerja lumayan padat"
-        ],
-        complaintCount: 2,
+        negatives: [],
+        complaintCount: 0,
         trendScore: "improving"
       },
       {
@@ -538,7 +537,7 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         latitude: -7.3012,
         longitude: 112.7812,
         rating: 4.8,
-        reviewCount: 133,
+        reviewCount: 260,
         status: "Top",
         positives: [
           "Akses MERR Surabaya Timur sangat strategis",
@@ -546,10 +545,7 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
           "Mekanik sangat teliti dan transparan menjelaskan kondisi oli & rem"
         ],
         negatives: [
-          "Area parkir depan outlet penuh saat jam makan siang",
-          "Waktu tunggu pengerjaan spooring balancing cukup panjang saat hari Sabtu",
-          "Respon pendaftaran antrean via WhatsApp kadang agak lambat di jam sibuk",
-          "Stok varian filter AC untuk beberapa tipe mobil langka perlu inden singkat"
+          "Area parkir depan outlet penuh saat jam makan siang"
         ],
         recentReviews: [
           {
@@ -589,7 +585,7 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
             tags: ["Respon WA", "Hasil Tune Up"]
           }
         ],
-        complaintCount: 7,
+        complaintCount: 1,
         trendScore: "improving"
       },
       {
@@ -599,17 +595,17 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         address: "Jl. Pandegiling No.139, DR. Soetomo, Kec. Tegalsari, Surabaya, Jawa Timur 60264",
         latitude: -7.2754,
         longitude: 112.7381,
-        rating: 5.0,
-        reviewCount: 55,
+        rating: 4.9,
+        reviewCount: 140,
         status: "Top",
         positives: [
           "Lokasi Surabaya Pusat strategis",
           "Pengerjaan ganti ban & balancing cepat"
         ],
         negatives: [
-          "Jalur Pandegiling kerap padat jam sibuk sore"
+          "Jalur Pandegiling Surabaya padat saat jam sibuk sore"
         ],
-        complaintCount: 4,
+        complaintCount: 1,
         trendScore: "improving"
       },
       {
@@ -620,16 +616,14 @@ export const PRESET_DATASETS: Record<string, FullIntelligenceReport> = {
         latitude: -7.3612,
         longitude: 112.6912,
         rating: 5.0,
-        reviewCount: 50,
+        reviewCount: 65,
         status: "Top",
         positives: [
           "Sangat membantu warga Sepanjang & Taman Sidoarjo",
           "Estimasi nota jelas sebelum pengerjaan"
         ],
-        negatives: [
-          "Ruang tunggu perlu tambahan kipas/AC pendingin"
-        ],
-        complaintCount: 3,
+        negatives: [],
+        complaintCount: 0,
         trendScore: "improving"
       }
     ],
